@@ -166,6 +166,8 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
 
   // Preencher o formulário com os dados da versão de cor quando disponíveis
   useEffect(() => {
+    console.log("versionColorData recebido:", versionColorData);
+    
     if (versionColorData && versionColorData.versionId !== undefined && versionColorData.colorId !== undefined) {
       const versionId = versionColorData.versionId?.toString() || "";
       const colorId = versionColorData.colorId?.toString() || "";
