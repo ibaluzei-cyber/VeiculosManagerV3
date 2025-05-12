@@ -70,30 +70,10 @@ export default function VersionColorList({ onEdit }: VersionColorListProps) {
     queryFn: getQueryFn()
   });
   
+  // Carrega todos os version-colors sem filtros
   const { data: versionColors = [], isLoading } = useQuery({
-    queryKey: ["/api/version-colors", selectedBrandId, selectedModelId, selectedVersionId],
-    queryFn: getQueryFn({
-      transformParams: () => {
-        const params = new URLSearchParams();
-        
-        // Adicionei debug para verificar valores selecionados
-        console.log("Filtros aplicados:", { 
-          brandId: selectedBrandId, 
-          modelId: selectedModelId, 
-          versionId: selectedVersionId 
-        });
-        
-        if (selectedModelId && selectedModelId !== "all") {
-          params.append("modelId", selectedModelId);
-        }
-        
-        if (selectedVersionId && selectedVersionId !== "all") {
-          params.append("versionId", selectedVersionId);
-        }
-        
-        return params.toString() ? `?${params.toString()}` : "";
-      }
-    }),
+    queryKey: ["/api/version-colors"],
+    queryFn: getQueryFn(),
     enabled: true,
   });
   
@@ -239,7 +219,7 @@ export default function VersionColorList({ onEdit }: VersionColorListProps) {
         
         {isLoading ? (
           <div>Carregando...</div>
-        ) : Array.isArray(versionColors) && versionColors.length > 0 ? (
+        ) : filteredVersionColors.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
@@ -252,7 +232,7 @@ export default function VersionColorList({ onEdit }: VersionColorListProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {versionColors.map((versionColor: any) => (
+              {filteredVersionColors.map((versionColor: any) => (
                 <TableRow key={versionColor.id}>
                   <TableCell>{versionColor.version?.model?.name || "N/A"}</TableCell>
                   <TableCell>{versionColor.version?.name || "N/A"}</TableCell>
