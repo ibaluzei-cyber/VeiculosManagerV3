@@ -1,0 +1,60 @@
+9815-68ebf559b2baaa50.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 9815-68ebf559b2baaa50.js:1
+9815-68ebf559b2baaa50.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 9815-68ebf559b2baaa50.js:1
+Console.js:61 [Default QueryFn] Carregando: /api/brands
+Console.js:61 [Default QueryFn] Carregando: /api/models
+Console.js:61 [Default QueryFn] Carregando: /api/versions
+Console.js:61 [Default QueryFn] Carregando: /api/colors
+Console.js:61 [Default QueryFn] Carregando: /api/version-colors/1667
+Console.js:61 versionColorData recebido: undefined
+Console.js:61 [Default QueryFn] Status: 200
+Console.js:61 versionColorData recebido: Object
+Console.js:61 Valores extraídos: Object
+Console.js:61 Configurando marca: 31
+Console.js:61 Modelos filtrados pela marca: Array(4)0: {id: 133, name: 'FRONTIER', brandId: 31, createdAt: '2025-05-12T10:43:34.699Z', brand: {…}}1: {id: 130, name: 'KICKS PLAY', brandId: 31, createdAt: '2025-05-12T08:33:40.663Z', brand: {…}}2: {id: 132, name: 'SENTRA', brandId: 31, createdAt: '2025-05-12T09:23:29.715Z', brand: {…}}3: {id: 131, name: 'VERSA', brandId: 31, createdAt: '2025-05-12T08:55:09.462Z', brand: {…}}length: 4[[Prototype]]: Array(0)
+Console.js:61 Configurando modelo: 133
+Console.js:61 Versões filtradas pelo modelo: Array(6)
+Console.js:61 Configurando versão: 365
+Console.js:61 [Default QueryFn] Status: 200
+Console.js:61 [Default QueryFn] Status: 200
+Console.js:61 [Default QueryFn] Status: 200
+Console.js:61 [Default QueryFn] Status: 200
+9815-68ebf559b2baaa50.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 9815-68ebf559b2baaa50.js:1
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+9815-68ebf559b2baaa50.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 9815-68ebf559b2baaa50.js:1
+B @ 9815-68ebf559b2baaa50.js:1
+send @ 9815-68ebf559b2baaa50.js:1
+(anonymous) @ 9815-68ebf559b2baaa50.js:1
+writeCb @ 9815-68ebf559b2baaa50.js:1
+write @ 9815-68ebf559b2baaa50.js:1
+onResizeTerminal @ replEnvironmentDesktop-6e3aebfac7fb85c1.js:1
+(anonymous) @ replEnvironmentDesktop-6e3aebfac7fb85c1.js:1
+fire @ 1c7fb644.e63caaf00eedf5aa.js:3
+(anonymous) @ 1c7fb644.e63caaf00eedf5aa.js:3
+fire @ 1c7fb644.e63caaf00eedf5aa.js:3
+resize @ 1c7fb644.e63caaf00eedf5aa.js:3
+resize @ 1c7fb644.e63caaf00eedf5aa.js:3
+resize @ 1c7fb644.e63caaf00eedf5aa.js:3
+resize @ 1c7fb644.e63caaf00eedf5aa.js:3
+fit @ 1669.495e4f34a391fdae.js:1
+fit @ replEnvironmentDesktop-6e3aebfac7fb85c1.js:1
+B.type @ replEnvironmentDesktop-6e3aebfac7fb85c1.js:1
+(anonymous) @ _app-7dbbc1f00d8214c8.js:15
+b @ _app-7dbbc1f00d8214c8.js:40
+w @ _app-7dbbc1f00d8214c8.js:40
+E @ _app-7dbbc1f00d8214c8.js:40
+r @ _app-7dbbc1f00d8214c8.js:13
