@@ -155,12 +155,7 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
   // Buscar dados para edição quando o id estiver presente
   const { data: versionColorData } = useQuery({
     queryKey: ["/api/version-colors", id],
-    queryFn: async () => {
-      if (!id) return null;
-      const response = await apiRequest("GET", `/api/version-colors/${id}`);
-      const data = await response.json();
-      return data;
-    },
+    queryFn: getQueryFn(), // Usar o getQueryFn para processar a resposta corretamente
     enabled: !!id,
   });
 
