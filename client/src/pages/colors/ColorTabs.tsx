@@ -31,7 +31,7 @@ export default function ColorTabs() {
   
   const handleEditVersionColor = (id: number) => {
     setEditVersionColorId(id);
-    setActiveTab("associate");
+    setActiveTab("associations"); // Manter na mesma aba "associations" em vez de mudar para "associate"
   };
   
   const handleCancelVersionColorEdit = () => {
@@ -84,7 +84,14 @@ export default function ColorTabs() {
         </TabsContent>
 
         <TabsContent value="associations" className="space-y-6">
-          <VersionColorList onEdit={handleEditVersionColor} />
+          {editVersionColorId ? (
+            <VersionColorForm 
+              id={editVersionColorId}
+              onCancel={handleCancelVersionColorEdit}
+            />
+          ) : (
+            <VersionColorList onEdit={handleEditVersionColor} />
+          )}
         </TabsContent>
       </Tabs>
     </div>
