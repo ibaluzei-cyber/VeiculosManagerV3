@@ -107,29 +107,47 @@ export default function VersionColorList({ onEdit }: VersionColorListProps) {
     }
   };
   
-  // Filtragem manual por marca, já que o backend não dá suporte direto para isso
+  // Filtragem em camadas para aplicar os filtros de marca, modelo e versão
   const filteredVersionColors = useMemo(() => {
     if (!versionColors || !Array.isArray(versionColors)) return [];
     
-    // Se não tiver filtro de marca, retorna todos
-    if (!selectedBrandId || selectedBrandId === "all") return versionColors;
-    
-    // Filtra manualmente por marca
-    const brandId = parseInt(selectedBrandId);
     return versionColors.filter(vc => {
-      // Verifica se existe version, model e brand na relação carregada
       const version = vc.version as any;
       if (!version || !version.model || !version.model.brand) return false;
       
-      return version.model.brand.id === brandId;
+      // Filtro de marca
+      if (selectedBrandId && selectedBrandId !== "all") {
+        const brandId = parseInt(selectedBrandId);
+        if (version.model.brand.id !== brandId) return false;
+      }
+      
+      // Filtro de modelo
+      if (selectedModelId && selectedModelId !== "all") {
+        const modelId = parseInt(selectedModelId);
+        if (version.modelId !== modelId) return false;
+      }
+      
+      // Filtro de versão
+      if (selectedVersionId && selectedVersionId !== "all") {
+        const versionId = parseInt(selectedVersionId);
+        if (version.id !== versionId) return false;
+      }
+      
+      // Passou por todos os filtros
+      return true;
     });
-  }, [versionColors, selectedBrandId]);
+  }, [versionColors, selectedBrandId, selectedModelId, selectedVersionId]);
   
   // Verificar dados recebidos para debugging
   useEffect(() => {
     console.log("VersionColors recebidos:", versionColors);
     console.log("VersionColors filtrados:", filteredVersionColors);
-  }, [versionColors, filteredVersionColors]);
+    console.log("Filtros aplicados:", {
+      marca: selectedBrandId,
+      modelo: selectedModelId,
+      versao: selectedVersionId
+    });
+  }, [versionColors, filteredVersionColors, selectedBrandId, selectedModelId, selectedVersionId]);
 
   return (
     <Card>
