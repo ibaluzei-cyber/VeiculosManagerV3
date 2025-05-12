@@ -516,7 +516,8 @@ function Configurator() {
                 {selectedBrandId && brands.find(b => b.id === parseInt(selectedBrandId))?.name} {" "}
                 {selectedModelId && filteredModels.find(m => m.id === parseInt(selectedModelId))?.name} {" "}
                 {selectedVersionId && filteredVersions.find(v => v.id === parseInt(selectedVersionId))?.name} {" "}
-                {selectedVehicle.fuelType} {selectedVehicle.year}
+                {selectedVehicle.fuelType?.toLowerCase() === 'gasoline' ? 'GASOLINA' : 
+                  selectedVehicle.fuelType?.toUpperCase()} {selectedVehicle.year}
               </h3>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
