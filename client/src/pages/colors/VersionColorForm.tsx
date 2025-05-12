@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient, getQueryFn } from "@/lib/queryClient";
 import { Brand, Model, Version, Color } from "@/lib/types";
 
 const formSchema = z.object({
@@ -154,8 +154,8 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
   
   // Buscar dados para edição quando o id estiver presente
   const { data: versionColorData } = useQuery({
-    queryKey: ["/api/version-colors", id],
-    queryFn: getQueryFn(), // Usar o getQueryFn para processar a resposta corretamente
+    queryKey: [`/api/version-colors/${id}`],
+    // Vamos usar o queryFn padrão que já está configurado no queryClient
     enabled: !!id,
   });
 
@@ -163,11 +163,14 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
   useEffect(() => {
     console.log("versionColorData recebido:", versionColorData);
     
-    if (versionColorData && versionColorData.versionId !== undefined && versionColorData.colorId !== undefined) {
-      const versionId = versionColorData.versionId?.toString() || "";
-      const colorId = versionColorData.colorId?.toString() || "";
-      const modelId = versionColorData.version?.modelId?.toString() || "";
-      const brandId = versionColorData.version?.model?.brandId?.toString() || "";
+    // Usar typecasting para evitar problemas de tipo
+    const data = versionColorData as any;
+    
+    if (data && data.versionId !== undefined && data.colorId !== undefined) {
+      const versionId = data.versionId?.toString() || "";
+      const colorId = data.colorId?.toString() || "";
+      const modelId = data.version?.modelId?.toString() || "";
+      const brandId = data.version?.model?.brandId?.toString() || "";
       
       setSelectedBrandId(brandId);
       
@@ -186,8 +189,8 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
       form.setValue("modelId", modelId);
       form.setValue("versionId", versionId);
       form.setValue("colorId", colorId);
-      form.setValue("price", versionColorData.price ? parseFloat(versionColorData.price) : 0);
-      form.setValue("imageUrl", versionColorData.imageUrl || "");
+      form.setValue("price", data.price ? parseFloat(data.price.toString()) : 0);
+      form.setValue("imageUrl", data.imageUrl || "");
     }
   }, [versionColorData, form, models, versions]);
 
