@@ -165,11 +165,11 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
 
   // Preencher o formulário com os dados da versão de cor quando disponíveis
   useEffect(() => {
-    if (versionColorData) {
-      const versionId = versionColorData.versionId.toString();
-      const colorId = versionColorData.colorId.toString();
-      const modelId = versionColorData.version?.modelId.toString() || "";
-      const brandId = versionColorData.version?.model?.brandId.toString() || "";
+    if (versionColorData && versionColorData.versionId !== undefined && versionColorData.colorId !== undefined) {
+      const versionId = versionColorData.versionId?.toString() || "";
+      const colorId = versionColorData.colorId?.toString() || "";
+      const modelId = versionColorData.version?.modelId?.toString() || "";
+      const brandId = versionColorData.version?.model?.brandId?.toString() || "";
       
       setSelectedBrandId(brandId);
       
@@ -188,7 +188,7 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
       form.setValue("modelId", modelId);
       form.setValue("versionId", versionId);
       form.setValue("colorId", colorId);
-      form.setValue("price", parseFloat(versionColorData.price));
+      form.setValue("price", versionColorData.price ? parseFloat(versionColorData.price) : 0);
       form.setValue("imageUrl", versionColorData.imageUrl || "");
     }
   }, [versionColorData, form, models, versions]);
