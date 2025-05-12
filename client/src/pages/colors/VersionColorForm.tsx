@@ -65,13 +65,16 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
   
   // Update filtered models when brand changes
   const handleBrandChange = (brandId: string) => {
+    console.log("Marca selecionada manualmente:", brandId);
     setSelectedBrandId(brandId);
     form.setValue("modelId", ""); // Reset model selection
     form.setValue("versionId", ""); // Reset version selection
     
     if (brandId) {
       const parsedBrandId = parseInt(brandId);
-      setFilteredModels(models.filter(model => model.brandId === parsedBrandId));
+      const filteredModelsByBrand = models.filter(model => model.brandId === parsedBrandId);
+      setFilteredModels(filteredModelsByBrand);
+      console.log("Modelos filtrados após seleção manual de marca:", filteredModelsByBrand);
     } else {
       setFilteredModels([]);
     }
@@ -81,12 +84,15 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
   
   // Update filtered versions when model changes
   const handleModelChange = (modelId: string) => {
+    console.log("Modelo selecionado manualmente:", modelId);
     form.setValue("modelId", modelId);
     form.setValue("versionId", ""); // Reset version selection
     
     if (modelId) {
       const parsedModelId = parseInt(modelId);
-      setFilteredVersions(versions.filter(version => version.modelId === parsedModelId));
+      const filteredVersionsByModel = versions.filter(version => version.modelId === parsedModelId);
+      setFilteredVersions(filteredVersionsByModel);
+      console.log("Versões filtradas após seleção manual de modelo:", filteredVersionsByModel);
     } else {
       setFilteredVersions([]);
     }
@@ -160,7 +166,7 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
   });
 
   // Função para garantir que os campos do form estejam corretos mesmo com atualizações assíncronas
-  const syncFormWithVersionColor = (data: any) => {
+  const syncFormWithVersionColor = async (data: any) => {
     if (!data || data.versionId === undefined || data.colorId === undefined) return;
     
     try {
@@ -179,49 +185,47 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
         model: data.version?.model
       });
       
-      // Primeiro configurar marca e atualizar os modelos filtrados
-      if (brandId) {
-        const brandIdInt = parseInt(brandId);
-        setSelectedBrandId(brandId);
-        
-        // Atualizar valor no formulário
-        // A propriedade brandId não faz parte do form
-        // form.setValue("brandId", brandId);
-        
-        // Filtrar modelos pela marca
-        const modelsForBrand = models.filter(model => model.brandId === brandIdInt);
-        setFilteredModels(modelsForBrand);
-        console.log("Modelos disponíveis para marca:", modelsForBrand);
-        
-        // Verificar se o modelo existe entre as opções
-        const isModelValid = modelsForBrand.some(model => model.id.toString() === modelId);
-        
-        if (isModelValid && modelId) {
-          // Atualizar modelo no formulário
-          setTimeout(() => {
-            form.setValue("modelId", modelId);
-            
-            // Filtrar versões pelo modelo
-            const modelIdInt = parseInt(modelId);
-            const versionsForModel = versions.filter(version => version.modelId === modelIdInt);
-            setFilteredVersions(versionsForModel);
-            console.log("Versões disponíveis para modelo:", versionsForModel);
-            
-            // Atualizar versão no formulário
-            if (versionId) {
-              setTimeout(() => {
-                form.setValue("versionId", versionId);
-              }, 0);
-            }
-          }, 0);
-        }
-      }
-      
-      // Configurar os outros campos que não dependem da hierarquia
+      // Configurar os campos que não dependem da hierarquia primeiro
       form.setValue("colorId", colorId);
       form.setValue("price", data.price ? parseFloat(data.price.toString()) : 0);
       form.setValue("imageUrl", data.imageUrl || "");
       
+      // Definir valores na ordem correta para preservar a cascata de dependências
+      if (brandId) {
+        // 1. Atualizar a marca selecionada no estado local
+        const brandIdInt = parseInt(brandId);
+        setSelectedBrandId(brandId);
+        
+        // 2. Filtrar os modelos com base na marca
+        const modelsForBrand = models.filter(model => model.brandId === brandIdInt);
+        setFilteredModels(modelsForBrand);
+        console.log("Modelos disponíveis para marca:", modelsForBrand);
+        
+        // Forçar atualização síncrona para garantir que o array de modelos filtrados esteja disponível
+        await new Promise(resolve => setTimeout(resolve, 0));
+        
+        // 3. Verificar se o modelo existe na lista filtrada e definir o valor
+        if (modelId && modelsForBrand.some(model => model.id.toString() === modelId)) {
+          // Definir modelId manualmente no formulário
+          form.setValue("modelId", modelId);
+          console.log("Modelo selecionado:", modelId);
+          
+          // 4. Filtrar versões baseadas no modelo e atualizar o estado
+          const modelIdInt = parseInt(modelId);
+          const versionsForModel = versions.filter(version => version.modelId === modelIdInt);
+          setFilteredVersions(versionsForModel);
+          console.log("Versões disponíveis para modelo:", versionsForModel);
+          
+          // Forçar atualização síncrona
+          await new Promise(resolve => setTimeout(resolve, 0));
+          
+          // 5. Definir a versão se existir entre as opções filtradas
+          if (versionId && versionsForModel.some(version => version.id.toString() === versionId)) {
+            form.setValue("versionId", versionId);
+            console.log("Versão selecionada:", versionId);
+          }
+        }
+      }
     } catch (err) {
       console.error("Erro ao processar dados da versão de cor:", err);
     }
@@ -234,11 +238,16 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
     // Usar typecasting para evitar problemas de tipo
     const data = versionColorData as any;
     
-    // Só processar quando tivermos dados completos
-    if (data && models.length > 0 && versions.length > 0) {
-      syncFormWithVersionColor(data);
+    // Só processar quando tivermos dados completos e os Arrays de referência estiverem carregados
+    if (data && models.length > 0 && versions.length > 0 && colors.length > 0) {
+      // Executar de forma assíncrona para garantir que tudo esteja carregado
+      const initializeForm = async () => {
+        await syncFormWithVersionColor(data);
+      };
+      
+      initializeForm();
     }
-  }, [versionColorData, form, models, versions]);
+  }, [versionColorData, form, models, versions, colors]);
 
   return (
     <Card>
