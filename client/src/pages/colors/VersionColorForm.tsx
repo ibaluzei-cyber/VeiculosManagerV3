@@ -158,7 +158,8 @@ export default function VersionColorForm({ id, onCancel }: VersionColorFormProps
     queryFn: async () => {
       if (!id) return null;
       const response = await apiRequest("GET", `/api/version-colors/${id}`);
-      return response;
+      const data = await response.json();
+      return data;
     },
     enabled: !!id,
   });
