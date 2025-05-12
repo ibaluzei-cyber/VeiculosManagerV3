@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,10 +71,17 @@ export default function VersionColorList({ onEdit }: VersionColorListProps) {
   });
   
   const { data: versionColors = [], isLoading } = useQuery({
-    queryKey: ["/api/version-colors", selectedModelId, selectedVersionId],
+    queryKey: ["/api/version-colors", selectedBrandId, selectedModelId, selectedVersionId],
     queryFn: getQueryFn({
       transformParams: () => {
         const params = new URLSearchParams();
+        
+        // Adicionei debug para verificar valores selecionados
+        console.log("Filtros aplicados:", { 
+          brandId: selectedBrandId, 
+          modelId: selectedModelId, 
+          versionId: selectedVersionId 
+        });
         
         if (selectedModelId && selectedModelId !== "all") {
           params.append("modelId", selectedModelId);
@@ -120,10 +127,29 @@ export default function VersionColorList({ onEdit }: VersionColorListProps) {
     }
   };
   
+  // Filtragem manual por marca, já que o backend não dá suporte direto para isso
+  const filteredVersionColors = useMemo(() => {
+    if (!versionColors || !Array.isArray(versionColors)) return [];
+    
+    // Se não tiver filtro de marca, retorna todos
+    if (!selectedBrandId || selectedBrandId === "all") return versionColors;
+    
+    // Filtra manualmente por marca
+    const brandId = parseInt(selectedBrandId);
+    return versionColors.filter(vc => {
+      // Verifica se existe version, model e brand na relação carregada
+      const version = vc.version as any;
+      if (!version || !version.model || !version.model.brand) return false;
+      
+      return version.model.brand.id === brandId;
+    });
+  }, [versionColors, selectedBrandId]);
+  
   // Verificar dados recebidos para debugging
   useEffect(() => {
     console.log("VersionColors recebidos:", versionColors);
-  }, [versionColors]);
+    console.log("VersionColors filtrados:", filteredVersionColors);
+  }, [versionColors, filteredVersionColors]);
 
   return (
     <Card>
