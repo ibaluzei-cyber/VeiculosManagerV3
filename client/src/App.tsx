@@ -34,6 +34,7 @@ import ProfilePage from "@/pages/user/profile";
 import UserManagement from "@/pages/admin/UserManagement";
 import AccessPermissions from "@/pages/admin/AccessPermissions";
 import PermissionSettings from "@/pages/admin/PermissionSettings";
+import LandingPage from "@/pages/landing-page";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 
@@ -42,6 +43,9 @@ function Router() {
     <Switch>
       {/* Rota de autenticação - acessível a todos */}
       <Route path="/auth" component={AuthPage} />
+      
+      {/* Rota da landing page - acessível a todos */}
+      <Route path="/landingpage" component={LandingPage} />
       
       {/* Rotas protegidas - só podem ser acessadas por usuários autenticados */}
       <ProtectedRoute path="/" component={Dashboard} />
