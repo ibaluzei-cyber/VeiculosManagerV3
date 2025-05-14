@@ -181,39 +181,42 @@ export default function LandingPage() {
               </a>
             </div>
             
-            {/* Diálogo de alerta para usuários não autenticados */}
-            <AlertDialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
-              <AlertDialogContent className="relative">
-                <button 
-                  onClick={() => setIsAuthDialogOpen(false)}
-                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
-                  aria-label="Fechar"
-                >
-                  <span className="sr-only">Fechar</span>
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-                  </svg>
-                </button>
-
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    Acesso Restrito
-                  </AlertDialogTitle>
-                  <AlertDialogDescription className="text-base">
-                    Para acessar o sistema de gerenciamento de veículos, você precisa estar registrado e autenticado.
-                    Por favor, crie uma conta ou faça login para continuar.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <Link href="/auth">
-                    <Button className="w-full sm:w-auto">
-                      Fazer Login / Registrar
-                    </Button>
-                  </Link>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {/* Modal customizada para usuários não autenticados */}
+            {isAuthDialogOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative overflow-hidden p-6">
+                  <button 
+                    onClick={() => setIsAuthDialogOpen(false)}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                    aria-label="Fechar"
+                  >
+                    <span className="sr-only">Fechar</span>
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                    </svg>
+                  </button>
+                  
+                  <div className="text-left">
+                    <h2 className="flex items-center gap-2 text-lg font-semibold mb-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-500" />
+                      Acesso Restrito
+                    </h2>
+                    <p className="text-gray-700 mb-6">
+                      Para acessar o sistema de gerenciamento de veículos, você precisa estar registrado e autenticado.
+                      Por favor, crie uma conta ou faça login para continuar.
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-end mt-4">
+                    <Link href="/auth">
+                      <Button className="w-full sm:w-auto">
+                        Fazer Login / Registrar
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
