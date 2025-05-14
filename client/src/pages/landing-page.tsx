@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useMobile } from "@/hooks/use-mobile";
-import { ArrowRight, Car, Shield, Settings, Users, Palette, BarChart } from "lucide-react";
+import { ArrowRight, Car, Shield, Settings, Users, Palette, BarChart, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // Definição das interfaces para os dados
 interface Setting {
@@ -37,7 +48,11 @@ interface Version {
 
 export default function LandingPage() {
   const isMobile = useMobile();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [animatedCount, setAnimatedCount] = useState(0);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   
   // Buscar configurações da empresa
   const { data: settings = [] } = useQuery<Setting[]>({
@@ -60,6 +75,37 @@ export default function LandingPage() {
   const { data: versions = [] } = useQuery<Version[]>({
     queryKey: ["/api/versions"],
   });
+  
+  // Verificar se o usuário está autenticado
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await apiRequest("GET", "/api/user");
+        if (response.ok) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        setIsLoggedIn(false);
+      }
+    };
+    
+    checkAuth();
+  }, []);
+  
+  // Manipular o clique no botão "Começar agora"
+  const handleStartNowClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (isLoggedIn) {
+      // Se o usuário estiver logado, redireciona para o dashboard
+      setLocation("/");
+    } else {
+      // Se não estiver logado, abre o diálogo de alerta
+      setIsAuthDialogOpen(true);
+    }
+  };
   
   // Extrair dados das configurações
   const companyName = settings.find(setting => setting.key === "company_name")?.value || "Auto+";
@@ -121,17 +167,42 @@ export default function LandingPage() {
               Gerencie marcas, modelos, versões e configure veículos de forma intuitiva com nosso sistema completo.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/auth">
-                <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                  Começar agora <Car className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="bg-white text-primary hover:bg-gray-100"
+                onClick={handleStartNowClick}
+              >
+                Começar agora <Car className="ml-2 h-5 w-5" />
+              </Button>
               <a href="#features">
                 <Button size="lg" className="bg-white/90 text-primary font-medium hover:bg-white">
                   Conheça os recursos <Settings className="ml-2 h-5 w-5" />
                 </Button>
               </a>
             </div>
+            
+            {/* Diálogo de alerta para usuários não autenticados */}
+            <AlertDialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    Acesso Restrito
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-base">
+                    Para acessar o sistema de gerenciamento de veículos, você precisa estar registrado e autenticado.
+                    Por favor, crie uma conta ou faça login para continuar.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <Link href="/auth">
+                    <Button className="w-full sm:w-auto">
+                      Fazer Login / Registrar
+                    </Button>
+                  </Link>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </section>
@@ -263,7 +334,7 @@ export default function LandingPage() {
           </p>
           <Link href="/auth">
             <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-              Criar uma conta <Users className="ml-2 h-5 w-5" />
+              Criar uma conta / Login <Users className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
