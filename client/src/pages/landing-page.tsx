@@ -144,12 +144,12 @@ export default function LandingPage() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/auth">
-              <Button variant="ghost">Login</Button>
+          <div className="flex items-center gap-2 md:gap-4">
+            <Link href="/auth" className="w-auto">
+              <Button variant="ghost" className="text-sm md:text-base">Login</Button>
             </Link>
-            <Link href="/auth">
-              <Button>Registrar</Button>
+            <Link href="/auth" className="w-auto">
+              <Button className="text-sm md:text-base">Registrar</Button>
             </Link>
           </div>
         </div>
@@ -166,16 +166,16 @@ export default function LandingPage() {
             <p className="text-xl mb-8">
               Gerencie marcas, modelos, versões e configure veículos de forma intuitiva com nosso sistema completo.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-gray-100"
+                className="bg-white text-primary hover:bg-gray-100 w-full sm:w-auto"
                 onClick={handleStartNowClick}
               >
                 Começar agora <Car className="ml-2 h-5 w-5" />
               </Button>
-              <a href="#features">
-                <Button size="lg" className="bg-white/90 text-primary font-medium hover:bg-white">
+              <a href="#features" className="w-full sm:w-auto">
+                <Button size="lg" className="bg-white/90 text-primary font-medium hover:bg-white w-full">
                   Conheça os recursos <Settings className="ml-2 h-5 w-5" />
                 </Button>
               </a>
@@ -346,11 +346,13 @@ export default function LandingPage() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Simplifique a gestão de veículos e configure o tipo de revenda para sua empresa com nossa plataforma completa.
           </p>
-          <Link href="/auth">
-            <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-              Criar uma conta / Login <Users className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+          <div className="flex justify-center">
+            <Link href="/auth" className="w-full sm:w-auto max-w-xs">
+              <Button size="lg" className="bg-white text-primary hover:bg-gray-100 w-full">
+                Criar uma conta / Login <Users className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
       
