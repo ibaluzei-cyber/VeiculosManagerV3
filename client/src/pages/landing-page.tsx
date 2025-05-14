@@ -123,12 +123,12 @@ export default function LandingPage() {
             <div className="flex flex-wrap gap-4">
               <Link href="/auth">
                 <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                  Começar agora <ArrowRight className="ml-2 h-5 w-5" />
+                  Começar agora <Car className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <a href="#features">
                 <Button size="lg" className="bg-white/90 text-primary font-medium hover:bg-white">
-                  Conheça os recursos
+                  Conheça os recursos <Settings className="ml-2 h-5 w-5" />
                 </Button>
               </a>
             </div>
@@ -233,7 +233,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Itens de Série</h3>
                 <p className="text-gray-600">
-                  Cadastre todos os itens de série inclusos em cada modelo, facilitando a comparação entre diferentes versões de veículos.
+                  Gerencie todos os itens de série inclusos em cada modelo, facilitando a comparação entre diferentes versões de veículos.
                 </p>
               </CardContent>
             </Card>
@@ -263,7 +263,7 @@ export default function LandingPage() {
           </p>
           <Link href="/auth">
             <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-              Criar uma conta <ArrowRight className="ml-2 h-5 w-5" />
+              Criar uma conta <Users className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>
