@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient, apiRequest } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -43,9 +43,6 @@ function Router() {
     <Switch>
       {/* Rota de autenticação - acessível a todos */}
       <Route path="/auth" component={AuthPage} />
-      
-      {/* Rota da landing page - acessível a todos */}
-      <Route path="/landingpage" component={LandingPage} />
       
       {/* Rotas protegidas - só podem ser acessadas por usuários autenticados */}
       <ProtectedRoute path="/" component={Dashboard} />
@@ -167,15 +164,67 @@ function ProtectedContent() {
   );
 }
 
+// Componente de redirecionamento simples
+function RedirectTo({ to }: { to: string }) {
+  const [_, navigate] = useLocation();
+  
+  useEffect(() => {
+    navigate(to);
+  }, [navigate, to]);
+  
+  return null;
+}
+
+// Componente de roteamento externo que não requer autenticação
+function PublicRouter() {
+  return (
+    <Switch>
+      <Route path="/landingpage">
+        <LandingPage />
+      </Route>
+      <Route path="/">
+        <RedirectTo to="/landingpage" />
+      </Route>
+    </Switch>
+  );
+}
+
+function AppWithRouter() {
+  // Utilize o hook useLocation para verificar a rota atual
+  const [location] = useLocation();
+  const { user, isLoading } = useAuth();
+  
+  const isLandingPage = location === '/landingpage' || 
+                        (!user && !isLoading && location === '/');
+
+  return (
+    <>
+      {/* Componente para gerenciar o título e favicon da aplicação */}
+      <AppHead />
+      
+      {/* Renderiza a landing page fora do layout admin quando a rota for /landingpage 
+         ou quando o usuário não estiver autenticado e estiver na rota inicial */}
+      {isLandingPage ? (
+        <>
+          <PublicRouter />
+          <Toaster />
+        </>
+      ) : (
+        <>
+          <ProtectedContent />
+          <Toaster />
+        </>
+      )}
+    </>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <SidebarProvider>
-          {/* Componente para gerenciar o título e favicon da aplicação */}
-          <AppHead />
-          <ProtectedContent />
-          <Toaster />
+          <AppWithRouter />
         </SidebarProvider>
       </AuthProvider>
     </QueryClientProvider>
