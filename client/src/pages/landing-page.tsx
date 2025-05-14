@@ -127,7 +127,7 @@ export default function LandingPage() {
                 </Button>
               </Link>
               <a href="#features">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button size="lg" className="bg-white/90 text-primary font-medium hover:bg-white">
                   Conheça os recursos
                 </Button>
               </a>
@@ -168,7 +168,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Recursos Poderosos</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Nossa plataforma oferece todos os recursos necessários para uma gestão eficiente de veículos.
+              Nossa plataforma oferece todos os recursos necessários para uma gestão de veículos e preços para revendedores.
             </p>
           </div>
           
@@ -181,7 +181,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Gerenciamento de Veículos</h3>
                 <p className="text-gray-600">
-                  Cadastre e gerencie marcas, modelos, versões e veículos de forma organizada e eficiente.
+                  Gerencie marcas, modelos, versões de veículos de forma organizada e eficiente.
                 </p>
               </CardContent>
             </Card>
@@ -216,11 +216,11 @@ export default function LandingPage() {
             <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
               <CardContent className="p-6">
                 <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                  <Shield className="h-6 w-6 text-primary" />
+                  <Car className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Controle de Acesso</h3>
+                <h3 className="text-xl font-bold mb-2">Equipamentos</h3>
                 <p className="text-gray-600">
-                  Três níveis de acesso (Administrador, Cadastrador, Usuário) com permissões personalizáveis.
+                  Gerencie equipamentos opcionais com preços específicos para cada versão de veículo, personalizando a oferta ao cliente.
                 </p>
               </CardContent>
             </Card>
@@ -229,11 +229,11 @@ export default function LandingPage() {
             <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
               <CardContent className="p-6">
                 <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                  <BarChart className="h-6 w-6 text-primary" />
+                  <Settings className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Painéis Estatísticos</h3>
+                <h3 className="text-xl font-bold mb-2">Itens de Série</h3>
                 <p className="text-gray-600">
-                  Visualize dados importantes com painéis estatísticos para acompanhar seu inventário.
+                  Cadastre todos os itens de série inclusos em cada modelo, facilitando a comparação entre diferentes versões de veículos.
                 </p>
               </CardContent>
             </Card>
@@ -259,7 +259,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Pronto para começar?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Simplifique a gestão de veículos da sua empresa com nossa plataforma completa.
+            Simplifique a gestão de veículos e configure o tipo de revenda para sua empresa com nossa plataforma completa.
           </p>
           <Link href="/auth">
             <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
