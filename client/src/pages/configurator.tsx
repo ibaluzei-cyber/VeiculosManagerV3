@@ -696,15 +696,18 @@ function Configurator() {
                       </Accordion>
                     </TabsContent>
                     <TabsContent value="diagrama" className="p-4 border rounded-md mt-2">
-                      <div className="flex justify-center items-center h-64">
-                        {selectedVehicle && selectedVehicle.color && selectedVehicle.color.imageUrl ? (
-                          <img 
-                            src={selectedVehicle.color.imageUrl} 
-                            alt="Vehicle diagram"
-                            className="max-h-full object-contain"
-                          />
+                      <div className="h-full">
+                        {selectedVehicle && selectedVehicle.description ? (
+                          <div className="prose">
+                            <h3 className="text-lg font-semibold mb-3">Descrição e Itens de Série</h3>
+                            <div className="whitespace-pre-wrap text-gray-700">
+                              {selectedVehicle.description}
+                            </div>
+                          </div>
                         ) : (
-                          <div className="text-gray-500">Diagrama não disponível</div>
+                          <div className="text-gray-500 flex justify-center items-center h-64">
+                            Informações sobre itens de série não disponíveis
+                          </div>
                         )}
                       </div>
                     </TabsContent>
