@@ -199,7 +199,13 @@ export default function VehicleFormFixed() {
           form.setValue("brandId", brandId);
           form.setValue("modelId", modelId);
           form.setValue("versionId", versionId);
-          console.log("Valores de campos atualizados manualmente após reset");
+          
+          // Atualiza os nomes para exibição nos componentes Select
+          setSelectedBrandName(brandName);
+          setSelectedModelName(modelName);
+          setSelectedVersionName(versionName);
+          
+          console.log("Valores de campos e nomes atualizados manualmente após reset");
         }, 100);
         
         console.log("Formulário preenchido com dados do veículo");
