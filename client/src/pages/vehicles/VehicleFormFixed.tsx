@@ -603,12 +603,16 @@ export default function VehicleFormFixed() {
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <div className="flex items-center justify-between w-full overflow-hidden">
-                                  <div className="truncate">
-                                    {selectedBrandName ? selectedBrandName : "Selecione uma marca"}
+                              <SelectTrigger id="brand-trigger">
+                                {field.value && selectedBrandName ? (
+                                  <div className="flex items-center justify-between w-full overflow-hidden">
+                                    <div className="truncate text-foreground">
+                                      {selectedBrandName}
+                                    </div>
                                   </div>
-                                </div>
+                                ) : (
+                                  <div className="text-muted-foreground">Selecione uma marca</div>
+                                )}
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -644,12 +648,16 @@ export default function VehicleFormFixed() {
                             disabled={!form.getValues("brandId")}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <div className="flex items-center justify-between w-full overflow-hidden">
-                                  <div className="truncate">
-                                    {selectedModelName ? selectedModelName : "Selecione um modelo"}
+                              <SelectTrigger id="model-trigger">
+                                {field.value && selectedModelName ? (
+                                  <div className="flex items-center justify-between w-full overflow-hidden">
+                                    <div className="truncate text-foreground">
+                                      {selectedModelName}
+                                    </div>
                                   </div>
-                                </div>
+                                ) : (
+                                  <div className="text-muted-foreground">Selecione um modelo</div>
+                                )}
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -685,12 +693,16 @@ export default function VehicleFormFixed() {
                             disabled={!form.getValues("modelId")}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <div className="flex items-center justify-between w-full overflow-hidden">
-                                  <div className="truncate">
-                                    {selectedVersionName ? selectedVersionName : "Selecione uma versão"}
+                              <SelectTrigger id="version-trigger">
+                                {field.value && selectedVersionName ? (
+                                  <div className="flex items-center justify-between w-full overflow-hidden">
+                                    <div className="truncate text-foreground">
+                                      {selectedVersionName}
+                                    </div>
                                   </div>
-                                </div>
+                                ) : (
+                                  <div className="text-muted-foreground">Selecione uma versão</div>
+                                )}
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
