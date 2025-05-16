@@ -690,13 +690,9 @@ export default function VehicleFormFixed() {
                           >
                             <FormControl>
                               <SelectTrigger className="relative">
-                                {selectedVersionName ? (
-                                  <div className="absolute inset-0 flex items-center px-3 font-normal">
-                                    {selectedVersionName}
-                                  </div>
-                                ) : (
-                                  <SelectValue placeholder="Selecione uma versão" />
-                                )}
+                                <SelectValue>
+                                  {selectedVersionName || "Selecione uma versão"}
+                                </SelectValue>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
