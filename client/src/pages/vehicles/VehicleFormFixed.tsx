@@ -144,37 +144,47 @@ export default function VehicleFormFixed() {
       try {
         // Sempre carregamos os dados do veículo ao editar
         
-        // Carregar dados relacionados de forma consistente
+        // Garantir que os IDs sejam strings para manipulação consistente
         const brandId = vehicle.version.model.brandId.toString();
         const modelId = vehicle.version.modelId.toString();
         const versionId = vehicle.versionId.toString();
         
         console.log(`Definindo marca=${brandId}, modelo=${modelId}, versão=${versionId}`);
         
-        // Obter os nomes para exibição nos campos de seleção
-        const brandName = brands.find(b => b.id === vehicle.version.model.brandId)?.name || "";
-        const modelName = models.find(m => m.id === vehicle.version.modelId)?.name || "";
-        const versionName = versions.find(v => v.id === vehicle.versionId)?.name || "";
+        // Obter os dados completos baseados nos IDs
+        const brandObj = brands.find(b => b.id.toString() === brandId);
+        const modelObj = models.find(m => m.id.toString() === modelId);
+        const versionObj = versions.find(v => v.id.toString() === versionId);
         
-        // Armazenar os nomes
-        setSelectedBrandName(brandName);
-        setSelectedModelName(modelName);
-        setSelectedVersionName(versionName);
+        // Verificar se encontramos todos os objetos
+        if (!brandObj || !modelObj || !versionObj) {
+          console.error("Dados incompletos:", { brandObj, modelObj, versionObj });
+        }
+        
+        // Obter os nomes para exibição nos campos de seleção
+        const brandName = brandObj?.name || "";
+        const modelName = modelObj?.name || "";
+        const versionName = versionObj?.name || "";
         
         console.log(`Nomes encontrados: marca=${brandName}, modelo=${modelName}, versão=${versionName}`);
         
         // Primeiro filtramos os modelos pela marca
-        const modelsForBrand = models.filter(model => model.brandId === vehicle.version.model.brandId);
+        const modelsForBrand = models.filter(model => model.brandId.toString() === brandId);
         setFilteredModels(modelsForBrand);
         console.log("Modelos filtrados:", modelsForBrand);
         
         // Filtramos as versões pelo modelo
-        const versionsForModel = versions.filter(version => version.modelId === vehicle.version.modelId);
+        const versionsForModel = versions.filter(version => version.modelId.toString() === modelId);
         setFilteredVersions(versionsForModel);
         console.log("Versões filtradas:", versionsForModel);
         
-        // Definimos TODOS os valores do formulário de uma vez só para evitar problemas de ordem
-        form.reset({
+        // Armazenar os nomes dos campos de seleção
+        setSelectedBrandName(brandName);
+        setSelectedModelName(modelName);
+        setSelectedVersionName(versionName);
+        
+        // Definimos TODOS os valores do formulário em um único objeto
+        const formValues = {
           brandId: brandId,
           modelId: modelId,
           versionId: versionId,
@@ -191,22 +201,29 @@ export default function VehicleFormFixed() {
           pcdIpi: formatBRCurrency(Number(vehicle.pcdIpi)),
           taxiIpiIcms: formatBRCurrency(Number(vehicle.taxiIpiIcms)),
           taxiIpi: formatBRCurrency(Number(vehicle.taxiIpi))
-        });
+        };
+        
+        // Resetamos o formulário com todos os valores
+        form.reset(formValues);
         
         // Força a atualização dos campos usando setValue após o reset do formulário
         // Isso garante que os valores sejam atualizados corretamente nos componentes Select
         setTimeout(() => {
+          // Definir valores diretamente para garantir que os campos de seleção estejam atualizados
           form.setValue("brandId", brandId);
           form.setValue("modelId", modelId);
           form.setValue("versionId", versionId);
           
-          // Atualiza os nomes para exibição nos componentes Select
+          // Atualizar estados de exibição de nomes novamente, por segurança
           setSelectedBrandName(brandName);
           setSelectedModelName(modelName);
           setSelectedVersionName(versionName);
           
+          // Forçar atualização de dados
+          window.document.getElementById("version-trigger")?.click();
+          
           console.log("Valores de campos e nomes atualizados manualmente após reset");
-        }, 100);
+        }, 250); // Aumentado para 250ms para garantir que o DOM esteja atualizado
         
         console.log("Formulário preenchido com dados do veículo");
         
