@@ -694,10 +694,11 @@ export default function VehicleFormFixed() {
                           >
                             <FormControl>
                               <SelectTrigger id="version-trigger">
-                                {field.value && selectedVersionName ? (
+                                {/* Verificação mais direta, usando field.value como principal referência */}
+                                {field.value ? (
                                   <div className="flex items-center justify-between w-full overflow-hidden">
-                                    <div className="truncate text-foreground">
-                                      {selectedVersionName}
+                                    <div className="truncate text-foreground font-normal">
+                                      {selectedVersionName || versions.find(v => v.id.toString() === field.value)?.name || ""}
                                     </div>
                                   </div>
                                 ) : (
