@@ -193,6 +193,15 @@ export default function VehicleFormFixed() {
           taxiIpi: formatBRCurrency(Number(vehicle.taxiIpi))
         });
         
+        // Força a atualização dos campos usando setValue após o reset do formulário
+        // Isso garante que os valores sejam atualizados corretamente nos componentes Select
+        setTimeout(() => {
+          form.setValue("brandId", brandId);
+          form.setValue("modelId", modelId);
+          form.setValue("versionId", versionId);
+          console.log("Valores de campos atualizados manualmente após reset");
+        }, 100);
+        
         console.log("Formulário preenchido com dados do veículo");
         
         // Definimos que os dados foram carregados após carregar tudo
@@ -630,11 +639,7 @@ export default function VehicleFormFixed() {
                           >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Selecione um modelo">
-                                  {field.value && models.find(m => m.id.toString() === field.value) 
-                                    ? models.find(m => m.id.toString() === field.value)?.name 
-                                    : selectedModelName || "Selecione um modelo"}
-                                </SelectValue>
+                                <SelectValue placeholder="Selecione um modelo" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -671,11 +676,7 @@ export default function VehicleFormFixed() {
                           >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Selecione uma versão">
-                                  {field.value && versions.find(v => v.id.toString() === field.value) 
-                                    ? versions.find(v => v.id.toString() === field.value)?.name 
-                                    : selectedVersionName || "Selecione uma versão"}
-                                </SelectValue>
+                                <SelectValue placeholder="Selecione uma versão" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
