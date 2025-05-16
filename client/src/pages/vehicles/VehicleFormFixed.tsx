@@ -696,51 +696,65 @@ export default function VehicleFormFixed() {
                       control={form.control}
                       name="versionId"
                       render={({ field }) => {
-                        // Encontrar versão selecionada pelo ID
-                        const selectedVersion = versions.find(v => v.id.toString() === field.value);
-                        
+                        // Encontrar o nome da versão através de várias fontes
+                        const versionById = versions.find(v => v.id.toString() === field.value);
+                        const versionName = versionById?.name || selectedVersionName || "";
+                        const hasValue = Boolean(field.value);
+
                         return (
                           <FormItem>
                             <FormLabel>Versão</FormLabel>
                             <div className="relative">
-                              {/* Menu de seleção convencional */}
-                              <Select 
-                                value={field.value || ""}
-                                defaultValue={field.value || ""}
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                  // Atualizar nome ao selecionar
-                                  const versionName = versions.find(v => v.id.toString() === value)?.name || "";
-                                  setSelectedVersionName(versionName);
-                                }}
-                                disabled={!form.getValues("modelId")}
-                              >
-                                <FormControl>
-                                  <SelectTrigger id="version-trigger">
-                                    {field.value ? (
-                                      <SelectValue>
-                                        {selectedVersion?.name || selectedVersionName || ""}
-                                      </SelectValue>
-                                    ) : (
-                                      "Selecione uma versão"
-                                    )}
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {filteredVersions.map((version) => (
-                                    <SelectItem key={version.id} value={version.id.toString()}>
-                                      {version.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              
-                              {/* Exibe informações de depuração quando o valor está presente mas não é visível */}
-                              {field.value && !selectedVersion && (
-                                <div className="text-xs text-amber-600 mt-1 pl-1">
-                                  ID selecionado: {field.value}
+                              {/* Dropdown customizado para garantir exibição do valor correto */}
+                              <div className="flex flex-col gap-1 w-full">
+                                {/* Exibe o valor selecionado (ou mensagem para selecionar) */}
+                                <div 
+                                  id="version-trigger"
+                                  className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ${!form.getValues("modelId") ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                  onClick={() => {
+                                    if (form.getValues("modelId")) {
+                                      document.getElementById('version-dropdown')?.classList.toggle('hidden');
+                                    }
+                                  }}
+                                >
+                                  <span className={hasValue ? "text-foreground" : "text-muted-foreground"}>
+                                    {hasValue ? versionName : "Selecione uma versão"}
+                                  </span>
+                                  <ChevronDown className="h-4 w-4 opacity-50" />
                                 </div>
-                              )}
+                                
+                                {/* Dropdown customizado que sempre mostra a lista correta */}
+                                <div 
+                                  id="version-dropdown" 
+                                  className="hidden absolute top-[calc(100%+4px)] left-0 w-full z-50 max-h-60 overflow-auto rounded-md border bg-popover p-1"
+                                >
+                                  {filteredVersions.map((version) => (
+                                    <div
+                                      key={version.id}
+                                      className={`relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm hover:bg-accent hover:text-accent-foreground ${version.id.toString() === field.value ? 'bg-accent text-accent-foreground' : ''}`}
+                                      onClick={() => {
+                                        const value = version.id.toString();
+                                        field.onChange(value);
+                                        setSelectedVersionName(version.name);
+                                        document.getElementById('version-dropdown')?.classList.add('hidden');
+                                      }}
+                                    >
+                                      {version.id.toString() === field.value && (
+                                        <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                                          <Check className="h-4 w-4" />
+                                        </span>
+                                      )}
+                                      {version.name}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              
+                              {/* Campo oculto para manter o valor no form */}
+                              <input 
+                                type="hidden" 
+                                {...field}
+                              />
                             </div>
                             <FormMessage />
                           </FormItem>
