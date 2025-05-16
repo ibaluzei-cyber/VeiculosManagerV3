@@ -695,46 +695,57 @@ export default function VehicleFormFixed() {
                     <FormField
                       control={form.control}
                       name="versionId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Versão</FormLabel>
-                          <Select 
-                            value={field.value || ""}
-                            defaultValue={field.value || ""}
-                            onValueChange={(value) => {
-                              field.onChange(value);
-                              // Atualizar nome ao selecionar
-                              const versionName = versions.find(v => v.id.toString() === value)?.name || "";
-                              setSelectedVersionName(versionName);
-                            }}
-                            disabled={!form.getValues("modelId")}
-                          >
-                            <FormControl>
-                              <SelectTrigger id="version-trigger">
-                                {/* Verificação mais direta, usando field.value como principal referência */}
-                                {field.value ? (
-                                  <div className="flex items-center justify-between w-full overflow-hidden">
-                                    <div className="truncate text-foreground font-normal">
-                                      {selectedVersionName || versions.find(v => v.id.toString() === field.value)?.name || ""}
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="text-muted-foreground">Selecione uma versão</div>
-                                )}
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {filteredVersions.map((version) => (
-                                <SelectItem key={version.id} value={version.id.toString()}>
-                                  {version.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                          {field.value && !selectedVersionName && <div className="text-sm text-gray-500 pt-1">Versão selecionada: {versions.find(v => v.id.toString() === field.value)?.name}</div>}
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        // Encontrar versão selecionada pelo ID
+                        const selectedVersion = versions.find(v => v.id.toString() === field.value);
+                        
+                        return (
+                          <FormItem>
+                            <FormLabel>Versão</FormLabel>
+                            <div className="relative">
+                              {/* Menu de seleção convencional */}
+                              <Select 
+                                value={field.value || ""}
+                                defaultValue={field.value || ""}
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  // Atualizar nome ao selecionar
+                                  const versionName = versions.find(v => v.id.toString() === value)?.name || "";
+                                  setSelectedVersionName(versionName);
+                                }}
+                                disabled={!form.getValues("modelId")}
+                              >
+                                <FormControl>
+                                  <SelectTrigger id="version-trigger">
+                                    {field.value ? (
+                                      <SelectValue>
+                                        {selectedVersion?.name || selectedVersionName || ""}
+                                      </SelectValue>
+                                    ) : (
+                                      "Selecione uma versão"
+                                    )}
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {filteredVersions.map((version) => (
+                                    <SelectItem key={version.id} value={version.id.toString()}>
+                                      {version.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              
+                              {/* Exibe informações de depuração quando o valor está presente mas não é visível */}
+                              {field.value && !selectedVersion && (
+                                <div className="text-xs text-amber-600 mt-1 pl-1">
+                                  ID selecionado: {field.value}
+                                </div>
+                              )}
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
                     />
                     
                     {/* Campo de cor removido - será null por padrão */}
