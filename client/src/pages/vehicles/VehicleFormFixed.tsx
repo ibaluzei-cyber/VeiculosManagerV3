@@ -603,14 +603,12 @@ export default function VehicleFormFixed() {
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger className="relative">
-                                {selectedBrandName ? (
-                                  <div className="absolute inset-0 flex items-center px-3 font-normal">
-                                    {selectedBrandName}
+                              <SelectTrigger>
+                                <div className="flex items-center justify-between w-full overflow-hidden">
+                                  <div className="truncate">
+                                    {selectedBrandName ? selectedBrandName : "Selecione uma marca"}
                                   </div>
-                                ) : (
-                                  <SelectValue placeholder="Selecione uma marca" />
-                                )}
+                                </div>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -646,14 +644,12 @@ export default function VehicleFormFixed() {
                             disabled={!form.getValues("brandId")}
                           >
                             <FormControl>
-                              <SelectTrigger className="relative">
-                                {selectedModelName ? (
-                                  <div className="absolute inset-0 flex items-center px-3 font-normal">
-                                    {selectedModelName}
+                              <SelectTrigger>
+                                <div className="flex items-center justify-between w-full overflow-hidden">
+                                  <div className="truncate">
+                                    {selectedModelName ? selectedModelName : "Selecione um modelo"}
                                   </div>
-                                ) : (
-                                  <SelectValue placeholder="Selecione um modelo" />
-                                )}
+                                </div>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -689,10 +685,12 @@ export default function VehicleFormFixed() {
                             disabled={!form.getValues("modelId")}
                           >
                             <FormControl>
-                              <SelectTrigger className="relative">
-                                <SelectValue>
-                                  {selectedVersionName || "Selecione uma versão"}
-                                </SelectValue>
+                              <SelectTrigger>
+                                <div className="flex items-center justify-between w-full overflow-hidden">
+                                  <div className="truncate">
+                                    {selectedVersionName ? selectedVersionName : "Selecione uma versão"}
+                                  </div>
+                                </div>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
