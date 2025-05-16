@@ -593,8 +593,8 @@ export default function VehicleFormFixed() {
                         <FormItem>
                           <FormLabel>Marca</FormLabel>
                           <Select 
-                            value={field.value} 
-                            defaultValue={field.value}
+                            value={field.value || ""}
+                            defaultValue={field.value || ""}
                             onValueChange={(value) => {
                               handleBrandChange(value);
                               // Atualizar nome ao selecionar
@@ -603,12 +603,14 @@ export default function VehicleFormFixed() {
                             }}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione uma marca">
-                                  {field.value && brands.find(b => b.id.toString() === field.value) 
-                                    ? brands.find(b => b.id.toString() === field.value)?.name 
-                                    : selectedBrandName || "Selecione uma marca"}
-                                </SelectValue>
+                              <SelectTrigger className="relative">
+                                {selectedBrandName ? (
+                                  <div className="absolute inset-0 flex items-center px-3 font-normal">
+                                    {selectedBrandName}
+                                  </div>
+                                ) : (
+                                  <SelectValue placeholder="Selecione uma marca" />
+                                )}
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -633,8 +635,8 @@ export default function VehicleFormFixed() {
                         <FormItem>
                           <FormLabel>Modelo</FormLabel>
                           <Select 
-                            value={field.value} 
-                            defaultValue={field.value}
+                            value={field.value || ""}
+                            defaultValue={field.value || ""}
                             onValueChange={(value) => {
                               handleModelChange(value);
                               // Atualizar nome ao selecionar
@@ -644,8 +646,14 @@ export default function VehicleFormFixed() {
                             disabled={!form.getValues("brandId")}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um modelo" />
+                              <SelectTrigger className="relative">
+                                {selectedModelName ? (
+                                  <div className="absolute inset-0 flex items-center px-3 font-normal">
+                                    {selectedModelName}
+                                  </div>
+                                ) : (
+                                  <SelectValue placeholder="Selecione um modelo" />
+                                )}
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -670,8 +678,8 @@ export default function VehicleFormFixed() {
                         <FormItem>
                           <FormLabel>Versão</FormLabel>
                           <Select 
-                            value={field.value} 
-                            defaultValue={field.value}
+                            value={field.value || ""}
+                            defaultValue={field.value || ""}
                             onValueChange={(value) => {
                               field.onChange(value);
                               // Atualizar nome ao selecionar
@@ -681,8 +689,14 @@ export default function VehicleFormFixed() {
                             disabled={!form.getValues("modelId")}
                           >
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione uma versão" />
+                              <SelectTrigger className="relative">
+                                {selectedVersionName ? (
+                                  <div className="absolute inset-0 flex items-center px-3 font-normal">
+                                    {selectedVersionName}
+                                  </div>
+                                ) : (
+                                  <SelectValue placeholder="Selecione uma versão" />
+                                )}
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
