@@ -39,19 +39,6 @@ export default function ColorList({ onEdit }: ColorListProps) {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Cores/Pinturas</h1>
-        {onEdit ? (
-          <Button onClick={() => onEdit(0)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Cor
-          </Button>
-        ) : (
-          <Link href="/colors/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Cor
-            </Button>
-          </Link>
-        )}
       </div>
       
       <Card>
