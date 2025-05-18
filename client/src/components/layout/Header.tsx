@@ -85,11 +85,11 @@ export default function Header() {
     <header className="bg-white shadow">
       <div className="flex justify-between items-center px-4 py-2">
         <div className="flex items-center">
-          <div className="text-primary flex items-center">
+          <div className="flex items-center">
             {companyLogoUrl ? (
               <img src={companyLogoUrl} alt="Logo" className="h-8 w-auto" />
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
               </svg>
             )}
@@ -151,16 +151,24 @@ export default function Header() {
             <div className="flex">
               <div className="flex space-x-1">
                 {/* Renderizar apenas os links que o usuário tem permissão */}
-                {filteredMenuItems.map((item, index) => (
-                  <Link 
-                    key={index} 
-                    href={item.path} 
-                    className={`nav-link ${location.startsWith(item.path) || 
-                      (item.path !== '/' && location === item.path) ? 'active' : ''}`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {filteredMenuItems.map((item, index) => {
+                  const isActive = location.startsWith(item.path) || 
+                      (item.path !== '/' && location === item.path);
+                  
+                  // Buscar configuração da cor do menu ativo
+                  const activeMenuColor = settings.find((s: any) => s.key === "theme_color_active_menu")?.value || "#0a9587";
+                  
+                  return (
+                    <Link 
+                      key={index} 
+                      href={item.path} 
+                      className={`nav-link ${isActive ? 'active' : ''}`}
+                      style={isActive ? { color: "#fff" } : {}}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           )}

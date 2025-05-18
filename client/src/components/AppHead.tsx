@@ -91,21 +91,30 @@ export function AppHead() {
       const cssRules = `
         /* Cor do menu ativo */
         .bg-primary, 
-        .text-primary,
-        .border-primary,
-        .ring-primary,
-        .hover\\:text-primary:hover,
         .hover\\:bg-primary:hover,
-        .active\\:bg-primary:active,
-        .navlink.active {
+        .active\\:bg-primary:active {
           --tw-bg-opacity: 1;
-          --tw-text-opacity: 1;
-          --tw-border-opacity: 1;
-          --tw-ring-opacity: 1;
           background-color: ${activeMenuColor} !important;
+        }
+        
+        .text-primary,
+        .hover\\:text-primary:hover {
+          --tw-text-opacity: 1;
           color: ${activeMenuColor} !important;
+        }
+        
+        .border-primary {
+          --tw-border-opacity: 1;
           border-color: ${activeMenuColor} !important;
+        }
+        
+        .ring-primary {
+          --tw-ring-opacity: 1;
           --tw-ring-color: ${activeMenuColor} !important;
+        }
+        
+        .navlink.active {
+          color: ${activeMenuColor} !important;
         }
         
         /* Cor da barra abaixo do logo */
@@ -135,8 +144,8 @@ export function AppHead() {
         }
         
         /* Elementos específicos com classe primária */
-        [class*="primary"] {
-          color: ${activeMenuColor};
+        h1, h2, h3 {
+          color: inherit;
         }
       `;
       
