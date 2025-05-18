@@ -221,7 +221,7 @@ export default function Configurator2() {
     ? versionColors.find(vc => vc.colorId === parseInt(selectedColorId))?.imageUrl || ""
     : "";
 
-  // Quando mudamos de veículo, atualizar os preços
+  // Quando mudamos de veículo, atualizar os preços iniciais
   useEffect(() => {
     if (selectedVehicle) {
       // Usar diretamente o preço público do veículo
@@ -250,63 +250,56 @@ export default function Configurator2() {
         .reduce((sum, opt) => sum + (Number(opt.price) || 0), 0);
       
       setOptionalsTotal(selectedOptionalsTotal);
-      
+    }
+  }, [selectedVehicle, selectedDirectSaleId, selectedOptionals, versionOptionals, directSales]);
+  
+  // Efeito separado para cálculo do preço final baseado em todas as entradas do usuário
+  useEffect(() => {
+    if (selectedVehicle) {
       // Preço base para cálculo final
-      let precoBaseCalculo = selectedVehicle.publicPrice;
+      let basePrice = Number(publicPrice) || 0;
       
       // Se tiver um tipo de preço selecionado, usa ele como base
       if (selectedPriceType) {
         switch (selectedPriceType) {
           case 'pcdIpi':
-            precoBaseCalculo = selectedVehicle.pcdIpi; 
+            basePrice = Number(pcdIpi) || 0;
             break;
           case 'taxiIpiIcms':
-            precoBaseCalculo = selectedVehicle.taxiIpiIcms;
+            basePrice = Number(taxiIpiIcms) || 0;
             break;
           case 'pcdIpiIcms':
-            precoBaseCalculo = selectedVehicle.pcdIpiIcms;
+            basePrice = Number(pcdIpiIcms) || 0;
             break;
           case 'taxiIpi':
-            precoBaseCalculo = selectedVehicle.taxiIpi;
+            basePrice = Number(taxiIpi) || 0;
             break;
         }
       }
       
-      // Cálculo do preço final
       // Garantir que todos os valores são números válidos
-      const basePrice = Number(selectedVehicle.publicPrice) || 0;
-      const discount = Number(calculatedDiscountAmount) || 0;
+      const discount = Number(discountAmount) || 0;
       const surcharge = Number(surchargeAmount) || 0;
-      const optionalsPrice = Number(selectedOptionalsTotal) || 0;
+      const optionalsPrice = Number(optionalsTotal) || 0;
       const paintCost = Number(paintPrice) || 0;
       
-      let calculatedFinalPrice = basePrice - discount + surcharge + optionalsPrice + paintCost;
-      
-      // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
-      if (selectedPriceType) {
-        let specificPrice = basePrice; // valor padrão
-        
-        switch (selectedPriceType) {
-          case 'pcdIpi':
-            specificPrice = Number(pcdIpi) || 0;
-            break;
-          case 'taxiIpiIcms':
-            specificPrice = Number(taxiIpiIcms) || 0;
-            break;
-          case 'pcdIpiIcms':
-            specificPrice = Number(pcdIpiIcms) || 0;
-            break;
-          case 'taxiIpi':
-            specificPrice = Number(taxiIpi) || 0;
-            break;
-        }
-        
-        calculatedFinalPrice = specificPrice - discount + surcharge + optionalsPrice + paintCost;
-      }
-      
+      // Calcular preço final
+      const calculatedFinalPrice = basePrice - discount + surcharge + optionalsPrice + paintCost;
       setFinalPrice(calculatedFinalPrice);
     }
-  }, [selectedVehicle, selectedDirectSaleId, surchargeAmount, selectedOptionals, versionOptionals, directSales]);
+  }, [
+    selectedVehicle, 
+    selectedPriceType, 
+    publicPrice, 
+    pcdIpi, 
+    pcdIpiIcms, 
+    taxiIpiIcms, 
+    taxiIpi, 
+    discountAmount, 
+    surchargeAmount, 
+    optionalsTotal, 
+    paintPrice
+  ]);
 
   // Limpeza de campos dependentes
   useEffect(() => {
@@ -710,6 +703,10 @@ export default function Configurator2() {
                     <div>
                       <div className="text-sm font-medium">Desc. {discountPercentage > 0 ? `${discountPercentage}%` : "0%"}</div>
                       <div className="font-bold">{formatCurrency(discountAmount)}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium">Ágio</div>
+                      <div className="font-bold">{formatCurrency(surchargeAmount)}</div>
                     </div>
                   </div>
                 </div>
