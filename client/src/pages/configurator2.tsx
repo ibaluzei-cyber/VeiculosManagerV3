@@ -580,25 +580,32 @@ export default function Configurator2() {
               
               <TabsContent value="equipment" className="border p-4 rounded-b-md">
                 {versionOptionals && versionOptionals.length > 0 ? (
-                  <div className="space-y-4">
+                  <div>
+                    <div className="mb-4">
+                      <h3 className="text-lg font-bold uppercase mb-2">OPCIONAIS</h3>
+                    </div>
+                    
                     {versionOptionals.map((opt) => (
-                      <div key={opt.id} className="border rounded-md p-4">
-                        <div className="flex items-start gap-3">
-                          <Checkbox 
-                            id={`optional-${opt.id}`} 
-                            checked={selectedOptionals.includes(opt.optionalId)}
-                            onCheckedChange={() => handleOptionalToggle(opt.optionalId)}
-                          />
-                          <div className="flex-1">
-                            <Label 
-                              htmlFor={`optional-${opt.id}`} 
-                              className="font-medium cursor-pointer uppercase"
-                            >
-                              {opt.optional?.name}
-                            </Label>
-                            <p className="text-sm text-gray-500 uppercase mt-1">{opt.optional?.description}</p>
+                      <div key={opt.id} className="border mb-4 p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-2">
+                            <Checkbox 
+                              id={`optional-${opt.id}`} 
+                              checked={selectedOptionals.includes(opt.optionalId)}
+                              onCheckedChange={() => handleOptionalToggle(opt.optionalId)}
+                              className="mt-1"
+                            />
+                            <div>
+                              <Label 
+                                htmlFor={`optional-${opt.id}`} 
+                                className="font-bold cursor-pointer uppercase"
+                              >
+                                {opt.optional?.name}
+                              </Label>
+                              <p className="text-gray-600">{opt.optional?.description}</p>
+                            </div>
                           </div>
-                          <div className="font-bold text-right text-green-600">
+                          <div className="font-bold text-right">
                             {formatCurrency(opt.price)}
                           </div>
                         </div>
