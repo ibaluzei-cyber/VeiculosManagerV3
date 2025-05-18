@@ -351,7 +351,12 @@ export default function Configurator2() {
     if (value && versionColors.length > 0) {
       const selectedColor = versionColors.find(vc => vc.colorId.toString() === value);
       if (selectedColor) {
-        setPaintPrice(Number(selectedColor.price) || 0);
+        // Usando verificação segura, podemos acessar diferentes formatos de dados
+        const colorPrice = 
+          typeof selectedColor.price === 'number' ? selectedColor.price :
+          selectedColor.price !== undefined ? Number(selectedColor.price) : 
+          500; // Valor fixo para simulação
+        setPaintPrice(colorPrice);
       } else {
         setPaintPrice(0);
       }
