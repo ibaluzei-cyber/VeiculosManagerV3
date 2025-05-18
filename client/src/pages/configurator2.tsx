@@ -260,14 +260,27 @@ export default function Configurator2() {
       }
       
       // Cálculo do preço final
-      const calculatedFinalPrice = precoBaseCalculo - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
-      setFinalPrice(calculatedFinalPrice);
+      let calculatedFinalPrice = basePrice - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
       
-      // Cálculo de isenções
-      setPcdIpi(basePrice * 0.85); // 15% de desconto
-      setTaxiIpiIcms(basePrice * 0.70); // 30% de desconto
-      setPcdIpiIcms(basePrice * 0.65); // 35% de desconto
-      setTaxiIpi(basePrice * 0.80); // 20% de desconto
+      // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
+      if (selectedPriceType) {
+        switch (selectedPriceType) {
+          case 'pcdIpi':
+            calculatedFinalPrice = (selectedVehicle?.pcdIpi || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            break;
+          case 'taxiIpiIcms':
+            calculatedFinalPrice = (selectedVehicle?.taxiIpiIcms || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            break;
+          case 'pcdIpiIcms':
+            calculatedFinalPrice = (selectedVehicle?.pcdIpiIcms || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            break;
+          case 'taxiIpi':
+            calculatedFinalPrice = (selectedVehicle?.taxiIpi || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            break;
+        }
+      }
+      
+      setFinalPrice(calculatedFinalPrice);
     }
   }, [selectedVehicle, selectedDirectSaleId, surchargeAmount, selectedOptionals, versionOptionals, directSales]);
 
@@ -572,9 +585,9 @@ export default function Configurator2() {
               </div>
 
               {/* Resumo e Valores Finais */}
-              {/* Cartões de Isenções */}
+              {/* Cartões de Preços */}
               <div className="mb-6">
-                <h3 className="font-bold mb-3 uppercase">ISENÇÕES FISCAIS</h3>
+                <h3 className="font-bold mb-3 uppercase">PREÇOS ESPECIAIS</h3>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <Card 
                     className={`cursor-pointer transition-all ${selectedPriceType === 'pcdIpi' ? 'border-2 border-primary' : ''}`}
@@ -589,7 +602,7 @@ export default function Configurator2() {
                         </div>
                         <div>
                           <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
-                          <div className="font-bold text-green-600">{formatCurrency(pcdIpi)}</div>
+                          <div className="font-bold text-green-600">{formatCurrency(selectedVehicle?.pcdIpi || 0)}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -608,7 +621,7 @@ export default function Configurator2() {
                         </div>
                         <div>
                           <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
-                          <div className="font-bold text-green-600">{formatCurrency(taxiIpiIcms)}</div>
+                          <div className="font-bold text-green-600">{formatCurrency(selectedVehicle?.taxiIpiIcms || 0)}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -629,7 +642,7 @@ export default function Configurator2() {
                         </div>
                         <div>
                           <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
-                          <div className="font-bold text-green-600">{formatCurrency(pcdIpiIcms)}</div>
+                          <div className="font-bold text-green-600">{formatCurrency(selectedVehicle?.pcdIpiIcms || 0)}</div>
                         </div>
                       </div>
                     </CardContent>
@@ -648,7 +661,7 @@ export default function Configurator2() {
                         </div>
                         <div>
                           <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
-                          <div className="font-bold text-green-600">{formatCurrency(taxiIpi)}</div>
+                          <div className="font-bold text-green-600">{formatCurrency(selectedVehicle?.taxiIpi || 0)}</div>
                         </div>
                       </div>
                     </CardContent>
