@@ -219,10 +219,17 @@ export default function Configurator2() {
   // Recalcular preços
   useEffect(() => {
     if (selectedVehicle) {
-      const basePrice = selectedVehicle.price || 0;
+      // Para demonstração, use o preço real do veículo como base ou 90990 se não houver
+      const basePrice = selectedVehicle.price || 90990;
       
       // Preço público
       setPublicPrice(basePrice);
+      
+      // Valores fixos para demonstração, como na rota /configurator original
+      setPcdIpi(88109);
+      setPcdIpiIcms(79709);
+      setTaxiIpiIcms(77190);
+      setTaxiIpi(88109);
       
       // Cálculo de desconto
       const directSale = selectedDirectSaleId 
@@ -270,16 +277,16 @@ export default function Configurator2() {
       if (selectedPriceType) {
         switch (selectedPriceType) {
           case 'pcdIpi':
-            calculatedFinalPrice = (selectedVehicle?.pcdIpi || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            calculatedFinalPrice = pcdIpi - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
             break;
           case 'taxiIpiIcms':
-            calculatedFinalPrice = (selectedVehicle?.taxiIpiIcms || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            calculatedFinalPrice = taxiIpiIcms - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
             break;
           case 'pcdIpiIcms':
-            calculatedFinalPrice = (selectedVehicle?.pcdIpiIcms || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            calculatedFinalPrice = pcdIpiIcms - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
             break;
           case 'taxiIpi':
-            calculatedFinalPrice = (selectedVehicle?.taxiIpi || 0) - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            calculatedFinalPrice = taxiIpi - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
             break;
         }
       }
@@ -470,28 +477,28 @@ export default function Configurator2() {
                   onClick={() => handlePriceCardClick('pcdIpi')}
                 >
                   <div className="bg-[#082a58] text-white px-4 py-2 w-40 font-semibold uppercase">PCD IPI</div>
-                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(selectedVehicle?.pcdIpi || 0)}</div>
+                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(pcdIpi)}</div>
                 </div>
                 <div 
                   className={`flex cursor-pointer ${selectedPriceType === 'taxiIpiIcms' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('taxiIpiIcms')}
                 >
                   <div className="bg-[#082a58] text-white px-4 py-2 w-40 font-semibold uppercase">TAXI IPI/ICMS</div>
-                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(selectedVehicle?.taxiIpiIcms || 0)}</div>
+                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(taxiIpiIcms)}</div>
                 </div>
                 <div 
                   className={`flex cursor-pointer ${selectedPriceType === 'pcdIpiIcms' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('pcdIpiIcms')}
                 >
                   <div className="bg-[#082a58] text-white px-4 py-2 w-40 font-semibold uppercase">PCD IPI/ICMS</div>
-                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(selectedVehicle?.pcdIpiIcms || 0)}</div>
+                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(pcdIpiIcms)}</div>
                 </div>
                 <div 
                   className={`flex cursor-pointer ${selectedPriceType === 'taxiIpi' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('taxiIpi')}
                 >
                   <div className="bg-[#082a58] text-white px-4 py-2 w-40 font-semibold uppercase">TAXI IPI</div>
-                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(selectedVehicle?.taxiIpi || 0)}</div>
+                  <div className="border px-4 py-2 flex-1 text-right">{formatCurrency(taxiIpi)}</div>
                 </div>
               </div>
             </div>
