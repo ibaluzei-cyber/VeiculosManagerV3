@@ -9,40 +9,58 @@ async function addAppSettings() {
   try {
     console.log('Verificando e adicionando configurações da aplicação...');
     
-    // Verificar se a configuração de nome da aplicação já existe
-    const existingAppName = await db.query.settings.findFirst({
-      where: eq(settings.key, 'app_name')
-    });
-    
-    // Adicionar configuração de nome da aplicação se não existir
-    if (!existingAppName) {
-      await db.insert(settings).values({
+    // Configurações a serem verificadas e adicionadas
+    const configList = [
+      {
         key: 'app_name',
         value: '',
         label: 'Nome da Aplicação',
         type: 'text'
-      });
-      console.log('Configuração de nome da aplicação adicionada.');
-    } else {
-      console.log('Configuração de nome da aplicação já existe.');
-    }
-    
-    // Verificar se a configuração de favicon já existe
-    const existingAppFavicon = await db.query.settings.findFirst({
-      where: eq(settings.key, 'app_favicon')
-    });
-    
-    // Adicionar configuração de favicon se não existir
-    if (!existingAppFavicon) {
-      await db.insert(settings).values({
+      },
+      {
         key: 'app_favicon',
         value: '',
         label: 'URL do Favicon',
         type: 'text'
+      },
+      // Novas configurações de cores do tema
+      {
+        key: 'theme_color_active_menu',
+        value: '#0a9587',
+        label: 'Cor do Menu Ativo (ex: #0a9587)',
+        type: 'color'
+      },
+      {
+        key: 'theme_color_logo_bar',
+        value: '#01a896',
+        label: 'Cor da Barra Abaixo do Logo (ex: #01a896)',
+        type: 'color'
+      },
+      {
+        key: 'theme_color_active_sidebar',
+        value: '#e6f6f5',
+        label: 'Cor de Fundo do Item Ativo na Sidebar (ex: #e6f6f5)',
+        type: 'color'
+      }
+    ];
+    
+    // Verificar e adicionar cada configuração
+    for (const config of configList) {
+      const existingConfig = await db.query.settings.findFirst({
+        where: eq(settings.key, config.key)
       });
-      console.log('Configuração de favicon da aplicação adicionada.');
-    } else {
-      console.log('Configuração de favicon da aplicação já existe.');
+      
+      if (!existingConfig) {
+        await db.insert(settings).values({
+          key: config.key,
+          value: config.value,
+          label: config.label,
+          type: config.type
+        });
+        console.log(`Configuração ${config.label} adicionada.`);
+      } else {
+        console.log(`Configuração ${config.label} já existe.`);
+      }
     }
     
     console.log('Configurações da aplicação verificadas e atualizadas com sucesso!');
