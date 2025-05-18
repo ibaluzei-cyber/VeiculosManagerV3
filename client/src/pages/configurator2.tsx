@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Select, 
@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { ChevronDown, FileText, Printer, LayoutTemplate } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Printer, LayoutTemplate } from "lucide-react";
 import { formatCurrency } from "@/lib/formatters";
 import { hasPermission } from "@/lib/permissions";
 import { useAuth } from "@/hooks/use-auth";
@@ -619,46 +619,50 @@ export default function Configurator2() {
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <div>
                     <div className="font-medium text-sm mb-1">DESCONTOS %</div>
-                    <input 
-                      type="text" 
-                      value={discountPercentage === 0 ? '' : discountPercentage.toString()}
-                      onChange={(e) => {
-                        const inputValue = e.target.value;
-                        if (inputValue === '') {
-                          setDiscountPercentage(0);
-                          setDiscountAmount(0);
-                        } else {
-                          // Permitir apenas números e pontos
-                          const validValue = inputValue.replace(/[^0-9.]/g, '');
-                          const newPercentage = parseFloat(validValue) || 0;
-                          setDiscountPercentage(newPercentage);
-                          const newDiscountAmount = (publicPrice * newPercentage) / 100;
-                          setDiscountAmount(newDiscountAmount);
-                        }
-                      }}
-                      inputMode="decimal"
-                      className="border p-2 text-right w-full"
-                    />
+                    <div className="border p-2 text-right w-full">
+                      <input 
+                        type="text" 
+                        value={discountPercentage === 0 ? '' : discountPercentage.toString()}
+                        onChange={(e) => {
+                          const inputValue = e.target.value;
+                          if (inputValue === '') {
+                            setDiscountPercentage(0);
+                            setDiscountAmount(0);
+                          } else {
+                            // Permitir apenas números e pontos
+                            const validValue = inputValue.replace(/[^0-9.]/g, '');
+                            const newPercentage = parseFloat(validValue) || 0;
+                            setDiscountPercentage(newPercentage);
+                            const newDiscountAmount = (publicPrice * newPercentage) / 100;
+                            setDiscountAmount(newDiscountAmount);
+                          }
+                        }}
+                        inputMode="decimal"
+                        className="w-full text-right border-none outline-none bg-transparent"
+                      />
+                    </div>
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">ÁGIO</div>
-                    <input 
-                      type="text" 
-                      value={surchargeAmount === 0 ? '' : surchargeAmount.toString()}
-                      onChange={(e) => {
-                        const inputValue = e.target.value;
-                        if (inputValue === '') {
-                          setSurchargeAmount(0);
-                        } else {
-                          // Permitir apenas números e pontos
-                          const validValue = inputValue.replace(/[^0-9.]/g, '');
-                          const newSurcharge = parseFloat(validValue) || 0;
-                          setSurchargeAmount(newSurcharge);
-                        }
-                      }}
-                      inputMode="decimal"
-                      className="border p-2 text-right w-full"
-                    />
+                    <div className="border p-2 text-right w-full">
+                      <input 
+                        type="text" 
+                        value={surchargeAmount === 0 ? '' : surchargeAmount.toString()}
+                        onChange={(e) => {
+                          const inputValue = e.target.value;
+                          if (inputValue === '') {
+                            setSurchargeAmount(0);
+                          } else {
+                            // Permitir apenas números e pontos
+                            const validValue = inputValue.replace(/[^0-9.]/g, '');
+                            const newSurcharge = parseFloat(validValue) || 0;
+                            setSurchargeAmount(newSurcharge);
+                          }
+                        }}
+                        inputMode="decimal"
+                        className="w-full text-right border-none outline-none bg-transparent"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -669,28 +673,30 @@ export default function Configurator2() {
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">QUANTIDADE</div>
-                    <input 
-                      type="text" 
-                      value={quantity === 1 ? '1' : quantity.toString()}
-                      onChange={(e) => {
-                        const inputValue = e.target.value;
-                        if (inputValue === '') {
-                          setQuantity(1);
-                        } else {
-                          // Permitir apenas números inteiros
-                          const validValue = inputValue.replace(/[^0-9]/g, '');
-                          if (validValue) {
-                            const newQuantity = parseInt(validValue);
-                            // Assegura que o valor mínimo é 1
-                            setQuantity(newQuantity < 1 ? 1 : newQuantity);
-                          } else {
+                    <div className="border p-2 text-right w-full">
+                      <input 
+                        type="text" 
+                        value={quantity === 1 ? '1' : quantity.toString()}
+                        onChange={(e) => {
+                          const inputValue = e.target.value;
+                          if (inputValue === '') {
                             setQuantity(1);
+                          } else {
+                            // Permitir apenas números inteiros
+                            const validValue = inputValue.replace(/[^0-9]/g, '');
+                            if (validValue) {
+                              const newQuantity = parseInt(validValue);
+                              // Assegura que o valor mínimo é 1
+                              setQuantity(newQuantity < 1 ? 1 : newQuantity);
+                            } else {
+                              setQuantity(1);
+                            }
                           }
-                        }
-                      }}
-                      inputMode="numeric"
-                      className="border p-2 text-right w-full"
-                    />
+                        }}
+                        inputMode="numeric"
+                        className="w-full text-right border-none outline-none bg-transparent"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
