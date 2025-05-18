@@ -219,17 +219,18 @@ export default function Configurator2() {
   // Recalcular preços
   useEffect(() => {
     if (selectedVehicle) {
-      // Para demonstração, use o preço real do veículo como base ou 90990 se não houver
-      const basePrice = selectedVehicle.price || 90990;
+      // Usar sempre o preço real do veículo como base
+      const basePrice = selectedVehicle.price;
       
       // Preço público
       setPublicPrice(basePrice);
       
-      // Valores fixos para demonstração, como na rota /configurator original
-      setPcdIpi(88109);
-      setPcdIpiIcms(79709);
-      setTaxiIpiIcms(77190);
-      setTaxiIpi(88109);
+      // Calcular os preços especiais com base no preço do veículo
+      // Esses percentuais são aplicados de forma similar ao configurador original
+      setPcdIpi(Math.round(basePrice * 0.97)); // 3% de desconto
+      setPcdIpiIcms(Math.round(basePrice * 0.88)); // 12% de desconto
+      setTaxiIpiIcms(Math.round(basePrice * 0.85)); // 15% de desconto
+      setTaxiIpi(Math.round(basePrice * 0.97)); // 3% de desconto
       
       // Cálculo de desconto
       const directSale = selectedDirectSaleId 
