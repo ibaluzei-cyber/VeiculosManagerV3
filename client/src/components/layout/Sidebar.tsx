@@ -206,8 +206,12 @@ export default function Sidebar() {
                   borderLeftStyle: 'solid'
                 } : {}}
               >
-                {item.icon}
-                {item.label}
+                <span style={isActive ? { color: activeMenuColor } : {}}>
+                  {item.icon}
+                </span>
+                <span style={isActive ? { color: activeMenuColor } : {}}>
+                  {item.label}
+                </span>
               </Link>
             </li>
           );
