@@ -620,30 +620,43 @@ export default function Configurator2() {
                   <div>
                     <div className="font-medium text-sm mb-1">DESCONTOS %</div>
                     <input 
-                      type="number" 
-                      value={discountPercentage || 0}
+                      type="text" 
+                      value={discountPercentage === 0 ? '' : discountPercentage.toString()}
                       onChange={(e) => {
-                        const newPercentage = e.target.value === '' ? 0 : parseFloat(e.target.value);
-                        setDiscountPercentage(newPercentage);
-                        const newDiscountAmount = (publicPrice * newPercentage) / 100;
-                        setDiscountAmount(newDiscountAmount);
+                        const inputValue = e.target.value;
+                        if (inputValue === '') {
+                          setDiscountPercentage(0);
+                          setDiscountAmount(0);
+                        } else {
+                          // Permitir apenas números e pontos
+                          const validValue = inputValue.replace(/[^0-9.]/g, '');
+                          const newPercentage = parseFloat(validValue) || 0;
+                          setDiscountPercentage(newPercentage);
+                          const newDiscountAmount = (publicPrice * newPercentage) / 100;
+                          setDiscountAmount(newDiscountAmount);
+                        }
                       }}
-                      min="0"
-                      step="0.01"
+                      inputMode="decimal"
                       className="border p-2 text-right w-full"
                     />
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">ÁGIO</div>
                     <input 
-                      type="number" 
-                      value={surchargeAmount || 0}
+                      type="text" 
+                      value={surchargeAmount === 0 ? '' : surchargeAmount.toString()}
                       onChange={(e) => {
-                        const newSurcharge = e.target.value === '' ? 0 : parseFloat(e.target.value);
-                        setSurchargeAmount(newSurcharge);
+                        const inputValue = e.target.value;
+                        if (inputValue === '') {
+                          setSurchargeAmount(0);
+                        } else {
+                          // Permitir apenas números e pontos
+                          const validValue = inputValue.replace(/[^0-9.]/g, '');
+                          const newSurcharge = parseFloat(validValue) || 0;
+                          setSurchargeAmount(newSurcharge);
+                        }
                       }}
-                      min="0"
-                      step="1"
+                      inputMode="decimal"
                       className="border p-2 text-right w-full"
                     />
                   </div>
@@ -657,15 +670,25 @@ export default function Configurator2() {
                   <div>
                     <div className="font-medium text-sm mb-1">QUANTIDADE</div>
                     <input 
-                      type="number" 
-                      value={quantity || 1}
+                      type="text" 
+                      value={quantity === 1 ? '1' : quantity.toString()}
                       onChange={(e) => {
-                        const newQuantity = e.target.value === '' ? 1 : parseInt(e.target.value);
-                        // Salvar a quantidade em um estado
-                        setQuantity(newQuantity);
+                        const inputValue = e.target.value;
+                        if (inputValue === '') {
+                          setQuantity(1);
+                        } else {
+                          // Permitir apenas números inteiros
+                          const validValue = inputValue.replace(/[^0-9]/g, '');
+                          if (validValue) {
+                            const newQuantity = parseInt(validValue);
+                            // Assegura que o valor mínimo é 1
+                            setQuantity(newQuantity < 1 ? 1 : newQuantity);
+                          } else {
+                            setQuantity(1);
+                          }
+                        }
                       }}
-                      min="1"
-                      step="1"
+                      inputMode="numeric"
                       className="border p-2 text-right w-full"
                     />
                   </div>
