@@ -403,15 +403,15 @@ export default function Configurator2() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-screen-xl mx-auto px-4">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">CONFIGURADOR NOVO</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 text-center">CONFIGURADOR NOVO</h1>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Dropdown de Marca */}
         <div className="w-full">
-          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase">
+          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center">
             MARCA
           </div>
           <Select value={selectedBrandId} onValueChange={handleBrandChange}>
@@ -433,7 +433,7 @@ export default function Configurator2() {
 
         {/* Dropdown de Modelo */}
         <div className="w-full">
-          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase">
+          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center">
             MODELO
           </div>
           <Select 
@@ -459,7 +459,7 @@ export default function Configurator2() {
 
         {/* Dropdown de Versão */}
         <div className="w-full">
-          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase">
+          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center">
             VERSÃO
           </div>
           <Select 
