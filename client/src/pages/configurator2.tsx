@@ -200,24 +200,10 @@ export default function Configurator2() {
     !selectedBrandId || ds.brandId === 0 || ds.brandId === parseInt(selectedBrandId)
   );
 
-  // Buscar o veículo selecionado ou criar um veículo de demonstração
-  const foundVehicle = selectedVersionId 
+  // Buscar o veículo selecionado na lista de veículos
+  const selectedVehicle = selectedVersionId 
     ? allVehicles.find(v => v.versionId === parseInt(selectedVersionId)) 
     : null;
-    
-  // Se não encontrar um veículo, criar um veículo de demonstração com preços padrão
-  const selectedVehicle = foundVehicle || (selectedVersionId ? {
-    id: 999,
-    versionId: parseInt(selectedVersionId),
-    year: 2025,
-    price: 105990,
-    fuelType: 'FLEX',
-    description: 'Veículo de demonstração',
-    pcdIpi: 102176,
-    pcdIpiIcms: 89915,
-    taxiIpi: 102176,
-    taxiIpiIcms: 89915
-  } : null);
 
   const selectedVersion = selectedVersionId 
     ? allVersions.find(v => v.id === parseInt(selectedVersionId)) 
@@ -234,15 +220,20 @@ export default function Configurator2() {
   // Quando mudamos de veículo, atualizar os preços
   useEffect(() => {
     if (selectedVehicle) {
-      // Pegar os dados do veículo selecionado
-      // O preço do veículo está no campo 'price'
-      setPublicPrice(selectedVehicle.price);
+      console.log("Veículo selecionado para cálculo de preços:", selectedVehicle);
       
-      // Pegar os preços de isenção diretamente do veículo
-      setPcdIpi(selectedVehicle.pcdIpi);
-      setPcdIpiIcms(selectedVehicle.pcdIpiIcms);
-      setTaxiIpiIcms(selectedVehicle.taxiIpiIcms);
-      setTaxiIpi(selectedVehicle.taxiIpi);
+      // Usar diretamente o preço do veículo
+      const vehiclePrice = selectedVehicle.price;
+      console.log("Preço do veículo:", vehiclePrice);
+      
+      // Atualizar os preços no state
+      setPublicPrice(vehiclePrice);
+      
+      // Atualizar preços de isenção
+      setPcdIpi(selectedVehicle.pcdIpi || 0);
+      setPcdIpiIcms(selectedVehicle.pcdIpiIcms || 0);
+      setTaxiIpiIcms(selectedVehicle.taxiIpiIcms || 0);
+      setTaxiIpi(selectedVehicle.taxiIpi || 0);
       
       // Cálculo de desconto
       const directSale = selectedDirectSaleId 
@@ -628,7 +619,7 @@ export default function Configurator2() {
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
                       <div className="text-sm font-medium">Preço Base</div>
-                      <div className="font-bold">{formatCurrency(publicPrice)}</div>
+                      <div className="font-bold">{selectedVehicle ? formatCurrency(selectedVehicle.price) : "R$ 0,00"}</div>
                     </div>
                     <div>
                       <div className="text-sm font-medium">Frete</div>
