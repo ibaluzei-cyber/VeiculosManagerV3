@@ -59,6 +59,10 @@ interface Vehicle {
   fuelType: string;
   price: number;
   description?: string;
+  pcdIpi: number;
+  pcdIpiIcms: number;
+  taxiIpi: number;
+  taxiIpiIcms: number;
 }
 
 interface VersionColor {
