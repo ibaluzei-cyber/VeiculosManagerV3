@@ -177,20 +177,41 @@ export default function Sidebar() {
       );
     }
     
-    return (
+    // Buscar configurações de cores do tema
+  const { data: settings = [] } = useQuery({
+    queryKey: ["/api/settings"],
+    queryFn: getQueryFn(),
+    staleTime: 60 * 1000,
+  });
+  
+  // Obter a cor do sidebar ativo
+  const activeSidebarColor = settings.find((s: any) => s.key === "theme_color_active_sidebar")?.value || "#e6f6f5";
+  const activeMenuColor = settings.find((s: any) => s.key === "theme_color_active_menu")?.value || "#0a9587";
+  
+  return (
       <ul className="space-y-1">
-        {filteredMenuItems.map((item, index) => (
-          <li key={index}>
-            <Link 
-              href={item.path} 
-              className={`sidebar-item ${location.startsWith(item.path) || 
-                (item.path !== '/' && location === item.path) ? 'active' : ''}`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          </li>
-        ))}
+        {filteredMenuItems.map((item, index) => {
+          const isActive = location.startsWith(item.path) || 
+                (item.path !== '/' && location === item.path);
+          
+          return (
+            <li key={index}>
+              <Link 
+                href={item.path} 
+                className={`sidebar-item ${isActive ? 'active' : ''}`}
+                style={isActive ? { 
+                  backgroundColor: activeSidebarColor,
+                  borderLeftColor: activeMenuColor,
+                  borderLeftWidth: '4px',
+                  borderLeftStyle: 'solid'
+                } : {}}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     );
   };
