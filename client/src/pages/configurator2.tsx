@@ -113,6 +113,12 @@ export default function Configurator2() {
   const [taxiIpiIcms, setTaxiIpiIcms] = useState(0);
   const [pcdIpiIcms, setPcdIpiIcms] = useState(0);
   const [taxiIpi, setTaxiIpi] = useState(0);
+  const [selectedPriceType, setSelectedPriceType] = useState<string | null>(null);
+  
+  // Função para lidar com seleção de cartões de preço
+  const handlePriceCardClick = (priceType: string) => {
+    setSelectedPriceType(selectedPriceType === priceType ? null : priceType);
+  };
 
   // Fetch data
   const { data: brands = [] } = useQuery<Brand[]>({
