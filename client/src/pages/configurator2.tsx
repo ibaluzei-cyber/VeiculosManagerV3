@@ -238,8 +238,29 @@ export default function Configurator2() {
       
       setOptionalsTotal(selectedOptionalsTotal);
       
+      // Preço base para cálculo final
+      let precoBaseCalculo = basePrice;
+      
+      // Se tiver um tipo de preço selecionado, usa ele como base
+      if (selectedPriceType) {
+        switch (selectedPriceType) {
+          case 'pcdIpi':
+            precoBaseCalculo = basePrice * 0.85; // 15% de desconto
+            break;
+          case 'taxiIpiIcms':
+            precoBaseCalculo = basePrice * 0.70; // 30% de desconto
+            break;
+          case 'pcdIpiIcms':
+            precoBaseCalculo = basePrice * 0.65; // 35% de desconto
+            break;
+          case 'taxiIpi':
+            precoBaseCalculo = basePrice * 0.80; // 20% de desconto
+            break;
+        }
+      }
+      
       // Cálculo do preço final
-      const calculatedFinalPrice = basePrice - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+      const calculatedFinalPrice = precoBaseCalculo - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
       setFinalPrice(calculatedFinalPrice);
       
       // Cálculo de isenções
@@ -547,6 +568,91 @@ export default function Configurator2() {
                     <div className="font-medium text-sm mb-1">QUANTIDADE</div>
                     <div className="border p-2 text-right">1</div>
                   </div>
+                </div>
+              </div>
+
+              {/* Resumo e Valores Finais */}
+              {/* Cartões de Isenções */}
+              <div className="mb-6">
+                <h3 className="font-bold mb-3 uppercase">ISENÇÕES FISCAIS</h3>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <Card 
+                    className={`cursor-pointer transition-all ${selectedPriceType === 'pcdIpi' ? 'border-2 border-primary' : ''}`}
+                    onClick={() => handlePriceCardClick('pcdIpi')}
+                  >
+                    <CardContent className="p-4">
+                      <h3 className="font-bold text-lg mb-2">PCD IPI</h3>
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO PÚBLICO</div>
+                          <div className="font-bold">{formatCurrency(publicPrice)}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
+                          <div className="font-bold text-green-600">{formatCurrency(pcdIpi)}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card 
+                    className={`cursor-pointer transition-all ${selectedPriceType === 'taxiIpiIcms' ? 'border-2 border-primary' : ''}`}
+                    onClick={() => handlePriceCardClick('taxiIpiIcms')}
+                  >
+                    <CardContent className="p-4">
+                      <h3 className="font-bold text-lg mb-2">TAXI IPI/ICMS</h3>
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO PÚBLICO</div>
+                          <div className="font-bold">{formatCurrency(publicPrice)}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
+                          <div className="font-bold text-green-600">{formatCurrency(taxiIpiIcms)}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <Card 
+                    className={`cursor-pointer transition-all ${selectedPriceType === 'pcdIpiIcms' ? 'border-2 border-primary' : ''}`}
+                    onClick={() => handlePriceCardClick('pcdIpiIcms')}
+                  >
+                    <CardContent className="p-4">
+                      <h3 className="font-bold text-lg mb-2">PCD IPI/ICMS</h3>
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO PÚBLICO</div>
+                          <div className="font-bold">{formatCurrency(publicPrice)}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
+                          <div className="font-bold text-green-600">{formatCurrency(pcdIpiIcms)}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card 
+                    className={`cursor-pointer transition-all ${selectedPriceType === 'taxiIpi' ? 'border-2 border-primary' : ''}`}
+                    onClick={() => handlePriceCardClick('taxiIpi')}
+                  >
+                    <CardContent className="p-4">
+                      <h3 className="font-bold text-lg mb-2">TAXI IPI</h3>
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO PÚBLICO</div>
+                          <div className="font-bold">{formatCurrency(publicPrice)}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">PREÇO FINAL</div>
+                          <div className="font-bold text-green-600">{formatCurrency(taxiIpi)}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
 
