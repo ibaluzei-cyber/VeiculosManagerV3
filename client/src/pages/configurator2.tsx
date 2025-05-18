@@ -486,7 +486,7 @@ export default function Configurator2() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>DESCONTOS DISPONÍVEIS</SelectLabel>
-                      <SelectItem value="">SEM DESCONTO</SelectItem>
+                      <SelectItem value="0">SEM DESCONTO</SelectItem>
                       {availableDirectSales.map(sale => (
                         <SelectItem key={sale.id} value={sale.id.toString()}>
                           {sale.name.toUpperCase()} - {sale.discountPercentage}%
