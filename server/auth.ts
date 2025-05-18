@@ -188,9 +188,6 @@ export async function getAllRoles() {
 }
 
 export function setupAuth(app: Express) {
-  // Configurar o PostgreSQL para armazenar sessões
-  const PostgresStore = connectPg(session);
-  
   // Configurações da sessão
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
@@ -202,13 +199,8 @@ export function setupAuth(app: Express) {
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
     },
-    store: new PostgresStore({
-      pool,
-      tableName: 'user_sessions',
-      createTableIfMissing: true,
-      // Configurações adicionais para garantir que sessões expiradas sejam limpas
-      pruneSessionInterval: 60 // Limpa sessões a cada 60 segundos
-    }),
+    // Usando armazenamento em memória (padrão) para sessões
+    // Isso evita o erro de tabela não encontrada, mas as sessões serão perdidas ao reiniciar o servidor
     name: 'auto-plus.sid' // Nome personalizado do cookie para melhor segurança
   };
 
