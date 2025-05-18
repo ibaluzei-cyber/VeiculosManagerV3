@@ -277,8 +277,9 @@ export default function Configurator2() {
       const discount = Number(calculatedDiscountAmount) || 0;
       const surcharge = Number(surchargeAmount) || 0;
       const optionalsPrice = Number(selectedOptionalsTotal) || 0;
+      const paintCost = Number(paintPrice) || 0;
       
-      let calculatedFinalPrice = basePrice - discount + surcharge + optionalsPrice;
+      let calculatedFinalPrice = basePrice - discount + surcharge + optionalsPrice + paintCost;
       
       // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
       if (selectedPriceType) {
@@ -299,7 +300,7 @@ export default function Configurator2() {
             break;
         }
         
-        calculatedFinalPrice = specificPrice - discount + surcharge + optionalsPrice;
+        calculatedFinalPrice = specificPrice - discount + surcharge + optionalsPrice + paintCost;
       }
       
       setFinalPrice(calculatedFinalPrice);
