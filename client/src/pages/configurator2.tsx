@@ -490,68 +490,69 @@ export default function Configurator2() {
             <h2 className="text-lg md:text-xl font-bold uppercase px-2">{selectedVehicleTitle}</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            {/* Dropdowns na versão mobile */}
-            <div className="grid grid-cols-1 gap-4 mb-6 md:hidden mx-auto w-full max-w-xs">
-              {/* Dropdown de Pintura mobile */}
-              <div className="w-full">
-                <Select 
-                  value={selectedColorId} 
-                  onValueChange={handleColorChange}
-                  disabled={!selectedVersionId || availableColors.length === 0}
-                >
-                  <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
-                    <span className="mx-auto">
-                      {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
-                        ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
-                        : "PINTURAS"
-                      }
-                    </span>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>CORES DISPONÍVEIS</SelectLabel>
-                      {availableColors.map(item => (
-                        <SelectItem key={item.colorId} value={item.colorId.toString()}>
-                          {item.color?.name.toUpperCase()} - {item.color?.paintType?.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Dropdown de Descontos mobile */}
-              <div className="w-full">
-                <Select 
-                  value={selectedDirectSaleId} 
-                  onValueChange={handleDirectSaleChange}
-                  disabled={!selectedVersionId}
-                >
-                  <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
-                    <span className="mx-auto">
-                      {selectedDirectSaleId && selectedDirectSaleId !== "0"
-                        ? `${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.name.toUpperCase()} - ${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.discountPercentage}%`
-                        : selectedDirectSaleId === "0"
-                          ? "SEM DESCONTO"
-                          : "DESCONTOS V.D."
-                      }
-                    </span>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>DESCONTOS DISPONÍVEIS</SelectLabel>
-                      <SelectItem value="0">SEM DESCONTO</SelectItem>
-                      {availableDirectSales.map(sale => (
-                        <SelectItem key={sale.id} value={sale.id.toString()}>
-                          {sale.name.toUpperCase()} - {sale.discountPercentage}%
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+          {/* Dropdowns na versão mobile - fora do grid */}
+          <div className="mb-6 md:hidden max-w-xs mx-auto w-full">
+            {/* Dropdown de Pintura mobile */}
+            <div className="w-full mb-3">
+              <Select 
+                value={selectedColorId} 
+                onValueChange={handleColorChange}
+                disabled={!selectedVersionId || availableColors.length === 0}
+              >
+                <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
+                  <span className="mx-auto">
+                    {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
+                      ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
+                      : "PINTURAS"
+                    }
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>CORES DISPONÍVEIS</SelectLabel>
+                    {availableColors.map(item => (
+                      <SelectItem key={item.colorId} value={item.colorId.toString()}>
+                        {item.color?.name.toUpperCase()} - {item.color?.paintType?.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
+
+            {/* Dropdown de Descontos mobile */}
+            <div className="w-full">
+              <Select 
+                value={selectedDirectSaleId} 
+                onValueChange={handleDirectSaleChange}
+                disabled={!selectedVersionId}
+              >
+                <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
+                  <span className="mx-auto">
+                    {selectedDirectSaleId && selectedDirectSaleId !== "0"
+                      ? `${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.name.toUpperCase()} - ${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.discountPercentage}%`
+                      : selectedDirectSaleId === "0"
+                        ? "SEM DESCONTO"
+                        : "DESCONTOS V.D."
+                    }
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>DESCONTOS DISPONÍVEIS</SelectLabel>
+                    <SelectItem value="0">SEM DESCONTO</SelectItem>
+                    {availableDirectSales.map(sale => (
+                      <SelectItem key={sale.id} value={sale.id.toString()}>
+                        {sale.name.toUpperCase()} - {sale.discountPercentage}%
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 
             {/* Coluna da esquerda - Preços */}
             <div className="md:col-span-3 mx-auto w-full max-w-xs md:max-w-none">
