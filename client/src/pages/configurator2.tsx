@@ -220,20 +220,14 @@ export default function Configurator2() {
   // Quando mudamos de veículo, atualizar os preços
   useEffect(() => {
     if (selectedVehicle) {
-      console.log("Veículo selecionado para cálculo de preços:", selectedVehicle);
-      
       // Usar diretamente o preço do veículo
-      const vehiclePrice = selectedVehicle.price;
-      console.log("Preço do veículo:", vehiclePrice);
-      
-      // Atualizar os preços no state
-      setPublicPrice(vehiclePrice);
+      setPublicPrice(selectedVehicle.price);
       
       // Atualizar preços de isenção
-      setPcdIpi(selectedVehicle.pcdIpi || 0);
-      setPcdIpiIcms(selectedVehicle.pcdIpiIcms || 0);
-      setTaxiIpiIcms(selectedVehicle.taxiIpiIcms || 0);
-      setTaxiIpi(selectedVehicle.taxiIpi || 0);
+      setPcdIpi(selectedVehicle.pcdIpi);
+      setPcdIpiIcms(selectedVehicle.pcdIpiIcms);
+      setTaxiIpiIcms(selectedVehicle.taxiIpiIcms);
+      setTaxiIpi(selectedVehicle.taxiIpi);
       
       // Cálculo de desconto
       const directSale = selectedDirectSaleId 
@@ -619,7 +613,7 @@ export default function Configurator2() {
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
                       <div className="text-sm font-medium">Preço Base</div>
-                      <div className="font-bold">{selectedVehicle ? formatCurrency(selectedVehicle.price) : "R$ 0,00"}</div>
+                      <div className="font-bold">{formatCurrency(publicPrice)}</div>
                     </div>
                     <div>
                       <div className="text-sm font-medium">Frete</div>
