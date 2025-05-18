@@ -113,7 +113,8 @@ export function AppHead() {
           --tw-ring-color: ${activeMenuColor} !important;
         }
         
-        .navlink.active {
+        .navlink.active,
+        .nav-link.active {
           color: ${activeMenuColor} !important;
         }
         

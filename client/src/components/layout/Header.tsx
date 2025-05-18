@@ -163,7 +163,7 @@ export default function Header() {
                       key={index} 
                       href={item.path} 
                       className={`nav-link ${isActive ? 'active' : ''}`}
-                      style={isActive ? { color: "#fff" } : {}}
+                      style={isActive ? { color: "#fff", borderBottomColor: activeMenuColor, borderBottomWidth: '3px', borderBottomStyle: 'solid' } : {}}
                     >
                       {item.label}
                     </Link>
