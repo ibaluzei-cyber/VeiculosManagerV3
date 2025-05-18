@@ -671,7 +671,7 @@ export default function Configurator2() {
                     </div>
                     <div>
                       <div className="text-sm font-medium">Total</div>
-                      <div className="font-bold">{formatCurrency(finalPrice)}</div>
+                      <div className="font-bold">{formatCurrency(Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal))}</div>
                     </div>
                   </div>
                   
@@ -687,7 +687,7 @@ export default function Configurator2() {
               {/* Preço Final */}
               <div className="bg-[#082a58] text-white p-4 text-center">
                 <div className="uppercase font-bold mb-1">PREÇO FINAL</div>
-                <div className="text-xl font-bold">{formatCurrency(finalPrice)}</div>
+                <div className="text-xl font-bold">{formatCurrency(Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal) - Number(discountAmount) + Number(surchargeAmount))}</div>
               </div>
             </div>
           </div>
