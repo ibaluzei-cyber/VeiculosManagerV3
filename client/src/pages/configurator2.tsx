@@ -495,35 +495,35 @@ export default function Configurator2() {
             <div className="md:col-span-3">
               <div className="space-y-1">
                 <div className="flex flex-wrap md:flex-nowrap">
-                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center md:text-left">PREÇO PÚBLICO</div>
+                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center">PREÇO PÚBLICO</div>
                   <div className="border px-3 py-2 w-full md:flex-1 text-center md:text-right">{formatCurrency(publicPrice)}</div>
                 </div>
                 <div 
                   className={`flex flex-wrap md:flex-nowrap cursor-pointer ${selectedPriceType === 'pcdIpi' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('pcdIpi')}
                 >
-                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center md:text-left">PCD IPI</div>
+                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center">PCD IPI</div>
                   <div className="border px-3 py-2 w-full md:flex-1 text-center md:text-right">{formatCurrency(pcdIpi)}</div>
                 </div>
                 <div 
                   className={`flex flex-wrap md:flex-nowrap cursor-pointer ${selectedPriceType === 'taxiIpiIcms' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('taxiIpiIcms')}
                 >
-                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center md:text-left">TAXI IPI/ICMS</div>
+                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center">TAXI IPI/ICMS</div>
                   <div className="border px-3 py-2 w-full md:flex-1 text-center md:text-right">{formatCurrency(taxiIpiIcms)}</div>
                 </div>
                 <div 
                   className={`flex flex-wrap md:flex-nowrap cursor-pointer ${selectedPriceType === 'pcdIpiIcms' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('pcdIpiIcms')}
                 >
-                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center md:text-left">PCD IPI/ICMS</div>
+                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center">PCD IPI/ICMS</div>
                   <div className="border px-3 py-2 w-full md:flex-1 text-center md:text-right">{formatCurrency(pcdIpiIcms)}</div>
                 </div>
                 <div 
                   className={`flex flex-wrap md:flex-nowrap cursor-pointer ${selectedPriceType === 'taxiIpi' ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handlePriceCardClick('taxiIpi')}
                 >
-                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center md:text-left">TAXI IPI</div>
+                  <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center">TAXI IPI</div>
                   <div className="border px-3 py-2 w-full md:flex-1 text-center md:text-right">{formatCurrency(taxiIpi)}</div>
                 </div>
               </div>
