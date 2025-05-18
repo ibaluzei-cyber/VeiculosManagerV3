@@ -546,15 +546,12 @@ export default function Configurator2() {
                     disabled={!selectedVersionId || availableColors.length === 0}
                   >
                     <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
-                      <div className="flex items-center justify-between w-full">
-                        <span>
-                          {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
-                            ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
-                            : "PINTURAS"
-                          }
-                        </span>
-                        <ChevronDown className="h-4 w-4" />
-                      </div>
+                      <span>
+                        {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
+                          ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
+                          : "PINTURAS"
+                        }
+                      </span>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -600,17 +597,14 @@ export default function Configurator2() {
                   disabled={!selectedVersionId}
                 >
                   <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
-                    <div className="flex items-center justify-between w-full">
-                      <span>
-                        {selectedDirectSaleId && selectedDirectSaleId !== "0"
-                          ? `${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.name.toUpperCase()} - ${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.discountPercentage}%`
-                          : selectedDirectSaleId === "0"
-                            ? "SEM DESCONTO"
-                            : "DESCONTOS V.D."
-                        }
-                      </span>
-                      <ChevronDown className="h-4 w-4" />
-                    </div>
+                    <span>
+                      {selectedDirectSaleId && selectedDirectSaleId !== "0"
+                        ? `${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.name.toUpperCase()} - ${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.discountPercentage}%`
+                        : selectedDirectSaleId === "0"
+                          ? "SEM DESCONTO"
+                          : "DESCONTOS V.D."
+                      }
+                    </span>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
