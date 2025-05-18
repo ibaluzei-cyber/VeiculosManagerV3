@@ -28,6 +28,11 @@
     /* Custom colors for the teal theme */
     --teal-500: 173 100% 33%;
     --teal-600: 173 100% 31%;
+    
+    /* Tema personalizável */
+    --theme-active-menu: #0a9587;
+    --theme-logo-bar: #01a896;
+    --theme-active-sidebar: #e6f6f5;
   }
 
   .dark {
