@@ -244,7 +244,7 @@ export default function Configurator2() {
       // Cálculo de opcionais
       const selectedOptionalsTotal = versionOptionals
         .filter(opt => selectedOptionals.includes(opt.optionalId))
-        .reduce((sum, opt) => sum + opt.price, 0);
+        .reduce((sum, opt) => sum + (Number(opt.price) || 0), 0);
       
       setOptionalsTotal(selectedOptionalsTotal);
       
@@ -270,24 +270,34 @@ export default function Configurator2() {
       }
       
       // Cálculo do preço final
-      let calculatedFinalPrice = selectedVehicle.publicPrice - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+      // Garantir que todos os valores são números válidos
+      const basePrice = Number(selectedVehicle.publicPrice) || 0;
+      const discount = Number(calculatedDiscountAmount) || 0;
+      const surcharge = Number(surchargeAmount) || 0;
+      const optionalsPrice = Number(selectedOptionalsTotal) || 0;
+      
+      let calculatedFinalPrice = basePrice - discount + surcharge + optionalsPrice;
       
       // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
       if (selectedPriceType) {
+        let specificPrice = basePrice; // valor padrão
+        
         switch (selectedPriceType) {
           case 'pcdIpi':
-            calculatedFinalPrice = pcdIpi - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            specificPrice = Number(pcdIpi) || 0;
             break;
           case 'taxiIpiIcms':
-            calculatedFinalPrice = taxiIpiIcms - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            specificPrice = Number(taxiIpiIcms) || 0;
             break;
           case 'pcdIpiIcms':
-            calculatedFinalPrice = pcdIpiIcms - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            specificPrice = Number(pcdIpiIcms) || 0;
             break;
           case 'taxiIpi':
-            calculatedFinalPrice = taxiIpi - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+            specificPrice = Number(taxiIpi) || 0;
             break;
         }
+        
+        calculatedFinalPrice = specificPrice - discount + surcharge + optionalsPrice;
       }
       
       setFinalPrice(calculatedFinalPrice);
