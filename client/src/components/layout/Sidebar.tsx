@@ -121,6 +121,7 @@ const menuStructure = [
   { path: "/paint-types", label: "Tipos de Pintura", icon: <Palette className="h-5 w-5 mr-2" /> },
   { path: "/optionals", label: "Opcionais", icon: <ListPlus className="h-5 w-5 mr-2" /> },
   { path: "/configurator", label: "Configurador", icon: <Car className="h-5 w-5 mr-2" /> },
+  { path: "/configurator2", label: "Configurador Novo", icon: <Car className="h-5 w-5 mr-2" /> },
   { path: "/settings", label: "Configurações", icon: <Settings className="h-5 w-5 mr-2" /> },
   { path: "/admin/users", label: "Usuários", icon: <Users className="h-5 w-5 mr-2" /> },
   { path: "/admin/permissions", label: "Visualizar Permissões", icon: <Shield className="h-5 w-5 mr-2" /> },
