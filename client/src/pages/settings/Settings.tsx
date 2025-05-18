@@ -124,6 +124,7 @@ export default function Settings() {
   const taxSettings = settings.filter(s => ["tax_rate", "enable_pcd_discounts"].includes(s.key));
   const companySettings = settings.filter(s => ["company_name", "company_logo_url"].includes(s.key));
   const appSettings = settings.filter(s => ["app_name", "app_favicon"].includes(s.key));
+  const themeSettings = settings.filter(s => s.key.startsWith("theme_color_"));
   
   return (
     <div className="space-y-6">
@@ -150,6 +151,7 @@ export default function Settings() {
           <TabsTrigger value="direct-sales">Vendas Diretas</TabsTrigger>
           <TabsTrigger value="company">Empresa</TabsTrigger>
           <TabsTrigger value="app">Aplicação</TabsTrigger>
+          <TabsTrigger value="theme">Cores do Tema</TabsTrigger>
         </TabsList>
         
         <TabsContent value="general" className="space-y-4">
@@ -270,6 +272,74 @@ export default function Settings() {
                     />
                   </div>
                 )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="theme" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personalização de Cores</CardTitle>
+              <CardDescription>
+                Personalize as cores do tema da aplicação
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {themeSettings.map(setting => (
+                  <div key={setting.id} className="space-y-2">
+                    <Label htmlFor={setting.key}>{setting.label}</Label>
+                    <div className="flex space-x-2">
+                      <div 
+                        className="w-10 h-10 rounded border" 
+                        style={{ backgroundColor: formData[setting.key] as string || '' }}
+                      />
+                      <Input
+                        id={setting.key}
+                        name={setting.key}
+                        type="text"
+                        value={formData[setting.key] as string || ""}
+                        onChange={handleTextChange}
+                        className="flex-1"
+                        placeholder="Código hexadecimal (ex: #0a9587)"
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Digite um código hexadecimal válido (ex: #0a9587)
+                    </p>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 p-4 bg-muted rounded-md">
+                <h3 className="text-sm font-medium mb-2">Visualização das cores</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium">Menu Ativo</p>
+                    <div 
+                      className="h-10 w-full rounded" 
+                      style={{ backgroundColor: formData["theme_color_active_menu"] as string || '#0a9587' }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium">Barra do Logo</p>
+                    <div 
+                      className="h-10 w-full rounded" 
+                      style={{ backgroundColor: formData["theme_color_logo_bar"] as string || '#01a896' }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium">Sidebar Ativo</p>
+                    <div 
+                      className="h-10 w-full rounded" 
+                      style={{ backgroundColor: formData["theme_color_active_sidebar"] as string || '#e6f6f5' }}
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Nota: As alterações nas cores serão aplicadas após salvar e recarregar a página.
+                </p>
               </div>
             </CardContent>
           </Card>
