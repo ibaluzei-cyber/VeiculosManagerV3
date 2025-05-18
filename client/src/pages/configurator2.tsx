@@ -514,7 +514,12 @@ export default function Configurator2() {
                   >
                     <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
                       <div className="flex items-center justify-between w-full">
-                        <span>PINTURAS</span>
+                        <span>
+                          {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
+                            ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
+                            : "PINTURAS"
+                          }
+                        </span>
                         <ChevronDown className="h-4 w-4" />
                       </div>
                     </SelectTrigger>
