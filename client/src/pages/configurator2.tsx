@@ -616,7 +616,7 @@ export default function Configurator2() {
                       <div className="font-bold">{formatCurrency(publicPrice)}</div>
                     </div>
                     <div>
-                      <div className="text-sm font-medium">Frete</div>
+                      <div className="text-sm font-medium">Pintura</div>
                       <div className="font-bold">{formatCurrency(0)}</div>
                     </div>
                   </div>
@@ -634,7 +634,7 @@ export default function Configurator2() {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm font-medium">Desc.</div>
+                      <div className="text-sm font-medium">Desc. {discountPercentage > 0 ? `${discountPercentage}%` : "0%"}</div>
                       <div className="font-bold">{formatCurrency(discountAmount)}</div>
                     </div>
                   </div>
@@ -664,32 +664,33 @@ export default function Configurator2() {
               <TabsContent value="equipment" className="border p-4 rounded-b-md">
                 {versionOptionals && versionOptionals.length > 0 ? (
                   <div>
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold uppercase mb-2">OPCIONAIS</h3>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h3 className="text-lg font-bold uppercase">OPCIONAIS</h3>
+                      <ChevronDown className="h-5 w-5" />
                     </div>
                     
                     {versionOptionals.map((opt) => (
-                      <div key={opt.id} className="border mb-4 p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-2">
-                            <Checkbox 
-                              id={`optional-${opt.id}`} 
-                              checked={selectedOptionals.includes(opt.optionalId)}
-                              onCheckedChange={() => handleOptionalToggle(opt.optionalId)}
-                              className="mt-1"
-                            />
-                            <div>
+                      <div key={opt.id} className="border mb-4 p-4 rounded">
+                        <div className="flex items-start gap-3">
+                          <Checkbox 
+                            id={`optional-${opt.id}`} 
+                            checked={selectedOptionals.includes(opt.optionalId)}
+                            onCheckedChange={() => handleOptionalToggle(opt.optionalId)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1">
+                            <div className="flex justify-between items-start">
                               <Label 
                                 htmlFor={`optional-${opt.id}`} 
                                 className="font-bold cursor-pointer uppercase"
                               >
                                 {opt.optional?.name}
                               </Label>
-                              <p className="text-gray-600">{opt.optional?.description}</p>
+                              <div className="font-bold text-right">
+                                {formatCurrency(opt.price)}
+                              </div>
                             </div>
-                          </div>
-                          <div className="font-bold text-right">
-                            {formatCurrency(opt.price)}
+                            <p className="text-sm text-gray-600 mt-2">{opt.optional?.description}</p>
                           </div>
                         </div>
                       </div>
