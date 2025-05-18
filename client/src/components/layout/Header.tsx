@@ -145,7 +145,7 @@ export default function Header() {
         </div>
       </div>
       
-      <nav className="bg-primary">
+      <nav className="bg-primary logo-bar">
         <div className="max-w-full mx-auto px-4">
           {!isMobile && (
             <div className="flex">
