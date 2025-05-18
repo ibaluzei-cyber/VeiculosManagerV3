@@ -619,7 +619,10 @@ export default function Configurator2() {
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <div>
                     <div className="font-medium text-sm mb-1">DESCONTOS %</div>
-                    <div className="border p-2 text-right w-full">
+                    <div 
+                      className="border p-2 text-right w-full"
+                      onClick={(e) => e.currentTarget.querySelector('input')?.focus()}
+                    >
                       <input 
                         type="text" 
                         value={discountPercentage === 0 ? '' : discountPercentage.toString()}
@@ -638,13 +641,17 @@ export default function Configurator2() {
                           }
                         }}
                         inputMode="decimal"
+                        pattern="[0-9]*"
                         className="w-full text-right border-none outline-none bg-transparent"
                       />
                     </div>
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">ÁGIO</div>
-                    <div className="border p-2 text-right w-full">
+                    <div 
+                      className="border p-2 text-right w-full"
+                      onClick={(e) => e.currentTarget.querySelector('input')?.focus()}
+                    >
                       <input 
                         type="text" 
                         value={surchargeAmount === 0 ? '' : surchargeAmount.toString()}
@@ -660,6 +667,7 @@ export default function Configurator2() {
                           }
                         }}
                         inputMode="decimal"
+                        pattern="[0-9]*"
                         className="w-full text-right border-none outline-none bg-transparent"
                       />
                     </div>
@@ -673,7 +681,10 @@ export default function Configurator2() {
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">QUANTIDADE</div>
-                    <div className="border p-2 text-right w-full">
+                    <div 
+                      className="border p-2 text-right w-full"
+                      onClick={(e) => e.currentTarget.querySelector('input')?.focus()}
+                    >
                       <input 
                         type="text" 
                         value={quantity === 1 ? '1' : quantity.toString()}
@@ -694,6 +705,7 @@ export default function Configurator2() {
                           }
                         }}
                         inputMode="numeric"
+                        pattern="[0-9]*"
                         className="w-full text-right border-none outline-none bg-transparent"
                       />
                     </div>
