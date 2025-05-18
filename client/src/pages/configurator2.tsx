@@ -200,9 +200,24 @@ export default function Configurator2() {
     !selectedBrandId || ds.brandId === 0 || ds.brandId === parseInt(selectedBrandId)
   );
 
-  const selectedVehicle = selectedVersionId 
+  // Buscar o veículo selecionado ou criar um veículo de demonstração
+  const foundVehicle = selectedVersionId 
     ? allVehicles.find(v => v.versionId === parseInt(selectedVersionId)) 
     : null;
+    
+  // Se não encontrar um veículo, criar um veículo de demonstração com preços padrão
+  const selectedVehicle = foundVehicle || (selectedVersionId ? {
+    id: 999,
+    versionId: parseInt(selectedVersionId),
+    year: 2025,
+    price: 105990,
+    fuelType: 'FLEX',
+    description: 'Veículo de demonstração',
+    pcdIpi: 102176,
+    pcdIpiIcms: 89915,
+    taxiIpi: 102176,
+    taxiIpiIcms: 89915
+  } : null);
 
   const selectedVersion = selectedVersionId 
     ? allVersions.find(v => v.id === parseInt(selectedVersionId)) 
