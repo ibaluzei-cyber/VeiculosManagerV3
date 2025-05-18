@@ -103,6 +103,7 @@ export default function Configurator2() {
   const [selectedDirectSaleId, setSelectedDirectSaleId] = useState<string>("");
   const [selectedOptionals, setSelectedOptionals] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState("equipment");
+  const [optionalsExpanded, setOptionalsExpanded] = useState(true);
   
   // Valores calculados
   const [publicPrice, setPublicPrice] = useState(0);
@@ -664,12 +665,15 @@ export default function Configurator2() {
               <TabsContent value="equipment" className="border p-4 rounded-b-md">
                 {versionOptionals && versionOptionals.length > 0 ? (
                   <div>
-                    <div className="mb-4 flex items-center justify-between">
+                    <div 
+                      className="mb-4 flex items-center justify-between cursor-pointer" 
+                      onClick={() => setOptionalsExpanded(!optionalsExpanded)}
+                    >
                       <h3 className="text-lg font-bold uppercase">OPCIONAIS</h3>
-                      <ChevronDown className="h-5 w-5" />
+                      <ChevronDown className={`h-5 w-5 transition-transform ${optionalsExpanded ? '' : 'transform rotate-180'}`} />
                     </div>
                     
-                    {versionOptionals.map((opt) => (
+                    {optionalsExpanded && versionOptionals.map((opt) => (
                       <div key={opt.id} className="border mb-4 p-4 rounded">
                         <div className="flex items-start gap-3">
                           <Checkbox 
