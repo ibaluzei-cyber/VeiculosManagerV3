@@ -219,8 +219,14 @@ export default function Configurator2() {
   // Quando mudamos de veículo, atualizar os preços
   useEffect(() => {
     if (selectedVehicle) {
-      // Pegar o preço diretamente do veículo selecionado
-      const price = selectedVehicle.price;
+      // Log do veículo para debug
+      console.log("Veículo selecionado:", selectedVehicle);
+      
+      // O preço está no campo 'price', vamos verificar isso
+      const price = selectedVehicle.price || 0;
+      console.log("Preço do veículo:", price);
+      
+      // Definir o preço público
       setPublicPrice(price);
       
       // Valores fixos correspondentes aos do Fiat Argo (como no configurador original)
