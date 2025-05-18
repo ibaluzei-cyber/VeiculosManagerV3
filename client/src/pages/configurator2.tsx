@@ -502,7 +502,7 @@ export default function Configurator2() {
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <div>
                     <div className="font-medium text-sm mb-1">DESCONTOS %</div>
-                    <div className="border p-2 text-right">{discountPercentage.toFixed(2)}%</div>
+                    <div className="border p-2 text-right">{typeof discountPercentage === 'number' ? discountPercentage.toFixed(2) : '0.00'}%</div>
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">ÁGIO</div>
