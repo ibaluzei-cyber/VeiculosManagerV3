@@ -36,6 +36,9 @@ export default function Header() {
   const companyName = settings.find(setting => setting.key === "company_name")?.value || "Auto+";
   const companyLogoUrl = settings.find(setting => setting.key === "company_logo_url")?.value;
   
+  // Encontrar configurações de cores do tema
+  const logoBarColor = settings.find(setting => setting.key === "theme_color_logo_bar")?.value || "#01a896";
+  
   // Estrutura de menu dinâmica baseada em permissões
   const menuItems = [
     { path: "/", label: "INÍCIO", permission: "Dashboard" },
@@ -145,7 +148,7 @@ export default function Header() {
         </div>
       </div>
       
-      <nav className="bg-primary logo-bar">
+      <nav className="logo-bar" style={{ backgroundColor: logoBarColor || '#01a896' }}>
         <div className="max-w-full mx-auto px-4">
           {!isMobile && (
             <div className="flex">
