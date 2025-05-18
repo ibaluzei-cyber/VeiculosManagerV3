@@ -568,7 +568,14 @@ export default function Configurator2() {
                 >
                   <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
                     <div className="flex items-center justify-between w-full">
-                      <span>DESCONTOS V.D.</span>
+                      <span>
+                        {selectedDirectSaleId && selectedDirectSaleId !== "0"
+                          ? `${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.name.toUpperCase()} - ${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.discountPercentage}%`
+                          : selectedDirectSaleId === "0"
+                            ? "SEM DESCONTO"
+                            : "DESCONTOS V.D."
+                        }
+                      </span>
                       <ChevronDown className="h-4 w-4" />
                     </div>
                   </SelectTrigger>
