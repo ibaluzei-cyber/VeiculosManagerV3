@@ -69,6 +69,7 @@ interface VersionColor {
   id: number;
   versionId: number;
   colorId: number;
+  price: number;
   color?: Color;
   imageUrl?: string;
 }
@@ -112,6 +113,7 @@ export default function Configurator2() {
   const [surchargeAmount, setSurchargeAmount] = useState(0);
   const [optionalsTotal, setOptionalsTotal] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
+  const [paintPrice, setPaintPrice] = useState(0);
   
   // Isenções
   const [pcdIpi, setPcdIpi] = useState(0);
@@ -344,6 +346,18 @@ export default function Configurator2() {
 
   const handleColorChange = (value: string) => {
     setSelectedColorId(value);
+    
+    // Atualizar o preço da pintura quando uma cor for selecionada
+    if (value && versionColors.length > 0) {
+      const selectedColor = versionColors.find(vc => vc.colorId.toString() === value);
+      if (selectedColor) {
+        setPaintPrice(Number(selectedColor.price) || 0);
+      } else {
+        setPaintPrice(0);
+      }
+    } else {
+      setPaintPrice(0);
+    }
   };
 
   const handleDirectSaleChange = (value: string) => {
@@ -640,7 +654,7 @@ export default function Configurator2() {
                     </div>
                     <div>
                       <div className="text-sm font-medium">Pintura</div>
-                      <div className="font-bold">{formatCurrency(0)}</div>
+                      <div className="font-bold">{formatCurrency(paintPrice)}</div>
                     </div>
                   </div>
                   
