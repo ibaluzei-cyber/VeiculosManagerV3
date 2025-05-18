@@ -216,16 +216,15 @@ export default function Configurator2() {
     ? versionColors.find(vc => vc.colorId === parseInt(selectedColorId))?.imageUrl || ""
     : "";
 
-  // Recalcular preços
+  // Quando mudamos de veículo, atualizar os preços
   useEffect(() => {
     if (selectedVehicle) {
-      // Usar sempre o preço real do veículo como base, com fallback para 90990 se não existir
-      const basePrice = selectedVehicle.price || 90990;
+      // Pegar o preço diretamente do veículo selecionado
+      const price = selectedVehicle.price;
+      setPublicPrice(price);
       
-      // Preço público
-      setPublicPrice(basePrice);
-      
-      // Valores fixos com base no Fiat Argo que é o exemplo (para manter consistência com a interface original)
+      // Valores fixos correspondentes aos do Fiat Argo (como no configurador original)
+      // Se fosse real, estes preços viriam do banco de dados para cada veículo
       setPcdIpi(88109);
       setPcdIpiIcms(79709);
       setTaxiIpiIcms(77190);
