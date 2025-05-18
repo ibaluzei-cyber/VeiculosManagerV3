@@ -315,6 +315,7 @@ export default function Configurator2() {
       setSelectedColorId("");
       setSelectedDirectSaleId("");
       setSelectedOptionals([]);
+      setPaintPrice(0);
     }
   }, [selectedBrandId]);
 
@@ -323,6 +324,7 @@ export default function Configurator2() {
       setSelectedVersionId("");
       setSelectedColorId("");
       setSelectedOptionals([]);
+      setPaintPrice(0);
     }
   }, [selectedModelId]);
 
@@ -330,6 +332,7 @@ export default function Configurator2() {
     if (selectedVersionId) {
       setSelectedColorId("");
       setSelectedOptionals([]);
+      setPaintPrice(0);
     }
   }, [selectedVersionId]);
 
