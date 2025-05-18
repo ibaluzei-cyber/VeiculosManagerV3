@@ -57,7 +57,7 @@ interface Vehicle {
   versionId: number;
   year: number;
   fuelType: string;
-  price: number;
+  publicPrice: number;
   description?: string;
   pcdIpi: number;
   pcdIpiIcms: number;
@@ -220,8 +220,8 @@ export default function Configurator2() {
   // Quando mudamos de veículo, atualizar os preços
   useEffect(() => {
     if (selectedVehicle) {
-      // Usar diretamente o preço do veículo
-      setPublicPrice(selectedVehicle.price);
+      // Usar diretamente o preço público do veículo
+      setPublicPrice(selectedVehicle.publicPrice);
       
       // Atualizar preços de isenção
       setPcdIpi(selectedVehicle.pcdIpi);
@@ -235,7 +235,7 @@ export default function Configurator2() {
         : null;
       
       const calculatedDiscountPercentage = directSale ? directSale.discountPercentage : 0;
-      const calculatedDiscountAmount = (selectedVehicle.price * calculatedDiscountPercentage) / 100;
+      const calculatedDiscountAmount = (selectedVehicle.publicPrice * calculatedDiscountPercentage) / 100;
       
       setDiscountPercentage(calculatedDiscountPercentage);
       setDiscountAmount(calculatedDiscountAmount);
@@ -248,7 +248,7 @@ export default function Configurator2() {
       setOptionalsTotal(selectedOptionalsTotal);
       
       // Preço base para cálculo final
-      let precoBaseCalculo = selectedVehicle.price;
+      let precoBaseCalculo = selectedVehicle.publicPrice;
       
       // Se tiver um tipo de preço selecionado, usa ele como base
       if (selectedPriceType) {
@@ -269,7 +269,7 @@ export default function Configurator2() {
       }
       
       // Cálculo do preço final
-      let calculatedFinalPrice = selectedVehicle.price - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+      let calculatedFinalPrice = selectedVehicle.publicPrice - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
       
       // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
       if (selectedPriceType) {
