@@ -167,8 +167,7 @@ export default function Header() {
                       href={item.path} 
                       className={`nav-link ${isActive ? 'active' : ''}`}
                       style={isActive ? { 
-                        color: "#fff", 
-                        backgroundColor: 'transparent'
+                        color: "#fff"
                       } : {}}
                     >
                       {item.label}
