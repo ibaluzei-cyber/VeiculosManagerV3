@@ -555,8 +555,8 @@ export default function Configurator2() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 
             {/* Coluna da esquerda - Preços */}
-            <div className="md:col-span-3 mx-auto w-full max-w-xs md:max-w-none">
-              <div className="space-y-1">
+            <div className="md:col-span-3 flex justify-center w-full">
+              <div className="space-y-1 w-full max-w-[280px] md:max-w-none">
                 {/* Preço Público */}
                 <div className="flex flex-col md:flex-row">
                   <div className="bg-[#082a58] text-white px-3 py-2 w-full md:w-40 font-semibold uppercase text-center">PREÇO PÚBLICO</div>
