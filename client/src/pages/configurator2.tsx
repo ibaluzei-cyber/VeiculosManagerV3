@@ -236,7 +236,7 @@ export default function Configurator2() {
         : null;
       
       const calculatedDiscountPercentage = directSale ? directSale.discountPercentage : 0;
-      const calculatedDiscountAmount = (basePrice * calculatedDiscountPercentage) / 100;
+      const calculatedDiscountAmount = (price * calculatedDiscountPercentage) / 100;
       
       setDiscountPercentage(calculatedDiscountPercentage);
       setDiscountAmount(calculatedDiscountAmount);
@@ -249,28 +249,28 @@ export default function Configurator2() {
       setOptionalsTotal(selectedOptionalsTotal);
       
       // Preço base para cálculo final
-      let precoBaseCalculo = basePrice;
+      let precoBaseCalculo = price;
       
       // Se tiver um tipo de preço selecionado, usa ele como base
       if (selectedPriceType) {
         switch (selectedPriceType) {
           case 'pcdIpi':
-            precoBaseCalculo = basePrice * 0.85; // 15% de desconto
+            precoBaseCalculo = price * 0.85; // 15% de desconto
             break;
           case 'taxiIpiIcms':
-            precoBaseCalculo = basePrice * 0.70; // 30% de desconto
+            precoBaseCalculo = price * 0.70; // 30% de desconto
             break;
           case 'pcdIpiIcms':
-            precoBaseCalculo = basePrice * 0.65; // 35% de desconto
+            precoBaseCalculo = price * 0.65; // 35% de desconto
             break;
           case 'taxiIpi':
-            precoBaseCalculo = basePrice * 0.80; // 20% de desconto
+            precoBaseCalculo = price * 0.80; // 20% de desconto
             break;
         }
       }
       
       // Cálculo do preço final
-      let calculatedFinalPrice = basePrice - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+      let calculatedFinalPrice = price - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
       
       // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
       if (selectedPriceType) {
