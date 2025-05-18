@@ -621,9 +621,9 @@ export default function Configurator2() {
                     <div className="font-medium text-sm mb-1">DESCONTOS %</div>
                     <input 
                       type="number" 
-                      value={discountPercentage}
+                      value={discountPercentage || 0}
                       onChange={(e) => {
-                        const newPercentage = parseFloat(e.target.value) || 0;
+                        const newPercentage = e.target.value === '' ? 0 : parseFloat(e.target.value);
                         setDiscountPercentage(newPercentage);
                         const newDiscountAmount = (publicPrice * newPercentage) / 100;
                         setDiscountAmount(newDiscountAmount);
@@ -637,9 +637,9 @@ export default function Configurator2() {
                     <div className="font-medium text-sm mb-1">ÁGIO</div>
                     <input 
                       type="number" 
-                      value={surchargeAmount}
+                      value={surchargeAmount || 0}
                       onChange={(e) => {
-                        const newSurcharge = parseFloat(e.target.value) || 0;
+                        const newSurcharge = e.target.value === '' ? 0 : parseFloat(e.target.value);
                         setSurchargeAmount(newSurcharge);
                       }}
                       min="0"
@@ -658,9 +658,9 @@ export default function Configurator2() {
                     <div className="font-medium text-sm mb-1">QUANTIDADE</div>
                     <input 
                       type="number" 
-                      defaultValue={1}
+                      value={quantity || 1}
                       onChange={(e) => {
-                        const newQuantity = parseInt(e.target.value) || 1;
+                        const newQuantity = e.target.value === '' ? 1 : parseInt(e.target.value);
                         // Salvar a quantidade em um estado
                         setQuantity(newQuantity);
                       }}
