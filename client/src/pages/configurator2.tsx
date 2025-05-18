@@ -114,6 +114,7 @@ export default function Configurator2() {
   const [optionalsTotal, setOptionalsTotal] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
   const [paintPrice, setPaintPrice] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   
   // Isenções
   const [pcdIpi, setPcdIpi] = useState(0);
@@ -625,11 +626,33 @@ export default function Configurator2() {
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <div>
                     <div className="font-medium text-sm mb-1">DESCONTOS %</div>
-                    <div className="border p-2 text-right">{typeof discountPercentage === 'number' ? discountPercentage.toFixed(2) : '0.00'}%</div>
+                    <input 
+                      type="number" 
+                      value={discountPercentage}
+                      onChange={(e) => {
+                        const newPercentage = parseFloat(e.target.value) || 0;
+                        setDiscountPercentage(newPercentage);
+                        const newDiscountAmount = (publicPrice * newPercentage) / 100;
+                        setDiscountAmount(newDiscountAmount);
+                      }}
+                      min="0"
+                      step="0.01"
+                      className="border p-2 text-right w-full"
+                    />
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">ÁGIO</div>
-                    <div className="border p-2 text-right">{formatCurrency(surchargeAmount)}</div>
+                    <input 
+                      type="number" 
+                      value={surchargeAmount}
+                      onChange={(e) => {
+                        const newSurcharge = parseFloat(e.target.value) || 0;
+                        setSurchargeAmount(newSurcharge);
+                      }}
+                      min="0"
+                      step="1"
+                      className="border p-2 text-right w-full"
+                    />
                   </div>
                 </div>
 
@@ -640,7 +663,18 @@ export default function Configurator2() {
                   </div>
                   <div>
                     <div className="font-medium text-sm mb-1">QUANTIDADE</div>
-                    <div className="border p-2 text-right">1</div>
+                    <input 
+                      type="number" 
+                      defaultValue={1}
+                      onChange={(e) => {
+                        const newQuantity = parseInt(e.target.value) || 1;
+                        // Salvar a quantidade em um estado
+                        setQuantity(newQuantity);
+                      }}
+                      min="1"
+                      step="1"
+                      className="border p-2 text-right w-full"
+                    />
                   </div>
                 </div>
               </div>
@@ -668,7 +702,7 @@ export default function Configurator2() {
                     </div>
                     <div>
                       <div className="text-sm font-medium">Total</div>
-                      <div className="font-bold">{formatCurrency(Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal))}</div>
+                      <div className="font-bold">{formatCurrency((Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal)) * quantity)}</div>
                     </div>
                   </div>
                   
@@ -684,7 +718,7 @@ export default function Configurator2() {
               {/* Preço Final */}
               <div className="bg-[#082a58] text-white p-4 text-center">
                 <div className="uppercase font-bold mb-1">PREÇO FINAL</div>
-                <div className="text-xl font-bold">{formatCurrency(Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal) - Number(discountAmount) + Number(surchargeAmount))}</div>
+                <div className="text-xl font-bold">{formatCurrency((Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal) - Number(discountAmount) + Number(surchargeAmount)) * quantity)}</div>
               </div>
             </div>
           </div>
