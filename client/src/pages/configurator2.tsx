@@ -491,6 +491,68 @@ export default function Configurator2() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            {/* Dropdowns na versão mobile */}
+            <div className="grid grid-cols-1 gap-4 mb-6 md:hidden mx-auto w-full max-w-xs">
+              {/* Dropdown de Pintura mobile */}
+              <div className="w-full">
+                <Select 
+                  value={selectedColorId} 
+                  onValueChange={handleColorChange}
+                  disabled={!selectedVersionId || availableColors.length === 0}
+                >
+                  <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
+                    <span className="mx-auto">
+                      {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
+                        ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
+                        : "PINTURAS"
+                      }
+                    </span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>CORES DISPONÍVEIS</SelectLabel>
+                      {availableColors.map(item => (
+                        <SelectItem key={item.colorId} value={item.colorId.toString()}>
+                          {item.color?.name.toUpperCase()} - {item.color?.paintType?.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Dropdown de Descontos mobile */}
+              <div className="w-full">
+                <Select 
+                  value={selectedDirectSaleId} 
+                  onValueChange={handleDirectSaleChange}
+                  disabled={!selectedVersionId}
+                >
+                  <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
+                    <span className="mx-auto">
+                      {selectedDirectSaleId && selectedDirectSaleId !== "0"
+                        ? `${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.name.toUpperCase()} - ${availableDirectSales.find(sale => sale.id.toString() === selectedDirectSaleId)?.discountPercentage}%`
+                        : selectedDirectSaleId === "0"
+                          ? "SEM DESCONTO"
+                          : "DESCONTOS V.D."
+                      }
+                    </span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>DESCONTOS DISPONÍVEIS</SelectLabel>
+                      <SelectItem value="0">SEM DESCONTO</SelectItem>
+                      {availableDirectSales.map(sale => (
+                        <SelectItem key={sale.id} value={sale.id.toString()}>
+                          {sale.name.toUpperCase()} - {sale.discountPercentage}%
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             {/* Coluna da esquerda - Preços */}
             <div className="md:col-span-3 mx-auto w-full max-w-xs md:max-w-none">
               <div className="space-y-1">
@@ -532,8 +594,8 @@ export default function Configurator2() {
             {/* Coluna do meio - Pinturas e Imagem */}
             <div className="col-span-5">
               <div className="flex flex-col items-center">
-                {/* Dropdown de Pintura */}
-                <div className="mb-4 w-full max-w-md mx-auto">
+                {/* Dropdown de Pintura - apenas em desktop */}
+                <div className="mb-4 w-full max-w-md mx-auto hidden md:block">
                   <Select 
                     value={selectedColorId} 
                     onValueChange={handleColorChange}
@@ -583,8 +645,8 @@ export default function Configurator2() {
 
             {/* Coluna da direita - Descontos e Resumo */}
             <div className="col-span-4">
-              {/* Dropdown de Descontos */}
-              <div className="mb-6">
+              {/* Dropdown de Descontos - apenas em desktop */}
+              <div className="mb-6 hidden md:block">
                 <Select 
                   value={selectedDirectSaleId} 
                   onValueChange={handleDirectSaleChange}
