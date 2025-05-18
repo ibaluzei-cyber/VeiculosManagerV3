@@ -133,6 +133,12 @@ export function AppHead() {
           background-color: ${activeSidebarColor} !important;
         }
         
+        /* Cor dos ícones no menu da sidebar */
+        .sidebar-item.active svg {
+          color: ${activeMenuColor} !important;
+          stroke: ${activeMenuColor} !important;
+        }
+        
         /* Cor para elementos específicos */
         .sidebar-menu-item.active {
           background-color: ${activeSidebarColor} !important;

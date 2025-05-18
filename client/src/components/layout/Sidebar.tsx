@@ -206,7 +206,7 @@ export default function Sidebar() {
                   borderLeftStyle: 'solid'
                 } : {}}
               >
-                <span style={isActive ? { color: activeMenuColor } : {}}>
+                <span>
                   {item.icon}
                 </span>
                 <span style={isActive ? { color: activeMenuColor } : {}}>
