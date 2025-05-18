@@ -821,9 +821,9 @@ export default function Configurator2() {
           </div>
 
           {/* Botões de Ação */}
-          <div className="mt-8 flex justify-center gap-6">
+          <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6">
             <Button 
-              className="bg-[#082a58] text-white hover:bg-[#0a3675] px-8 py-2 uppercase"
+              className="bg-[#082a58] text-white hover:bg-[#0a3675] px-8 py-2 uppercase w-full md:w-auto"
               onClick={() => window.print()}
             >
               <Printer className="mr-2 h-4 w-4" />
@@ -831,7 +831,7 @@ export default function Configurator2() {
             </Button>
             
             <Button 
-              className="bg-[#082a58] text-white hover:bg-[#0a3675] px-8 py-2 uppercase"
+              className="bg-[#082a58] text-white hover:bg-[#0a3675] px-8 py-2 uppercase w-full md:w-auto"
             >
               <LayoutTemplate className="mr-2 h-4 w-4" />
               GERAR ANÚNCIO
