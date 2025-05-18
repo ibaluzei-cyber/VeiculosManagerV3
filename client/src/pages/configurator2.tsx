@@ -141,19 +141,29 @@ export default function Configurator2() {
 
   const { data: versionColors = [] } = useQuery<VersionColor[]>({
     queryKey: ["/api/version-colors", selectedVersionId],
-    queryFn: getQueryFn({
-      queryKey: ["/api/version-colors"],
-      params: selectedVersionId ? { versionId: selectedVersionId } : undefined
-    }),
+    queryFn: async () => {
+      if (!selectedVersionId) return [];
+      console.log("Buscando cores para versão:", selectedVersionId);
+      const response = await fetch(`/api/version-colors?versionId=${selectedVersionId}`);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar cores: ${response.statusText}`);
+      }
+      return response.json();
+    },
     enabled: !!selectedVersionId,
   });
 
   const { data: versionOptionals = [] } = useQuery<VersionOptional[]>({
     queryKey: ["/api/version-optionals", selectedVersionId],
-    queryFn: getQueryFn({
-      queryKey: ["/api/version-optionals"],
-      params: selectedVersionId ? { versionId: selectedVersionId } : undefined
-    }),
+    queryFn: async () => {
+      if (!selectedVersionId) return [];
+      console.log("Buscando opcionais para versão:", selectedVersionId);
+      const response = await fetch(`/api/version-optionals?versionId=${selectedVersionId}`);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar opcionais: ${response.statusText}`);
+      }
+      return response.json();
+    },
     enabled: !!selectedVersionId,
   });
 
@@ -166,12 +176,15 @@ export default function Configurator2() {
     selectedModelId ? version.modelId === parseInt(selectedModelId) : true
   );
 
-  const availableColors = versionColors
-    .filter(vc => vc.versionId === parseInt(selectedVersionId))
-    .map(vc => {
-      const color = allColors.find(c => c.id === vc.colorId);
-      return { ...vc, color };
-    });
+  // Filtra apenas as cores disponíveis para a versão selecionada
+  const availableColors = selectedVersionId 
+    ? versionColors
+        .filter((vc: VersionColor) => vc.versionId === parseInt(selectedVersionId))
+        .map((vc: VersionColor) => {
+          const color = allColors.find(c => c.id === vc.colorId);
+          return { ...vc, color };
+        })
+    : [];
 
   const availableDirectSales = directSales.filter(ds => 
     !selectedBrandId || ds.brandId === 0 || ds.brandId === parseInt(selectedBrandId)
