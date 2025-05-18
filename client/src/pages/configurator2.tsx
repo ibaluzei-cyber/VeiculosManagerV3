@@ -219,22 +219,15 @@ export default function Configurator2() {
   // Quando mudamos de veículo, atualizar os preços
   useEffect(() => {
     if (selectedVehicle) {
-      // Log do veículo para debug
-      console.log("Veículo selecionado:", selectedVehicle);
+      // Pegar os dados do veículo selecionado
+      // O preço do veículo está no campo 'price'
+      setPublicPrice(selectedVehicle.price);
       
-      // O preço está no campo 'price', vamos verificar isso
-      const price = selectedVehicle.price || 0;
-      console.log("Preço do veículo:", price);
-      
-      // Definir o preço público
-      setPublicPrice(price);
-      
-      // Valores fixos correspondentes aos do Fiat Argo (como no configurador original)
-      // Se fosse real, estes preços viriam do banco de dados para cada veículo
-      setPcdIpi(88109);
-      setPcdIpiIcms(79709);
-      setTaxiIpiIcms(77190);
-      setTaxiIpi(88109);
+      // Pegar os preços de isenção diretamente do veículo
+      setPcdIpi(selectedVehicle.pcdIpi);
+      setPcdIpiIcms(selectedVehicle.pcdIpiIcms);
+      setTaxiIpiIcms(selectedVehicle.taxiIpiIcms);
+      setTaxiIpi(selectedVehicle.taxiIpi);
       
       // Cálculo de desconto
       const directSale = selectedDirectSaleId 
@@ -242,7 +235,7 @@ export default function Configurator2() {
         : null;
       
       const calculatedDiscountPercentage = directSale ? directSale.discountPercentage : 0;
-      const calculatedDiscountAmount = (price * calculatedDiscountPercentage) / 100;
+      const calculatedDiscountAmount = (selectedVehicle.price * calculatedDiscountPercentage) / 100;
       
       setDiscountPercentage(calculatedDiscountPercentage);
       setDiscountAmount(calculatedDiscountAmount);
@@ -255,28 +248,28 @@ export default function Configurator2() {
       setOptionalsTotal(selectedOptionalsTotal);
       
       // Preço base para cálculo final
-      let precoBaseCalculo = price;
+      let precoBaseCalculo = selectedVehicle.price;
       
       // Se tiver um tipo de preço selecionado, usa ele como base
       if (selectedPriceType) {
         switch (selectedPriceType) {
           case 'pcdIpi':
-            precoBaseCalculo = price * 0.85; // 15% de desconto
+            precoBaseCalculo = selectedVehicle.pcdIpi; 
             break;
           case 'taxiIpiIcms':
-            precoBaseCalculo = price * 0.70; // 30% de desconto
+            precoBaseCalculo = selectedVehicle.taxiIpiIcms;
             break;
           case 'pcdIpiIcms':
-            precoBaseCalculo = price * 0.65; // 35% de desconto
+            precoBaseCalculo = selectedVehicle.pcdIpiIcms;
             break;
           case 'taxiIpi':
-            precoBaseCalculo = price * 0.80; // 20% de desconto
+            precoBaseCalculo = selectedVehicle.taxiIpi;
             break;
         }
       }
       
       // Cálculo do preço final
-      let calculatedFinalPrice = price - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
+      let calculatedFinalPrice = selectedVehicle.price - calculatedDiscountAmount + surchargeAmount + selectedOptionalsTotal;
       
       // Se houver um tipo de preço selecionado, substitui o preço base pelo preço específico
       if (selectedPriceType) {
