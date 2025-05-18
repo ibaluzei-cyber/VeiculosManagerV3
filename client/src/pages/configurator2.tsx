@@ -18,6 +18,7 @@ import { ChevronDown, FileText, Printer, LayoutTemplate } from "lucide-react";
 import { formatCurrency } from "@/lib/formatters";
 import { hasPermission } from "@/lib/permissions";
 import { useAuth } from "@/hooks/use-auth";
+import { getQueryFn } from "@/lib/queryClient";
 
 interface Brand {
   id: number;
@@ -140,11 +141,19 @@ export default function Configurator2() {
 
   const { data: versionColors = [] } = useQuery<VersionColor[]>({
     queryKey: ["/api/version-colors", selectedVersionId],
+    queryFn: getQueryFn({
+      queryKey: ["/api/version-colors"],
+      params: selectedVersionId ? { versionId: selectedVersionId } : undefined
+    }),
     enabled: !!selectedVersionId,
   });
 
   const { data: versionOptionals = [] } = useQuery<VersionOptional[]>({
     queryKey: ["/api/version-optionals", selectedVersionId],
+    queryFn: getQueryFn({
+      queryKey: ["/api/version-optionals"],
+      params: selectedVersionId ? { versionId: selectedVersionId } : undefined
+    }),
     enabled: !!selectedVersionId,
   });
 
