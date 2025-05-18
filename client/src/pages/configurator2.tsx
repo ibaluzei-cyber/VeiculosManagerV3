@@ -589,63 +589,63 @@ export default function Configurator2() {
               </div>
 
               {/* Resumo e Valores Finais */}
-              {/* Preços Especiais - Estilo Tabela */}
+              {/* Preços Especiais */}
               <div className="mb-6">
                 <h3 className="font-bold mb-3 uppercase">PREÇOS ESPECIAIS</h3>
                 <div className="border rounded-md overflow-hidden">
-                  <div className="grid grid-cols-2 mb-0">
+                  <div className="mb-0">
                     <div className="bg-blue-900 text-white p-3 font-bold">
                       PREÇO PÚBLICO
                     </div>
-                    <div className="p-3 border-b text-right">
+                    <div className="p-3 border-b">
                       {formatCurrency(publicPrice)}
                     </div>
                   </div>
                   
                   <div 
-                    className={`grid grid-cols-2 mb-0 cursor-pointer ${selectedPriceType === 'pcdIpi' ? 'bg-blue-50' : ''}`}
+                    className={`mb-0 cursor-pointer ${selectedPriceType === 'pcdIpi' ? 'bg-blue-50' : ''}`}
                     onClick={() => handlePriceCardClick('pcdIpi')}
                   >
                     <div className="bg-blue-900 text-white p-3 font-bold">
                       PCD IPI
                     </div>
-                    <div className="p-3 border-b text-right">
+                    <div className="p-3 border-b">
                       {formatCurrency(selectedVehicle?.pcdIpi || 0)}
                     </div>
                   </div>
                   
                   <div 
-                    className={`grid grid-cols-2 mb-0 cursor-pointer ${selectedPriceType === 'taxiIpiIcms' ? 'bg-blue-50' : ''}`}
+                    className={`mb-0 cursor-pointer ${selectedPriceType === 'taxiIpiIcms' ? 'bg-blue-50' : ''}`}
                     onClick={() => handlePriceCardClick('taxiIpiIcms')}
                   >
                     <div className="bg-blue-900 text-white p-3 font-bold">
                       TAXI IPI/ICMS
                     </div>
-                    <div className="p-3 border-b text-right">
+                    <div className="p-3 border-b">
                       {formatCurrency(selectedVehicle?.taxiIpiIcms || 0)}
                     </div>
                   </div>
                   
                   <div 
-                    className={`grid grid-cols-2 mb-0 cursor-pointer ${selectedPriceType === 'pcdIpiIcms' ? 'bg-blue-50' : ''}`}
+                    className={`mb-0 cursor-pointer ${selectedPriceType === 'pcdIpiIcms' ? 'bg-blue-50' : ''}`}
                     onClick={() => handlePriceCardClick('pcdIpiIcms')}
                   >
                     <div className="bg-blue-900 text-white p-3 font-bold">
                       PCD IPI/ICMS
                     </div>
-                    <div className="p-3 border-b text-right">
+                    <div className="p-3 border-b">
                       {formatCurrency(selectedVehicle?.pcdIpiIcms || 0)}
                     </div>
                   </div>
                   
                   <div 
-                    className={`grid grid-cols-2 mb-0 cursor-pointer ${selectedPriceType === 'taxiIpi' ? 'bg-blue-50' : ''}`}
+                    className={`mb-0 cursor-pointer ${selectedPriceType === 'taxiIpi' ? 'bg-blue-50' : ''}`}
                     onClick={() => handlePriceCardClick('taxiIpi')}
                   >
                     <div className="bg-blue-900 text-white p-3 font-bold">
                       TAXI IPI
                     </div>
-                    <div className="p-3 text-right">
+                    <div className="p-3">
                       {formatCurrency(selectedVehicle?.taxiIpi || 0)}
                     </div>
                   </div>
