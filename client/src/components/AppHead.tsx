@@ -116,6 +116,13 @@ export function AppHead() {
         .navlink.active,
         .nav-link.active {
           color: ${activeMenuColor} !important;
+          --tw-bg-opacity: 1;
+          background-color: transparent !important;
+        }
+        
+        /* Sobrescrever a cor de fundo do nav-link.active */
+        .nav-link.active {
+          border-bottom: 3px solid ${activeMenuColor} !important;
         }
         
         /* Cor da barra abaixo do logo */
