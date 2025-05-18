@@ -29,6 +29,7 @@ import OptionalTabs from "@/pages/optionals/OptionalTabs";
 import OptionalForm from "@/pages/optionals/OptionalForm";
 import DirectSaleForm from "./pages/direct-sales/DirectSaleForm";
 import Configurator from "@/pages/configurator";
+import Configurator2 from "@/pages/configurator2";
 import Settings from "@/pages/settings/Settings";
 import ProfilePage from "@/pages/user/profile";
 import UserManagement from "@/pages/admin/UserManagement";
@@ -50,6 +51,7 @@ function Router() {
       {/* Lista de marcas e configurador - acessível por todos os usuários autenticados */}
       <ProtectedRoute path="/brands" component={BrandList} />
       <ProtectedRoute path="/configurator" component={Configurator} />
+      <ProtectedRoute path="/configurator2" component={Configurator2} requiredRole="Administrador" />
       
       {/* Funcionalidades de cadastro - requer papel de Cadastrador ou Admin */}
       <ProtectedRoute path="/brands/new" component={BrandForm} requiredRole="Cadastrador" />
