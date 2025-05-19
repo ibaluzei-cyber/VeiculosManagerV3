@@ -411,7 +411,7 @@ export default function Configurator2() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Dropdown de Marca */}
         <div className="w-full">
-          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center">
+          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center rounded-md">
             MARCA
           </div>
           <Select value={selectedBrandId} onValueChange={handleBrandChange}>
@@ -433,7 +433,7 @@ export default function Configurator2() {
 
         {/* Dropdown de Modelo */}
         <div className="w-full">
-          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center">
+          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center rounded-md">
             MODELO
           </div>
           <Select 
@@ -459,7 +459,7 @@ export default function Configurator2() {
 
         {/* Dropdown de Versão */}
         <div className="w-full">
-          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center">
+          <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center rounded-md">
             VERSÃO
           </div>
           <Select 
@@ -606,7 +606,7 @@ export default function Configurator2() {
               <div className="space-y-1 w-full">
                 {/* Preço Público */}
                 <div className="flex flex-row">
-                  <div className="bg-[#082a58] text-white px-3 py-2 w-40 font-semibold uppercase text-center">PREÇO PÚBLICO</div>
+                  <div className="bg-[#082a58] text-white px-3 py-2 w-40 font-semibold uppercase text-center rounded-l-md">PREÇO PÚBLICO</div>
                   <div className="border px-3 py-2 flex-1 text-right">{formatCurrency(publicPrice)}</div>
                 </div>
                 
