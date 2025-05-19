@@ -873,7 +873,7 @@ export default function Configurator2() {
               </div>
 
               {/* Preço Final */}
-              <div className="bg-[#082a58] text-white p-4 text-center">
+              <div className="bg-[#082a58] text-white p-4 text-center rounded-md">
                 <div className="uppercase font-bold mb-1">PREÇO FINAL</div>
                 <div className="text-xl font-bold">{formatCurrency((Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal) - Number(discountAmount) + Number(surchargeAmount)) * quantity)}</div>
               </div>
