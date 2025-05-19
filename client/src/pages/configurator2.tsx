@@ -125,12 +125,18 @@ export default function Configurator2() {
   
   // Função para lidar com seleção de cartões de preço
   const handlePriceCardClick = (priceType: string) => {
-    // Se já estava selecionado, desmarca (volta para o preço público)
-    if (selectedPriceType === priceType) {
+    // Limpa os valores de desconto e ágio cada vez que um cartão é clicado
+    setDiscountPercentage(0);
+    setDiscountAmount(0);
+    setSurchargeAmount(0);
+    
+    // Se já estava selecionado ou se for o preço público e não havia seleção,
+    // simplesmente desmarca (volta para o preço público sem destaque)
+    if (selectedPriceType === priceType || (priceType === 'public' && selectedPriceType === null)) {
       setSelectedPriceType(null);
     } else {
       // Se não estava selecionado, marca este tipo de preço
-      setSelectedPriceType(priceType);
+      setSelectedPriceType(priceType === 'public' ? null : priceType);
     }
   };
 
@@ -562,7 +568,10 @@ export default function Configurator2() {
           <div className="block md:hidden mb-6">
             <div className="w-full max-w-[280px] mx-auto space-y-1">
               {/* Preço Público Mobile */}
-              <div className="flex flex-col">
+              <div 
+                className={`flex flex-col cursor-pointer ${selectedPriceType === null ? 'ring-2 ring-primary' : ''}`}
+                onClick={() => handlePriceCardClick('public')}
+              >
                 <div className="bg-[#082a58] text-white px-3 py-2 w-full font-semibold uppercase text-center">PREÇO PÚBLICO</div>
                 <div className="border px-3 py-2 w-full text-center">{formatCurrency(publicPrice)}</div>
               </div>
@@ -611,7 +620,10 @@ export default function Configurator2() {
             <div className="hidden md:block md:col-span-3">
               <div className="space-y-1 w-full">
                 {/* Preço Público */}
-                <div className="flex flex-row">
+                <div 
+                  className={`flex flex-row cursor-pointer ${selectedPriceType === null ? 'ring-2 ring-primary' : ''}`}
+                  onClick={() => handlePriceCardClick('public')}
+                >
                   <div className="bg-[#082a58] text-white px-3 py-2 w-40 font-semibold uppercase text-center rounded-l-md">PREÇO PÚBLICO</div>
                   <div className="border px-3 py-2 flex-1 text-right rounded-r-md">{formatCurrency(publicPrice)}</div>
                 </div>
