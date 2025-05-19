@@ -405,7 +405,7 @@ export default function Configurator2() {
   return (
     <div className="w-full max-w-screen-xl mx-auto px-4">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 text-center">CONFIGURADOR NOVO</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 text-center">MONTE SEU VEÍCULO</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -502,7 +502,7 @@ export default function Configurator2() {
                 <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
                   <span className="mx-auto">
                     {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
-                      ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
+                      ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${formatCurrency(availableColors.find(item => item.colorId.toString() === selectedColorId)?.price || 0)}`
                       : "PINTURAS"
                     }
                   </span>
@@ -512,7 +512,7 @@ export default function Configurator2() {
                     <SelectLabel>CORES DISPONÍVEIS</SelectLabel>
                     {availableColors.map(item => (
                       <SelectItem key={item.colorId} value={item.colorId.toString()}>
-                        {item.color?.name.toUpperCase()} - {item.color?.paintType?.name}
+                        {item.color?.name.toUpperCase()} - {formatCurrency(item.price || 0)}
                       </SelectItem>
                     ))}
                   </SelectGroup>
@@ -661,7 +661,7 @@ export default function Configurator2() {
                     <SelectTrigger className="w-full border-2 border-gray-300 rounded-md">
                       <span className="mx-auto">
                         {selectedColorId && availableColors.find(item => item.colorId.toString() === selectedColorId) 
-                          ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.paintType?.name}`
+                          ? `${availableColors.find(item => item.colorId.toString() === selectedColorId)?.color?.name.toUpperCase()} - ${formatCurrency(availableColors.find(item => item.colorId.toString() === selectedColorId)?.price || 0)}`
                           : "PINTURAS"
                         }
                       </span>
@@ -671,7 +671,7 @@ export default function Configurator2() {
                         <SelectLabel>CORES DISPONÍVEIS</SelectLabel>
                         {availableColors.map(item => (
                           <SelectItem key={item.colorId} value={item.colorId.toString()}>
-                            {item.color?.name.toUpperCase()} - {item.color?.paintType?.name}
+                            {item.color?.name.toUpperCase()} - {formatCurrency(item.price || 0)}
                           </SelectItem>
                         ))}
                       </SelectGroup>
