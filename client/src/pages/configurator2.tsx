@@ -125,7 +125,13 @@ export default function Configurator2() {
   
   // Função para lidar com seleção de cartões de preço
   const handlePriceCardClick = (priceType: string) => {
-    setSelectedPriceType(selectedPriceType === priceType ? null : priceType);
+    // Se já estava selecionado, desmarca (volta para o preço público)
+    if (selectedPriceType === priceType) {
+      setSelectedPriceType(null);
+    } else {
+      // Se não estava selecionado, marca este tipo de preço
+      setSelectedPriceType(priceType);
+    }
   };
 
   // Fetch data
@@ -840,7 +846,15 @@ export default function Configurator2() {
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
                       <div className="text-sm font-medium">Preço Base</div>
-                      <div className="font-bold">{formatCurrency(publicPrice)}</div>
+                      <div className="font-bold">
+                        {formatCurrency(
+                          selectedPriceType === 'pcdIpi' ? pcdIpi :
+                          selectedPriceType === 'taxiIpiIcms' ? taxiIpiIcms :
+                          selectedPriceType === 'pcdIpiIcms' ? pcdIpiIcms :
+                          selectedPriceType === 'taxiIpi' ? taxiIpi :
+                          publicPrice
+                        )}
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm font-medium">Pintura</div>
@@ -855,7 +869,15 @@ export default function Configurator2() {
                     </div>
                     <div>
                       <div className="text-sm font-medium">Total</div>
-                      <div className="font-bold">{formatCurrency((Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal)) * quantity)}</div>
+                      <div className="font-bold">{formatCurrency((
+                        Number(selectedPriceType === 'pcdIpi' ? pcdIpi :
+                              selectedPriceType === 'taxiIpiIcms' ? taxiIpiIcms :
+                              selectedPriceType === 'pcdIpiIcms' ? pcdIpiIcms :
+                              selectedPriceType === 'taxiIpi' ? taxiIpi :
+                              publicPrice) + 
+                        Number(paintPrice) + 
+                        Number(optionalsTotal)
+                      ) * quantity)}</div>
                     </div>
                   </div>
                   
@@ -875,7 +897,17 @@ export default function Configurator2() {
               {/* Preço Final */}
               <div className="bg-[#082a58] text-white p-4 text-center rounded-md">
                 <div className="uppercase font-bold mb-1">PREÇO FINAL</div>
-                <div className="text-xl font-bold">{formatCurrency((Number(publicPrice) + Number(paintPrice) + Number(optionalsTotal) - Number(discountAmount) + Number(surchargeAmount)) * quantity)}</div>
+                <div className="text-xl font-bold">{formatCurrency((
+                  Number(selectedPriceType === 'pcdIpi' ? pcdIpi :
+                        selectedPriceType === 'taxiIpiIcms' ? taxiIpiIcms :
+                        selectedPriceType === 'pcdIpiIcms' ? pcdIpiIcms :
+                        selectedPriceType === 'taxiIpi' ? taxiIpi :
+                        publicPrice) + 
+                  Number(paintPrice) + 
+                  Number(optionalsTotal) - 
+                  Number(discountAmount) + 
+                  Number(surchargeAmount)
+                ) * quantity)}</div>
               </div>
             </div>
           </div>
