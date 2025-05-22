@@ -12,6 +12,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { X } from "lucide-react";
 
 // Schema para validação do formulário de perfil
 const profileSchema = z.object({
@@ -246,10 +247,22 @@ export default function ProfilePage() {
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle>Alterar Senha</CardTitle>
-                <CardDescription>
-                  Atualize sua senha para manter sua conta segura
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Alterar Senha</CardTitle>
+                    <CardDescription>
+                      Atualize sua senha para manter sua conta segura
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => window.history.back()}
+                    className="shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <Form {...passwordForm}>
