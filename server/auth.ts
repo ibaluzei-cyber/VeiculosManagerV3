@@ -208,14 +208,7 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Middleware de debug para sessões
-  app.use((req, res, next) => {
-    console.log(`[AUTH DEBUG] ${req.method} ${req.path}`);
-    console.log(`[AUTH DEBUG] Session ID: ${req.sessionID}`);
-    console.log(`[AUTH DEBUG] User authenticated: ${req.isAuthenticated()}`);
-    console.log(`[AUTH DEBUG] User ID: ${req.user?.id || 'não logado'}`);
-    next();
-  });
+
 
   // Configurar estratégia local de autenticação
   passport.use(
