@@ -4,11 +4,16 @@ import { queryClient, apiRequest } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import AdminLayout from "@/components/layout/AdminLayout";
+import SimpleUserLayout from "@/components/layout/SimpleUserLayout";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import { AppHead } from "@/components/AppHead";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { setCustomPermissions } from "@/lib/permissions";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ChevronDown, User, Key, LogOut } from "lucide-react";
+import { Link } from "wouter";
+import { useMobile } from "@/hooks/use-mobile";
 
 // Pages
 import Dashboard from "@/pages/dashboard/Dashboard";
@@ -94,7 +99,7 @@ function Router() {
   );
 }
 
-// Componente para envolver as rotas protegidas no layout de administração
+// Componente para envolver as rotas protegidas no layout adequado
 function ProtectedContent() {
   const { user } = useAuth();
   
@@ -159,10 +164,44 @@ function ProtectedContent() {
     }
   }, [customPermissions]);
   
+  // Se o usuário é administrador, usar layout completo
+  // Se não é administrador, usar layout simplificado
+  const isAdmin = user?.role?.name === 'Administrador';
+  
+  if (isAdmin) {
+    return (
+      <AdminLayout>
+        <Router />
+      </AdminLayout>
+    );
+  }
+  
+  // Layout simplificado para usuários comuns - apenas configurador
   return (
-    <AdminLayout>
-      <Router />
-    </AdminLayout>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header simplificado */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <h1 className="text-xl font-bold text-primary">Monte seu Veículo</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              {user && (
+                <span className="text-sm text-gray-600">
+                  Olá {user.name}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Conteúdo principal - Configurador em tela cheia */}
+      <main className="w-full">
+        <Configurator2 />
+      </main>
+    </div>
   );
 }
 
