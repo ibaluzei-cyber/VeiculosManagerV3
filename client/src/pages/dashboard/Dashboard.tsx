@@ -9,11 +9,6 @@ import Configurator2 from "@/pages/configurator2";
 
 export default function Dashboard() {
   const { user } = useAuth();
-
-  // Se for usuário comum, mostrar o configurador em vez do dashboard
-  if (user?.role?.name === "Usuário") {
-    return <Configurator2 />;
-  }
   // Buscar dados reais do banco de dados
   const { data: vehicles = [], isLoading: loadingVehicles } = useQuery<Vehicle[]>({
     queryKey: ["/api/vehicles"],
