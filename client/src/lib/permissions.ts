@@ -13,7 +13,7 @@ export const ROUTE_PERMISSIONS: RoutePermission[] = [
   // Rotas acessíveis a todos os usuários autenticados
   { path: "/", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Dashboard" },
   { path: "/configurator", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Configurador de veículos" },
-  { path: "/configurator2", allowedRoles: ["Administrador"], description: "Configurador Novo" },
+  { path: "/configurator2", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Configurador Novo" },
   { path: "/user/profile", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Perfil de usuário" },
   
   // Rotas de visualização (somente leitura) - acessíveis a todos os usuários autenticados
