@@ -146,13 +146,20 @@ export default function Sidebar() {
           // Garantir que as permissões foram carregadas
           await getPermissions();
           
-          // Filtra os itens do menu para os quais o usuário tem permissão
-          // Usando o sistema centralizado de permissões
-          const filtered = menuStructure.filter(item => 
-            hasPermission(item.path, user?.role?.name)
-          );
+          // Para usuários regulares (papel "Usuário"), mostrar apenas o configurator
+          if (user?.role?.name === "Usuário") {
+            const userOnlyMenus = menuStructure.filter(item => 
+              item.path === "/configurator2"
+            );
+            setFilteredMenuItems(userOnlyMenus);
+          } else {
+            // Para administradores e cadastradores, usar o sistema normal de permissões
+            const filtered = menuStructure.filter(item => 
+              hasPermission(item.path, user?.role?.name)
+            );
+            setFilteredMenuItems(filtered);
+          }
           
-          setFilteredMenuItems(filtered);
           setPermissionsLoaded(true);
         } catch (error) {
           console.error("Erro ao carregar permissões:", error);
