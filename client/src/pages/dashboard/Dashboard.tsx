@@ -4,8 +4,18 @@ import { useQuery } from "@tanstack/react-query";
 import { Vehicle, Brand, Model, Color } from "@/lib/types";
 import { formatBRCurrencyWithSymbol } from "@/lib/formatters";
 import { getQueryFn } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 export default function Dashboard() {
+  const { user } = useAuth();
+
+  // Redirecionar usuários comuns para o configurador
+  useEffect(() => {
+    if (user?.role?.name === "Usuário") {
+      window.location.href = '/configurator2';
+    }
+  }, [user]);
   // Buscar dados reais do banco de dados
   const { data: vehicles = [], isLoading: loadingVehicles } = useQuery<Vehicle[]>({
     queryKey: ["/api/vehicles"],

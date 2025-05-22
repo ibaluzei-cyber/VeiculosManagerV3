@@ -55,7 +55,7 @@ function Router() {
       {/* Lista de marcas e configurador - acessível por todos os usuários autenticados */}
       <ProtectedRoute path="/brands" component={BrandList} />
       <ProtectedRoute path="/configurator" component={Configurator} />
-      <ProtectedRoute path="/configurator2" component={Configurator2} requiredRole="Administrador" />
+      <ProtectedRoute path="/configurator2" component={Configurator2} />
       
       {/* Funcionalidades de cadastro - requer papel de Cadastrador ou Admin */}
       <ProtectedRoute path="/brands/new" component={BrandForm} requiredRole="Cadastrador" />
@@ -178,12 +178,11 @@ function ProtectedContent() {
   // Layout simplificado para usuários comuns - apenas configurador
   const isMobile = useMobile();
   
-  // Redirecionamento automático para usuários comuns
-  useEffect(() => {
-    if (user?.role?.name === "Usuário" && location !== '/configurator2') {
-      window.location.replace('/configurator2');
-    }
-  }, [user, location]);
+  // Para usuários comuns, redirecionar para configurador
+  if (user?.role?.name === "Usuário" && location !== '/configurator2') {
+    window.location.href = '/configurator2';
+    return null;
+  }
   
   return (
     <div className="min-h-screen bg-gray-50">
