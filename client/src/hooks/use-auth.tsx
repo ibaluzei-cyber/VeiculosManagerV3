@@ -124,7 +124,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: `Bem-vindo, ${userData.name}!`,
       });
       
-      // O redirecionamento agora é feito automaticamente pela estrutura de rotas
+      // Redirecionamento FORÇADO após login bem-sucedido
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
     },
     onError: (error) => {
       toast({

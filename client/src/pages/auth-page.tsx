@@ -54,7 +54,7 @@ export default function AuthPage() {
     },
   });
 
-  // Redirecionar baseado no tipo de usuário se já estiver autenticado
+  // Redirecionar para a página inicial se o usuário já estiver autenticado
   if (user) {
     return <Redirect to="/" />;
   }
