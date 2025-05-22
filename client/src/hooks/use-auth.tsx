@@ -124,11 +124,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: `Bem-vindo, ${userData.name}!`,
       });
       
-      // Redirecionamento baseado no tipo de usuário
+      // Redirecionamento inteligente baseado na página atual e tipo de usuário
+      const currentPath = window.location.pathname;
+      
       if (userData.role?.name === "Usuário") {
-        window.location.href = "/configurator2";
+        // Se já está no configurator, não redireciona
+        if (currentPath !== "/configurator2") {
+          window.location.href = "/configurator2";
+        }
       } else {
-        window.location.href = "/";
+        // Para outros usuários, só redireciona se não estiver numa página válida
+        if (currentPath === "/auth" || currentPath === "/landingpage" || currentPath === "/") {
+          window.location.href = "/";
+        }
+        // Se estiver em uma página específica (como configurator), mantém onde está
       }
     },
     onError: (error) => {
