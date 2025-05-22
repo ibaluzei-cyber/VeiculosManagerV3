@@ -124,9 +124,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: `Bem-vindo, ${userData.name}!`,
       });
       
-      // Redirecionar para a página principal após login bem-sucedido
+      // Redirecionar com base no tipo de usuário
       setTimeout(() => {
-        window.location.href = "/";
+        if (userData.role?.name === "Usuário") {
+          // Usuários regulares vão direto para o configurador
+          window.location.href = "/configurator2";
+        } else {
+          // Administradores e cadastradores vão para o dashboard
+          window.location.href = "/";
+        }
       }, 500);
     },
     onError: (error) => {
