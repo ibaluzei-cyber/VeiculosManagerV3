@@ -4,7 +4,6 @@ import { queryClient, apiRequest } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import AdminLayout from "@/components/layout/AdminLayout";
-import SimpleUserLayout from "@/components/layout/SimpleUserLayout";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import { AppHead } from "@/components/AppHead";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
@@ -177,21 +176,76 @@ function ProtectedContent() {
   }
   
   // Layout simplificado para usuários comuns - apenas configurador
+  const isMobile = useMobile();
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header simplificado */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              {/* Logo */}
+              <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
+                <span className="text-white font-bold text-sm">A+</span>
+              </div>
               <h1 className="text-xl font-bold text-primary">Monte seu Veículo</h1>
             </div>
+            
             <div className="flex items-center space-x-4">
-              {user && (
+              {!isMobile && user && (
                 <span className="text-sm text-gray-600">
-                  Olá {user.name}
+                  Olá {user.name} ({user.id}), 
+                  {user.lastLogin 
+                    ? ` seu último acesso foi em ${new Date(user.lastLogin).toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}h` 
+                    : " bem-vindo ao sistema"
+                  }
                 </span>
               )}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800">
+                  <span>{isMobile ? "Conta" : "Meus dados"}</span>
+                  <ChevronDown className="ml-1 h-5 w-5" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <Link href="/user/profile">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Perfil</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem 
+                    className="cursor-pointer"
+                    onClick={() => {
+                      // Implementar mudança de senha
+                      window.location.href = '/user/profile?tab=password';
+                    }}
+                  >
+                    <Key className="mr-2 h-4 w-4" />
+                    <span>Alterar Senha</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-600"
+                    onClick={async () => {
+                      try {
+                        await apiRequest('POST', '/api/logout');
+                        window.location.href = '/auth';
+                      } catch (error) {
+                        console.error('Erro ao fazer logout:', error);
+                      }
+                    }}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sair</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
