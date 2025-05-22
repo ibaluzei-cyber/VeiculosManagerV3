@@ -105,6 +105,9 @@ export async function getPermissions(): Promise<Record<string, Record<string, bo
 export function hasPermission(path: string, userRole?: string): boolean {
   if (!userRole) return false;
   
+  // ACESSO DIRETO PARA ROTA PRINCIPAL - SEM COMPLICAÇÕES
+  if (path === "/") return true;
+  
   // Converter para o tipo UserRole (com verificação de tipo)
   const role = userRole as UserRole;
   
