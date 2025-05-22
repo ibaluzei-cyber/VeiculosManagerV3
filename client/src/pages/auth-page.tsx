@@ -54,9 +54,13 @@ export default function AuthPage() {
     },
   });
 
-  // Redirecionar para a página inicial se o usuário já estiver autenticado
+  // Redirecionar baseado no tipo de usuário se já estiver autenticado
   if (user) {
-    return <Redirect to="/" />;
+    if (user.role?.name === "Usuário") {
+      return <Redirect to="/configurator2" />;
+    } else {
+      return <Redirect to="/" />;
+    }
   }
 
   const onLoginSubmit = (data: LoginFormData) => {
