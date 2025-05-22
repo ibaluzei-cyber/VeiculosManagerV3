@@ -95,8 +95,33 @@ interface VersionOptional {
 }
 
 export default function Configurator2() {
-  const { user } = useAuth();
-  const hasAccess = !!user; // Todos os usuários autenticados têm acesso
+  const { user, isLoading } = useAuth();
+  
+  // Se está carregando, mostrar loading
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Se não há usuário logado, redirecionar para login
+  if (!user) {
+    window.location.href = '/auth';
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Redirecionando para login...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  const hasAccess = true; // Todos os usuários autenticados têm acesso
 
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [selectedModelId, setSelectedModelId] = useState<string>("");
