@@ -100,7 +100,7 @@ function Router() {
 
 // Componente para envolver as rotas protegidas no layout adequado
 function ProtectedContent() {
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
   
   // Carregar as permissões personalizadas
   const { data: customPermissions } = useQuery({
@@ -232,13 +232,9 @@ function ProtectedContent() {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="cursor-pointer text-red-600"
-                    onClick={async () => {
-                      try {
-                        await apiRequest('POST', '/api/logout');
-                        window.location.href = '/auth';
-                      } catch (error) {
-                        console.error('Erro ao fazer logout:', error);
-                      }
+                    onClick={() => {
+                      // Usar a mutação de logout do contexto de autenticação
+                      logoutMutation.mutate();
                     }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />

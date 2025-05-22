@@ -191,12 +191,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "Sua sessão foi encerrada com segurança"
       });
       
-      // Solução adicional: Redirecionar para página de login com um pequeno delay
-      // para garantir que tudo seja limpo
-      setTimeout(() => {
-        console.log("Redirecionando para página de autenticação após logout");
-        window.location.href = "/auth";
-      }, 300);
+      // Não redirecionar automaticamente - deixar o componente de rota gerenciar isso
     },
     onError: (error) => {
       console.error("Erro durante o logout:", error);

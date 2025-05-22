@@ -111,6 +111,31 @@ export function hasPermission(path: string, userRole?: string): boolean {
   // Administrador sempre tem permissão total
   if (role === "Administrador") return true;
   
+  // Se as permissões personalizadas ainda não foram carregadas, usar permissões padrão
+  if (!permissionsLoaded) {
+    // Encontrar a definição de permissão para o caminho
+    const matchingPermission = ROUTE_PERMISSIONS.find(p => {
+      if (p.path === path) return true;
+      if (p.path.includes(':')) {
+        const regex = new RegExp('^' + p.path.replace(/:[^\/]+/g, '[^/]+') + '$');
+        return regex.test(path);
+      }
+      return false;
+    });
+    
+    if (matchingPermission) {
+      return matchingPermission.allowedRoles.includes(role);
+    }
+    
+    // Se não encontrou regra específica, permitir acesso para rotas básicas
+    const basicRoutes = ["/", "/configurator", "/configurator2", "/user/profile"];
+    if (basicRoutes.includes(path)) {
+      return true;
+    }
+    
+    return false;
+  }
+  
   // Caso especial para o configurador - garantir acesso irrestrito para todos os usuários
   // Isto inclui acesso a cores, opcionais e outras funcionalidades do configurador
   if (path === "/configurator" || path.startsWith("/api/version-colors") || path.startsWith("/api/version-optionals")) {
