@@ -124,10 +124,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: `Bem-vindo, ${userData.name}!`,
       });
       
-      // Redirecionamento FORÇADO após login bem-sucedido
-      setTimeout(() => {
+      // Redirecionamento baseado no tipo de usuário
+      if (userData.role?.name === "Usuário") {
+        window.location.href = "/configurator2";
+      } else {
         window.location.href = "/";
-      }, 100);
+      }
     },
     onError: (error) => {
       toast({
