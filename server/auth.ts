@@ -190,24 +190,32 @@ export async function getAllRoles() {
 export function setupAuth(app: Express) {
   // Configurações da sessão
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
-    resave: true, // Alterado para true para forçar salvar sessão
-    saveUninitialized: true, // Alterado para true para garantir criação de sessão
+    secret: process.env.SESSION_SECRET || "auto-plus-secret-key-2025-replit",
+    resave: false,
+    saveUninitialized: false,
+    rolling: true, // Renovar sessão a cada request
     cookie: {
-      secure: false, // Desabilitado para desenvolvimento (Replit usa HTTP)
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
+      secure: false, // Sempre false no Replit
+      httpOnly: false, // Permitir acesso via JavaScript para debug
+      sameSite: 'none', // Mais permissivo para Replit
+      maxAge: 1000 * 60 * 60 * 24, // 24 horas
     },
-    // Usando armazenamento em memória (padrão) para sessões
-    // Isso evita o erro de tabela não encontrada, mas as sessões serão perdidas ao reiniciar o servidor
-    name: 'auto-plus.sid' // Nome personalizado do cookie para melhor segurança
+    name: 'sessionId' // Nome mais simples
   };
 
   app.set("trust proxy", 1);
   app.use(session(sessionSettings));
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Middleware de debug para sessões
+  app.use((req, res, next) => {
+    console.log(`[AUTH DEBUG] ${req.method} ${req.path}`);
+    console.log(`[AUTH DEBUG] Session ID: ${req.sessionID}`);
+    console.log(`[AUTH DEBUG] User authenticated: ${req.isAuthenticated()}`);
+    console.log(`[AUTH DEBUG] User ID: ${req.user?.id || 'não logado'}`);
+    next();
+  });
 
   // Configurar estratégia local de autenticação
   passport.use(
