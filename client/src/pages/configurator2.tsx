@@ -416,12 +416,14 @@ export default function Configurator2() {
   }
 
   return (
-    <div className="w-full max-w-screen-xl mx-auto px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 text-center">MONTE SEU VEÍCULO</h1>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="w-full max-w-screen-xl mx-auto px-4 py-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-800 text-center">MONTE SEU VEÍCULO</h1>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {/* Dropdown de Marca */}
         <div className="w-full">
           <div className="bg-[#082a58] text-white px-4 py-2 font-semibold mb-1 uppercase text-center rounded-md">
@@ -498,7 +500,7 @@ export default function Configurator2() {
       </div>
 
       {selectedVersionId && (
-        <>
+        <div>
           <div className="text-center mb-6">
             <h2 className="text-lg md:text-xl font-bold uppercase px-2">{selectedVehicleTitle}</h2>
           </div>
@@ -1013,8 +1015,9 @@ export default function Configurator2() {
               GERAR ANÚNCIO
             </Button>
           </div>
-        </>
+        </div>
       )}
+      </div>
     </div>
   );
 }
