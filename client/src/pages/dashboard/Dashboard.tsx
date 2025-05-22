@@ -5,17 +5,15 @@ import { Vehicle, Brand, Model, Color } from "@/lib/types";
 import { formatBRCurrencyWithSymbol } from "@/lib/formatters";
 import { getQueryFn } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect } from "react";
+import Configurator2 from "@/pages/configurator2";
 
 export default function Dashboard() {
   const { user } = useAuth();
 
-  // Redirecionar usuários comuns para o configurador
-  useEffect(() => {
-    if (user?.role?.name === "Usuário") {
-      window.location.href = '/configurator2';
-    }
-  }, [user]);
+  // Se for usuário comum, mostrar o configurador em vez do dashboard
+  if (user?.role?.name === "Usuário") {
+    return <Configurator2 />;
+  }
   // Buscar dados reais do banco de dados
   const { data: vehicles = [], isLoading: loadingVehicles } = useQuery<Vehicle[]>({
     queryKey: ["/api/vehicles"],
