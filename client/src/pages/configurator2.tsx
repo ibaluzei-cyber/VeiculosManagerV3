@@ -109,13 +109,18 @@ export default function Configurator2() {
     );
   }
   
-  // Se não há usuário logado, redirecionar para login
+  // Se não há usuário logado, mostrar mensagem (não redirecionar automaticamente)
   if (!user) {
-    window.location.href = '/auth';
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-gray-600">Redirecionando para login...</p>
+          <p className="text-gray-600 mb-4">Você precisa fazer login para acessar o configurador.</p>
+          <button 
+            onClick={() => window.location.href = '/auth'}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Ir para Login
+          </button>
         </div>
       </div>
     );
