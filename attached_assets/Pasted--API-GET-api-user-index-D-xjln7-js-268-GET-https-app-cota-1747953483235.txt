@@ -1,0 +1,74 @@
+[API GET] /api/user
+index-D--xjln7.js:268 
+            
+            
+           GET https://app.cotazerokm.com.br/api/user 401 (Unauthorized)
+Oe @ index-D--xjln7.js:268
+queryFn @ index-D--xjln7.js:268
+a @ index-D--xjln7.js:48
+j @ index-D--xjln7.js:48
+start @ index-D--xjln7.js:48
+fetch @ index-D--xjln7.js:48
+al @ index-D--xjln7.js:48
+onSubscribe @ index-D--xjln7.js:48
+subscribe @ index-D--xjln7.js:48
+(anonymous) @ index-D--xjln7.js:48
+hw @ index-D--xjln7.js:38
+Mu @ index-D--xjln7.js:40
+Ua @ index-D--xjln7.js:40
+mg @ index-D--xjln7.js:40
+jo @ index-D--xjln7.js:38
+I_ @ index-D--xjln7.js:40
+ko @ index-D--xjln7.js:40
+Ww @ index-D--xjln7.js:40
+N @ index-D--xjln7.js:25
+D @ index-D--xjln7.js:25Understand this error
+index-D--xjln7.js:268 [API Response] /api/user - Status: 401
+index-D--xjln7.js:268 [Default QueryFn] Carregando: /api/settings
+index-D--xjln7.js:268 [Default QueryFn] Carregando: /api/vehicles
+index-D--xjln7.js:268 [Default QueryFn] Carregando: /api/brands
+index-D--xjln7.js:268 [Default QueryFn] Carregando: /api/models
+index-D--xjln7.js:268 [Default QueryFn] Carregando: /api/versions
+index-D--xjln7.js:268 [API GET] /api/user
+index-D--xjln7.js:268 
+            
+            
+           GET https://app.cotazerokm.com.br/api/user 401 (Unauthorized)
+Oe @ index-D--xjln7.js:268
+(anonymous) @ index-D--xjln7.js:268
+(anonymous) @ index-D--xjln7.js:268
+Mu @ index-D--xjln7.js:40
+Ua @ index-D--xjln7.js:40
+I_ @ index-D--xjln7.js:40
+ko @ index-D--xjln7.js:40
+mg @ index-D--xjln7.js:40
+jo @ index-D--xjln7.js:38
+(anonymous) @ index-D--xjln7.js:40
+setTimeout
+jk @ index-D--xjln7.js:48
+i @ index-D--xjln7.js:48
+batch @ index-D--xjln7.js:48
+Yn @ index-D--xjln7.js:48
+setData @ index-D--xjln7.js:48
+onSuccess @ index-D--xjln7.js:48
+p @ index-D--xjln7.js:48
+Promise.then
+j @ index-D--xjln7.js:48
+start @ index-D--xjln7.js:48
+fetch @ index-D--xjln7.js:48
+al @ index-D--xjln7.js:48
+onSubscribe @ index-D--xjln7.js:48
+subscribe @ index-D--xjln7.js:48
+(anonymous) @ index-D--xjln7.js:48
+hw @ index-D--xjln7.js:38
+Mu @ index-D--xjln7.js:40
+Ua @ index-D--xjln7.js:40
+mg @ index-D--xjln7.js:40
+jo @ index-D--xjln7.js:38
+I_ @ index-D--xjln7.js:40
+ko @ index-D--xjln7.js:40
+Ww @ index-D--xjln7.js:40
+N @ index-D--xjln7.js:25
+D @ index-D--xjln7.js:25Understand this error
+index-D--xjln7.js:268 [API Response] /api/user - Status: 401
+5index-D--xjln7.js:268 [Default QueryFn] Status: 200
