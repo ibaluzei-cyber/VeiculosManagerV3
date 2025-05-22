@@ -178,11 +178,7 @@ function ProtectedContent() {
   // Layout simplificado para usuários comuns - apenas configurador
   const isMobile = useMobile();
   
-  // Para usuários comuns, redirecionar para configurador
-  if (user?.role?.name === "Usuário" && location !== '/configurator2') {
-    window.location.href = '/configurator2';
-    return null;
-  }
+
   
   return (
     <div className="min-h-screen bg-gray-50">
