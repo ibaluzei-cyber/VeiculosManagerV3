@@ -281,31 +281,69 @@ function PublicRouter() {
 }
 
 function AppWithRouter() {
-  // Utilize o hook useLocation para verificar a rota atual
   const [location] = useLocation();
   const { user, isLoading } = useAuth();
   
-  const isLandingPage = location === '/landingpage' || 
-                        (!user && !isLoading && location === '/');
+  // Se está carregando, mostrar loading
+  if (isLoading) {
+    return (
+      <>
+        <AppHead />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Carregando...</p>
+          </div>
+        </div>
+        <Toaster />
+      </>
+    );
+  }
 
+  // Se não tem usuário e não está na página de auth, redirecionar
+  if (!user && location !== '/auth') {
+    return (
+      <>
+        <AppHead />
+        <AuthPage />
+        <Toaster />
+      </>
+    );
+  }
+
+  // Se tem usuário e está na página de auth, redirecionar para home
+  if (user && location === '/auth') {
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100);
+    return (
+      <>
+        <AppHead />
+        <div className="flex items-center justify-center min-h-screen">
+          <p>Redirecionando...</p>
+        </div>
+        <Toaster />
+      </>
+    );
+  }
+
+  // Se tem usuário, mostrar conteúdo protegido
+  if (user) {
+    return (
+      <>
+        <AppHead />
+        <ProtectedContent />
+        <Toaster />
+      </>
+    );
+  }
+
+  // Caso padrão: mostrar página de auth
   return (
     <>
-      {/* Componente para gerenciar o título e favicon da aplicação */}
       <AppHead />
-      
-      {/* Renderiza a landing page fora do layout admin quando a rota for /landingpage 
-         ou quando o usuário não estiver autenticado e estiver na rota inicial */}
-      {isLandingPage ? (
-        <>
-          <PublicRouter />
-          <Toaster />
-        </>
-      ) : (
-        <>
-          <ProtectedContent />
-          <Toaster />
-        </>
-      )}
+      <AuthPage />
+      <Toaster />
     </>
   );
 }

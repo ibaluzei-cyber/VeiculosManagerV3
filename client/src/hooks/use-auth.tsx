@@ -123,6 +123,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Login realizado com sucesso",
         description: `Bem-vindo, ${userData.name}!`,
       });
+      
+      // Redirecionar para a página principal após login bem-sucedido
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
     },
     onError: (error) => {
       toast({
@@ -191,7 +196,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "Sua sessão foi encerrada com segurança"
       });
       
-      // Não redirecionar automaticamente - deixar o componente de rota gerenciar isso
+      // Forçar recarregamento da página para garantir limpeza total
+      setTimeout(() => {
+        window.location.href = "/auth";
+      }, 100);
     },
     onError: (error) => {
       console.error("Erro durante o logout:", error);
