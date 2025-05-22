@@ -54,11 +54,19 @@ export function ProtectedRoute({
         const userRole = user.role?.name;
         const currentPath = path; // Para rotas estáticas
         
+        // Debug: log das informações de permissão
+        console.log("DEBUG Permissões - Usuário:", user.name, "Papel:", userRole);
+        console.log("DEBUG Permissões - Caminho:", currentPath);
+        
         // Em todos os casos, priorizar o sistema de permissões para verificação
         // Isso permite que permissões personalizadas funcionem para todos os papéis
-        if (hasPermission(currentPath, userRole)) {
+        const hasAccess = hasPermission(currentPath, userRole);
+        console.log("DEBUG Permissões - Tem acesso:", hasAccess);
+        
+        if (hasAccess) {
           return <Component {...params} />;
         } else {
+          console.log("DEBUG Permissões - ACESSO NEGADO para:", currentPath, "usuário:", userRole);
           return <AccessDenied />;
         }
       }}

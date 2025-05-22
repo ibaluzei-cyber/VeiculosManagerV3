@@ -103,13 +103,21 @@ export async function getPermissions(): Promise<Record<string, Record<string, bo
  * @returns true se o usuário tem permissão, false caso contrário
  */
 export function hasPermission(path: string, userRole?: string): boolean {
-  if (!userRole) return false;
+  console.log("DEBUG hasPermission - Entrada:", { path, userRole, permissionsLoaded });
+  
+  if (!userRole) {
+    console.log("DEBUG hasPermission - Sem papel de usuário");
+    return false;
+  }
   
   // Converter para o tipo UserRole (com verificação de tipo)
   const role = userRole as UserRole;
   
   // Administrador sempre tem permissão total
-  if (role === "Administrador") return true;
+  if (role === "Administrador") {
+    console.log("DEBUG hasPermission - Administrador tem acesso total");
+    return true;
+  }
   
   // Se as permissões personalizadas ainda não foram carregadas, usar permissões padrão
   if (!permissionsLoaded) {
