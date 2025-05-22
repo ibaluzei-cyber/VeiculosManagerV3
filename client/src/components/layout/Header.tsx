@@ -148,37 +148,40 @@ export default function Header() {
         </div>
       </div>
       
-      <nav className="logo-bar" style={{ backgroundColor: logoBarColor || '#01a896' }}>
-        <div className="max-w-full mx-auto px-4">
-          {!isMobile && (
-            <div className="flex">
-              <div className="flex space-x-1">
-                {/* Renderizar apenas os links que o usuário tem permissão */}
-                {filteredMenuItems.map((item, index) => {
-                  const isActive = location.startsWith(item.path) || 
-                      (item.path !== '/' && location === item.path);
-                  
-                  // Buscar configuração da cor do menu ativo
-                  const activeMenuColor = settings.find((s: any) => s.key === "theme_color_active_menu")?.value || "#0a9587";
-                  
-                  return (
-                    <Link 
-                      key={index} 
-                      href={item.path} 
-                      className={`nav-link ${isActive ? 'active' : ''}`}
-                      style={isActive ? { 
-                        color: "#fff"
-                      } : {}}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
+      {/* Mostrar barra de navegação apenas para Administradores e Cadastradores */}
+      {user?.role?.name !== "Usuário" && (
+        <nav className="logo-bar" style={{ backgroundColor: logoBarColor || '#01a896' }}>
+          <div className="max-w-full mx-auto px-4">
+            {!isMobile && (
+              <div className="flex">
+                <div className="flex space-x-1">
+                  {/* Renderizar apenas os links que o usuário tem permissão */}
+                  {filteredMenuItems.map((item, index) => {
+                    const isActive = location.startsWith(item.path) || 
+                        (item.path !== '/' && location === item.path);
+                    
+                    // Buscar configuração da cor do menu ativo
+                    const activeMenuColor = settings.find((s: any) => s.key === "theme_color_active_menu")?.value || "#0a9587";
+                    
+                    return (
+                      <Link 
+                        key={index} 
+                        href={item.path} 
+                        className={`nav-link ${isActive ? 'active' : ''}`}
+                        style={isActive ? { 
+                          color: "#fff"
+                        } : {}}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </nav>
+            )}
+          </div>
+        </nav>
+      )}
 
       {/* Diálogo de confirmação de logout */}
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
