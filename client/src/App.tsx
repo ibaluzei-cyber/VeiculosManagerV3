@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, useRouter } from "wouter";
 import { queryClient, apiRequest } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -178,6 +178,13 @@ function ProtectedContent() {
   // Layout simplificado para usuários comuns - apenas configurador
   const isMobile = useMobile();
   
+  // Redirecionamento automático para usuários comuns
+  useEffect(() => {
+    if (user?.role?.name === "Usuário" && location !== '/configurator2') {
+      window.location.replace('/configurator2');
+    }
+  }, [user, location]);
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header simplificado */}
@@ -330,22 +337,6 @@ function AppWithRouter() {
   // Se tem usuário, verificar o tipo e redirecionar adequadamente
   if (user) {
     const userRole = user.role?.name;
-    
-    // Se for usuário comum e não estiver no configurador, redirecionar automaticamente
-    if (userRole === "Usuário" && location !== '/configurator2') {
-      setTimeout(() => {
-        window.location.href = '/configurator2';
-      }, 100);
-      return (
-        <>
-          <AppHead />
-          <div className="flex items-center justify-center min-h-screen">
-            <p>Redirecionando para o configurador...</p>
-          </div>
-          <Toaster />
-        </>
-      );
-    }
     
     return (
       <>
