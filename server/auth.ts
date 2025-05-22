@@ -191,10 +191,10 @@ export function setupAuth(app: Express) {
   // Configurações da sessão
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // Alterado para true para forçar salvar sessão
+    saveUninitialized: true, // Alterado para true para garantir criação de sessão
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // Desabilitado para desenvolvimento (Replit usa HTTP)
       httpOnly: true,
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
