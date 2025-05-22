@@ -95,7 +95,7 @@ interface VersionOptional {
 
 export default function Configurator2() {
   const { user } = useAuth();
-  const hasAccess = user?.role?.name === "Administrador";
+  const hasAccess = !!user; // Todos os usuários autenticados têm acesso
 
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [selectedModelId, setSelectedModelId] = useState<string>("");
