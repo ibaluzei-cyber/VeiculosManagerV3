@@ -19,6 +19,7 @@ import { formatCurrency } from "@/lib/formatters";
 import { hasPermission } from "@/lib/permissions";
 import { useAuth } from "@/hooks/use-auth";
 import { getQueryFn } from "@/lib/queryClient";
+import Header from "@/components/layout/Header";
 
 interface Brand {
   id: number;
