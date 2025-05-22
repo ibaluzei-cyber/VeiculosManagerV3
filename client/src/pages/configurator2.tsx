@@ -19,7 +19,7 @@ import { formatCurrency } from "@/lib/formatters";
 import { hasPermission } from "@/lib/permissions";
 import { useAuth } from "@/hooks/use-auth";
 import { getQueryFn } from "@/lib/queryClient";
-import Header from "@/components/layout/Header";
+
 
 interface Brand {
   id: number;
@@ -419,7 +419,6 @@ export default function Configurator2() {
 
   return (
     <div className={isRegularUser ? "min-h-screen bg-gray-50" : ""}>
-      {isRegularUser && <Header />}
       <div className={isRegularUser ? "w-full max-w-screen-xl mx-auto px-4 py-6" : "p-6"}>
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-gray-800 text-center">MONTE SEU VEÍCULO</h1>
