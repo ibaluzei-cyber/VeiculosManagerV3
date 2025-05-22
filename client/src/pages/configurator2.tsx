@@ -415,10 +415,12 @@ export default function Configurator2() {
     );
   }
 
+  const isRegularUser = user?.role?.name === "Usuário";
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="w-full max-w-screen-xl mx-auto px-4 py-6">
+      <div className={isRegularUser ? "w-full max-w-screen-xl mx-auto px-4 py-6" : "flex-1 overflow-auto"}>
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-gray-800 text-center">MONTE SEU VEÍCULO</h1>
         </div>
