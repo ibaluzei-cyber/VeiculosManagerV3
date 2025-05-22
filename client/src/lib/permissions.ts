@@ -138,7 +138,7 @@ export function hasPermission(path: string, userRole?: string): boolean {
   
   // Caso especial para o configurador - garantir acesso irrestrito para todos os usuários
   // Isto inclui acesso a cores, opcionais e outras funcionalidades do configurador
-  if (path === "/configurator" || path.startsWith("/api/version-colors") || path.startsWith("/api/version-optionals")) {
+  if (path === "/configurator" || path === "/configurator2" || path.startsWith("/api/version-colors") || path.startsWith("/api/version-optionals")) {
     return true;
   }
   
