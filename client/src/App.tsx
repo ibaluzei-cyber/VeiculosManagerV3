@@ -169,11 +169,19 @@ function AppContent() {
     );
   }
 
-  // Usuário logado - verificar se é rota do configurator2 para layout full-width
+  // Usuário logado - verificar se é usuário regular para layout full-width
+  const isRegularUser = user?.role?.name === "Usuário";
+  
   return (
     <Switch>
-      {/* Rota do configurator2 com layout full-width (sem sidebar) */}
-      <ProtectedRoute path="/configurator2" component={Configurator2} />
+      {/* Rota do configurator2 com layout condicional */}
+      {isRegularUser ? (
+        <ProtectedRoute path="/configurator2" component={Configurator2} />
+      ) : (
+        <AdminLayout>
+          <ProtectedRoute path="/configurator2" component={Configurator2} />
+        </AdminLayout>
+      )}
       
       {/* Todas as outras rotas usam o layout administrativo com sidebar */}
       <AdminLayout>
