@@ -174,6 +174,15 @@ function AppContent() {
   
   return (
     <Switch>
+      {/* Rota raiz com redirecionamento condicional */}
+      {isRegularUser ? (
+        <ProtectedRoute path="/" component={Configurator2} />
+      ) : (
+        <AdminLayout>
+          <ProtectedRoute path="/" component={Dashboard} />
+        </AdminLayout>
+      )}
+      
       {/* Rota do configurator2 com layout condicional */}
       {isRegularUser ? (
         <ProtectedRoute path="/configurator2" component={Configurator2} />
@@ -186,8 +195,6 @@ function AppContent() {
       {/* Todas as outras rotas usam o layout administrativo com sidebar */}
       <AdminLayout>
         <Switch>
-          {/* Rotas protegidas principais */}
-          <ProtectedRoute path="/" component={Dashboard} />
           <ProtectedRoute path="/configurator" component={Configurator} />
           
           {/* Rotas de marcas */}
