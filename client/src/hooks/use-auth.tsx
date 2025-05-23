@@ -193,24 +193,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     },
     onSuccess: () => {
-      console.log("Logout bem-sucedido, limpando cache");
+      console.log("Logout bem-sucedido, redirecionando imediatamente");
       
-      // Limpa os dados do usuário na cache
-      queryClient.setQueryData(["/api/user"], null);
-      
-      // Limpa toda a cache para garantir que todos os dados protegidos sejam removidos
-      queryClient.clear();
-      
-      // Mensagem de sucesso
-      toast({
-        title: "Logout realizado com sucesso",
-        description: "Sua sessão foi encerrada com segurança"
-      });
-      
-      // Forçar recarregamento da página para garantir limpeza total
-      setTimeout(() => {
-        window.location.href = "/auth";
-      }, 100);
+      // Redirecionamento IMEDIATO para /auth sem delays ou toasts
+      window.location.href = "/auth";
     },
     onError: (error) => {
       console.error("Erro durante o logout:", error);
