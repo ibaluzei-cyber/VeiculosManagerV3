@@ -29,6 +29,11 @@
     --teal-500: 173 100% 33%;
     --teal-600: 173 100% 31%;
     
+    /* Default theme colors - evita flash verde */
+    --active-menu-color: #3B82F6;
+    --bar-below-logo-color: #1E40AF;
+    --active-sidebar-bg-color: #EFF6FF;
+    
     /* Tema personalizável */
     --theme-active-menu: #0a9587;
     --theme-logo-bar: #01a896;
