@@ -11,25 +11,7 @@ import { useEffect } from "react";
 export default function Dashboard() {
   const { user } = useAuth();
   
-  // Carregar configurações do tema primeiro para aplicar cores imediatamente
-  const { data: settings = [] } = useQuery({
-    queryKey: ["/api/settings"],
-    queryFn: getQueryFn(),
-  });
-
-  // Aplicar cores do tema assim que carregadas
-  useEffect(() => {
-    if (settings.length > 0) {
-      const activeMenuColor = settings.find(s => s.key === 'active_menu_color')?.value || '#3B82F6';
-      const barBelowLogoColor = settings.find(s => s.key === 'bar_below_logo_color')?.value || '#1E40AF';
-      const activeSidebarBg = settings.find(s => s.key === 'active_sidebar_bg_color')?.value || '#EFF6FF';
-      
-      // Aplicar cores CSS imediatamente
-      document.documentElement.style.setProperty('--active-menu-color', activeMenuColor);
-      document.documentElement.style.setProperty('--bar-below-logo-color', barBelowLogoColor);
-      document.documentElement.style.setProperty('--active-sidebar-bg-color', activeSidebarBg);
-    }
-  }, [settings]);
+  // Configurações de tema agora são carregadas no AdminLayout
   
   // Se for usuário regular, mostrar o configurador diretamente
   if (user?.role?.name === "Usuário") {
