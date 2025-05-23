@@ -188,8 +188,10 @@ export async function getAllRoles() {
 }
 
 export function setupAuth(app: Express) {
-  // Configurações da sessão otimizadas para produção HTTPS
-  const isProduction = process.env.NODE_ENV === 'production' || process.env.REPL_ID;
+  // Configurações da sessão adaptáveis para desenvolvimento e produção
+  const isHTTPS = process.env.NODE_ENV === 'production' || 
+                  (typeof window !== 'undefined' && window.location.protocol === 'https:') ||
+                  process.env.REPL_ID;
   
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "auto-plus-secret-key-2025-replit",
@@ -197,27 +199,24 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     rolling: true, // Renovar sessão a cada request
     cookie: {
-      secure: isProduction, // true para HTTPS em produção
-      httpOnly: true, // Mais seguro em produção
-      sameSite: (isProduction ? 'lax' : 'none') as 'lax' | 'none' | 'strict', // lax para produção HTTPS
+      secure: false, // Sempre false para compatibilidade
+      httpOnly: false, // Permite acesso via JavaScript
+      sameSite: 'lax' as 'lax' | 'none' | 'strict', // Mais compatível
       maxAge: 1000 * 60 * 60 * 24, // 24 horas
-      domain: isProduction ? '.cotazerokm.com.br' : undefined, // Domain para produção
+      // Remove domain específico para funcionar em ambos ambientes
     },
     name: 'autoplus_session' // Nome único
   };
 
   app.set("trust proxy", 1);
   
-  // Configurações CORS para produção
-  if (isProduction) {
-    app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Origin', 'https://app.cotazerokm.com.br');
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-      next();
-    });
-  }
+  // Configurações CORS simplificadas
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    next();
+  });
   
   app.use(session(sessionSettings));
   app.use(passport.initialize());
