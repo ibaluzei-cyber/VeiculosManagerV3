@@ -10,6 +10,8 @@ import { eq, and } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db/index";
 
+const PostgresSessionStore = connectPg(session);
+
 // Definir a interface de usuário para autenticação
 type UserWithRole = {
   id: number;
@@ -198,6 +200,10 @@ export function setupAuth(app: Express) {
     resave: false,
     saveUninitialized: false,
     rolling: true, // Renovar sessão a cada request
+    store: new PostgresSessionStore({
+      pool: pool,
+      createTableIfMissing: true,
+    }),
     cookie: {
       secure: false, // Sempre false para compatibilidade
       httpOnly: false, // Permite acesso via JavaScript
