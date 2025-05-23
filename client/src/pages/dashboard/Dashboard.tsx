@@ -10,10 +10,17 @@ import Configurator2 from "@/pages/configurator2";
 export default function Dashboard() {
   const { user } = useAuth();
   
+  // Debug: mostrar qual papel está sendo detectado
+  console.log("Dashboard - Usuário:", user);
+  console.log("Dashboard - Papel:", user?.role?.name);
+  
   // Se for usuário regular, mostrar o configurador diretamente
   if (user?.role?.name === "Usuário") {
+    console.log("Redirecionando para configurador - usuário regular");
     return <Configurator2 />;
   }
+  
+  console.log("Mostrando Dashboard - usuário administrador/cadastrador");
   // Buscar dados reais do banco de dados
   const { data: vehicles = [], isLoading: loadingVehicles } = useQuery<Vehicle[]>({
     queryKey: ["/api/vehicles"],
