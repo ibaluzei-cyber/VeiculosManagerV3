@@ -40,22 +40,16 @@ export function ProtectedRoute({
   return (
     <Route path={path}>
       {(params) => {
-        // Enquanto carrega o usuário, mostrar um indicador de carregamento
-        if (isLoading) {
+        // Sempre mostrar loading enquanto está carregando OU se não tem user ainda
+        if (isLoading || !user) {
           return <Loading />;
-        }
-
-        // Se o usuário não estiver autenticado, redirecionar para a página de login
-        if (!user) {
-          return <Redirect to="/auth" />;
         }
 
         // Verificar as permissões baseadas no sistema de permissões
         const userRole = user.role?.name;
-        const currentPath = path; // Para rotas estáticas
+        const currentPath = path;
         
-        // Em todos os casos, priorizar o sistema de permissões para verificação
-        // Isso permite que permissões personalizadas funcionem para todos os papéis
+        // Se tem permissão, mostrar o componente
         if (hasPermission(currentPath, userRole)) {
           return <Component {...params} />;
         } else {

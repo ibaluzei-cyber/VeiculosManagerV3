@@ -87,88 +87,86 @@ function AppContent() {
         <Route path="/landingpage" component={LandingPage} />
         <Route path="/auth" component={AuthPage} />
         <Route path="/" component={LandingPage} />
+        <Route component={() => <LandingPage />} />
       </Switch>
     );
   }
 
-  // Usuário logado - verificar se é usuário regular para layout full-width
+  // Usuário logado - redirecionar diretamente baseado no papel
   const isRegularUser = user?.role?.name === "Usuário";
   
   return (
-    <Switch>
-      {/* Todas as rotas usam o layout administrativo com sidebar */}
-      <AdminLayout>
-        <Switch>
-          {/* Rotas protegidas principais */}
-          <ProtectedRoute path="/" component={Dashboard} />
-          <ProtectedRoute path="/configurator" component={Configurator} />
-          <ProtectedRoute path="/configurator2" component={Configurator2} />
-          
-          {/* Rotas de marcas */}
-          <ProtectedRoute path="/brands" component={BrandList} />
-          <ProtectedRoute path="/brands/new" component={BrandForm} />
-          <ProtectedRoute path="/brands/:id/edit" component={BrandForm} />
-          
-          {/* Rotas de modelos */}
-          <ProtectedRoute path="/models" component={ModelList} />
-          <ProtectedRoute path="/models/new" component={ModelForm} />
-          <ProtectedRoute path="/models/:id/edit" component={ModelForm} />
-          
-          {/* Rotas de versões */}
-          <ProtectedRoute path="/versions" component={VersionList} />
-          <ProtectedRoute path="/versions/new" component={VersionForm} />
-          <ProtectedRoute path="/versions/:id/edit" component={VersionForm} />
-          
-          {/* Rotas de cores */}
-          <ProtectedRoute path="/colors" component={ColorTabs} />
-          <ProtectedRoute path="/colors/list" component={ColorList} />
-          <ProtectedRoute path="/colors/new" component={ColorForm} />
-          <ProtectedRoute path="/colors/:id/edit" component={ColorForm} />
-          <ProtectedRoute path="/colors/version-colors" component={VersionColorList} />
-          <ProtectedRoute path="/colors/version-colors/new" component={VersionColorForm} />
-          <ProtectedRoute path="/colors/version-colors/:id/edit" component={VersionColorForm} />
-          
-          {/* Rotas de tipos de pintura */}
-          <ProtectedRoute path="/paint-types" component={PaintTypeList} />
-          <ProtectedRoute path="/paint-types/new" component={PaintTypeForm} />
-          <ProtectedRoute path="/paint-types/:id/edit" component={PaintTypeForm} />
-          
-          {/* Rotas de opcionais */}
-          <ProtectedRoute path="/optionals" component={OptionalTabs} />
-          <ProtectedRoute path="/optionals/list" component={OptionalList} />
-          <ProtectedRoute path="/optionals/new" component={OptionalForm} />
-          <ProtectedRoute path="/optionals/:id/edit" component={OptionalForm} />
-          <ProtectedRoute path="/optionals/version-optionals" component={VersionOptionalList} />
-          <ProtectedRoute path="/optionals/version-optionals/new" component={VersionOptionalForm} />
-          <ProtectedRoute path="/optionals/version-optionals/:id/edit" component={VersionOptionalForm} />
-          
-          {/* Rotas de veículos */}
-          <ProtectedRoute path="/vehicles" component={VehicleList} />
-          <ProtectedRoute path="/vehicles/new" component={VehicleForm} />
-          <ProtectedRoute path="/vehicles/:id/edit" component={VehicleFormFixed} />
-          
-          {/* Rotas de vendas diretas */}
-          <ProtectedRoute path="/direct-sales" component={DirectSaleList} />
-          <ProtectedRoute path="/direct-sales/new" component={DirectSaleForm} />
-          <ProtectedRoute path="/direct-sales/edit/:id" component={DirectSaleForm} />
-          
-          {/* Rotas de usuário */}
-          <ProtectedRoute path="/user/profile" component={UserProfile} />
-          
-          {/* Rotas de configurações */}
-          <ProtectedRoute path="/settings" component={Settings} />
-          <ProtectedRoute path="/settings/company" component={CompanySettingsPage} />
-          
-          {/* Rotas administrativas */}
-          <ProtectedRoute path="/admin/users" component={UserManagement} />
-          <ProtectedRoute path="/admin/permissions" component={AccessPermissions} />
-          <ProtectedRoute path="/admin/permission-settings" component={PermissionSettings} />
-          
-          {/* Rota de erro 404 */}
-          <Route component={NotFound} />
-        </Switch>
-      </AdminLayout>
-    </Switch>
+    <AdminLayout>
+      <Switch>
+        {/* Rotas protegidas principais */}
+        <ProtectedRoute path="/" component={Dashboard} />
+        <ProtectedRoute path="/configurator" component={Configurator} />
+        <ProtectedRoute path="/configurator2" component={Configurator2} />
+        
+        {/* Rotas de marcas */}
+        <ProtectedRoute path="/brands" component={BrandList} />
+        <ProtectedRoute path="/brands/new" component={BrandForm} />
+        <ProtectedRoute path="/brands/:id/edit" component={BrandForm} />
+        
+        {/* Rotas de modelos */}
+        <ProtectedRoute path="/models" component={ModelList} />
+        <ProtectedRoute path="/models/new" component={ModelForm} />
+        <ProtectedRoute path="/models/:id/edit" component={ModelForm} />
+        
+        {/* Rotas de versões */}
+        <ProtectedRoute path="/versions" component={VersionList} />
+        <ProtectedRoute path="/versions/new" component={VersionForm} />
+        <ProtectedRoute path="/versions/:id/edit" component={VersionForm} />
+        
+        {/* Rotas de cores */}
+        <ProtectedRoute path="/colors" component={ColorTabs} />
+        <ProtectedRoute path="/colors/list" component={ColorList} />
+        <ProtectedRoute path="/colors/new" component={ColorForm} />
+        <ProtectedRoute path="/colors/:id/edit" component={ColorForm} />
+        <ProtectedRoute path="/colors/version-colors" component={VersionColorList} />
+        <ProtectedRoute path="/colors/version-colors/new" component={VersionColorForm} />
+        <ProtectedRoute path="/colors/version-colors/:id/edit" component={VersionColorForm} />
+        
+        {/* Rotas de tipos de pintura */}
+        <ProtectedRoute path="/paint-types" component={PaintTypeList} />
+        <ProtectedRoute path="/paint-types/new" component={PaintTypeForm} />
+        <ProtectedRoute path="/paint-types/:id/edit" component={PaintTypeForm} />
+        
+        {/* Rotas de opcionais */}
+        <ProtectedRoute path="/optionals" component={OptionalTabs} />
+        <ProtectedRoute path="/optionals/list" component={OptionalList} />
+        <ProtectedRoute path="/optionals/new" component={OptionalForm} />
+        <ProtectedRoute path="/optionals/:id/edit" component={OptionalForm} />
+        <ProtectedRoute path="/optionals/version-optionals" component={VersionOptionalList} />
+        <ProtectedRoute path="/optionals/version-optionals/new" component={VersionOptionalForm} />
+        <ProtectedRoute path="/optionals/version-optionals/:id/edit" component={VersionOptionalForm} />
+        
+        {/* Rotas de veículos */}
+        <ProtectedRoute path="/vehicles" component={VehicleList} />
+        <ProtectedRoute path="/vehicles/new" component={VehicleForm} />
+        <ProtectedRoute path="/vehicles/:id/edit" component={VehicleFormFixed} />
+        
+        {/* Rotas de vendas diretas */}
+        <ProtectedRoute path="/direct-sales" component={DirectSaleList} />
+        <ProtectedRoute path="/direct-sales/new" component={DirectSaleForm} />
+        <ProtectedRoute path="/direct-sales/edit/:id" component={DirectSaleForm} />
+        
+        {/* Rotas de usuário */}
+        <ProtectedRoute path="/user/profile" component={UserProfile} />
+        
+        {/* Rotas de configurações */}
+        <ProtectedRoute path="/settings" component={Settings} />
+        <ProtectedRoute path="/settings/company" component={CompanySettingsPage} />
+        
+        {/* Rotas administrativas */}
+        <ProtectedRoute path="/admin/users" component={UserManagement} />
+        <ProtectedRoute path="/admin/permissions" component={AccessPermissions} />
+        <ProtectedRoute path="/admin/permission-settings" component={PermissionSettings} />
+        
+        {/* Fallback para usuários logados - vai para dashboard */}
+        <Route component={Dashboard} />
+      </Switch>
+    </AdminLayout>
   );
 }
 
