@@ -156,11 +156,12 @@ export default function Sidebar() {
           } else {
             // Para administradores e cadastradores, usar o sistema normal de permissões
             const filtered = menuStructure.filter(item => {
-              const permission = hasPermission(item.path, user?.role?.name);
-              console.log(`Permission check for ${item.path} (${item.label}): ${permission}`);
-              return permission;
+              // Garantir que administradores sempre vejam todos os menus administrativos
+              if (user?.role?.name === "Administrador") {
+                return true;
+              }
+              return hasPermission(item.path, user?.role?.name);
             });
-            console.log('Filtered menu items:', filtered.map(item => item.label));
             setFilteredMenuItems(filtered);
           }
           
