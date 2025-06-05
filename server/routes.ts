@@ -1553,5 +1553,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin user management endpoints
+  app.get(`${apiPrefix}/admin/users`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const users = await getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Erro ao buscar usuários:", error);
+      res.status(500).json({ message: "Erro ao buscar usuários" });
+    }
+  });
+
+  app.get(`${apiPrefix}/admin/roles`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const roles = await getAllRoles();
+      res.json(roles);
+    } catch (error) {
+      console.error("Erro ao buscar papéis:", error);
+      res.status(500).json({ message: "Erro ao buscar papéis" });
+    }
+  });
+
+  app.put(`${apiPrefix}/admin/users/:id/role`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { roleId } = req.body;
+
+      if (!roleId) {
+        return res.status(400).json({ message: "roleId é obrigatório" });
+      }
+
+      const updatedUser = await updateUserRole(userId, roleId);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Erro ao atualizar papel do usuário:", error);
+      res.status(500).json({ message: "Erro ao atualizar papel do usuário" });
+    }
+  });
+
+  app.put(`${apiPrefix}/admin/users/:id/status`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { isActive } = req.body;
+
+      if (typeof isActive !== 'boolean') {
+        return res.status(400).json({ message: "isActive deve ser um valor booleano" });
+      }
+
+      const updatedUser = await updateUserStatus(userId, isActive);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Erro ao atualizar status do usuário:", error);
+      res.status(500).json({ message: "Erro ao atualizar status do usuário" });
+    }
+  });
+
   return httpServer;
 }
