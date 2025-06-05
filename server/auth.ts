@@ -10,6 +10,7 @@ import { eq, and } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db/index";
 import { loginLimiter, logSecurityEvent } from "./security";
+import { createUserSession, deactivateSession, updateSessionActivity } from "./storage";
 
 const PostgresSessionStore = connectPg(session);
 

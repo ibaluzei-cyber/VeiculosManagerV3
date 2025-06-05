@@ -1,5 +1,5 @@
 import { db } from "@db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, lt, gt, ne } from "drizzle-orm";
 import { 
   brands, 
   models, 
@@ -13,6 +13,7 @@ import {
   versionOptionals,
   directSales,
   customPermissions,
+  userSessions,
   BrandInsert,
   ModelInsert,
   VersionInsert,
@@ -24,7 +25,8 @@ import {
   OptionalInsert,
   VersionOptionalInsert,
   DirectSaleInsert,
-  CustomPermissionsInsert
+  CustomPermissionsInsert,
+  UserSessionInsert
 } from "@shared/schema";
 
 // Brands
@@ -774,4 +776,80 @@ export async function deleteCustomPermissions(roleName: string) {
   }
   
   return null;
+}
+
+// Session Management Functions
+export async function createUserSession(data: {
+  userId: number;
+  sessionId: string;
+  deviceInfo: string;
+  ipAddress: string;
+  userAgent: string;
+  expiresAt: Date;
+}) {
+  return await db.insert(userSessions)
+    .values(data)
+    .returning();
+}
+
+export async function getUserSessions(userId: number) {
+  return await db.query.userSessions.findMany({
+    where: and(
+      eq(userSessions.userId, userId),
+      eq(userSessions.isActive, true)
+    ),
+    orderBy: desc(userSessions.lastActivity)
+  });
+}
+
+export async function updateSessionActivity(sessionId: string) {
+  return await db.update(userSessions)
+    .set({ lastActivity: new Date() })
+    .where(eq(userSessions.sessionId, sessionId))
+    .returning();
+}
+
+export async function getSessionById(sessionId: string) {
+  return await db.query.userSessions.findFirst({
+    where: eq(userSessions.sessionId, sessionId)
+  });
+}
+
+export async function deactivateSession(sessionId: string) {
+  return await db.update(userSessions)
+    .set({ isActive: false })
+    .where(eq(userSessions.sessionId, sessionId))
+    .returning();
+}
+
+export async function deactivateAllUserSessions(userId: number, exceptSessionId?: string) {
+  const whereCondition = exceptSessionId 
+    ? and(
+        eq(userSessions.userId, userId),
+        ne(userSessions.sessionId, exceptSessionId)
+      )
+    : eq(userSessions.userId, userId);
+    
+  return await db.update(userSessions)
+    .set({ isActive: false })
+    .where(whereCondition)
+    .returning();
+}
+
+export async function cleanupExpiredSessions() {
+  return await db.update(userSessions)
+    .set({ isActive: false })
+    .where(lt(userSessions.expiresAt, new Date()))
+    .returning();
+}
+
+export async function getActiveSessionsCount(userId: number) {
+  const sessions = await db.query.userSessions.findMany({
+    where: and(
+      eq(userSessions.userId, userId),
+      eq(userSessions.isActive, true),
+      gt(userSessions.expiresAt, new Date())
+    )
+  });
+  return sessions.length;
 }

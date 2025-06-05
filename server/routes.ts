@@ -1388,5 +1388,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Session Management APIs
+  
+  // Get user's active sessions
+  app.get(`${apiPrefix}/sessions`, isAuthenticated, async (req, res) => {
+    try {
+      // @ts-ignore - req.user exists due to middleware
+      const userId = req.user.id;
+      const sessions = await storage.getUserSessions(userId);
+      
+      // Remove sensitive information and add current session indicator
+      const currentSessionId = req.sessionID;
+      const sanitizedSessions = sessions.map(session => ({
+        id: session.id,
+        deviceInfo: session.deviceInfo,
+        ipAddress: session.ipAddress,
+        lastActivity: session.lastActivity,
+        createdAt: session.createdAt,
+        isCurrent: session.sessionId === currentSessionId
+      }));
+      
+      res.json(sanitizedSessions);
+    } catch (error) {
+      console.error("Erro ao buscar sessões:", error);
+      res.status(500).json({ message: "Erro ao buscar sessões ativas" });
+    }
+  });
+
+  // Terminate a specific session
+  app.delete(`${apiPrefix}/sessions/:sessionId`, isAuthenticated, async (req, res) => {
+    try {
+      // @ts-ignore - req.user exists due to middleware
+      const userId = req.user.id;
+      const { sessionId } = req.params;
+      const currentSessionId = req.sessionID;
+      
+      // Prevent terminating current session through this endpoint
+      if (sessionId === currentSessionId) {
+        return res.status(400).json({ 
+          message: "Use logout para encerrar a sessão atual" 
+        });
+      }
+      
+      // Verify session belongs to current user
+      const session = await storage.getSessionById(sessionId);
+      if (!session || session.userId !== userId) {
+        return res.status(404).json({ message: "Sessão não encontrada" });
+      }
+      
+      await storage.deactivateSession(sessionId);
+      
+      logSecurityEvent("SESSION_TERMINATED", {
+        terminatedSessionId: sessionId,
+        terminatedByUserId: userId,
+        terminatedByIp: req.ip
+      }, req);
+      
+      res.json({ message: "Sessão encerrada com sucesso" });
+    } catch (error) {
+      console.error("Erro ao encerrar sessão:", error);
+      res.status(500).json({ message: "Erro ao encerrar sessão" });
+    }
+  });
+
+  // Terminate all other sessions (except current)
+  app.post(`${apiPrefix}/sessions/terminate-others`, isAuthenticated, async (req, res) => {
+    try {
+      // @ts-ignore - req.user exists due to middleware
+      const userId = req.user.id;
+      const currentSessionId = req.sessionID;
+      
+      const terminatedSessions = await storage.deactivateAllUserSessions(userId, currentSessionId);
+      
+      logSecurityEvent("ALL_OTHER_SESSIONS_TERMINATED", {
+        terminatedByUserId: userId,
+        terminatedByIp: req.ip,
+        terminatedCount: terminatedSessions.length
+      }, req);
+      
+      res.json({ 
+        message: `${terminatedSessions.length} sessões foram encerradas`,
+        terminatedCount: terminatedSessions.length
+      });
+    } catch (error) {
+      console.error("Erro ao encerrar outras sessões:", error);
+      res.status(500).json({ message: "Erro ao encerrar outras sessões" });
+    }
+  });
+
   return httpServer;
 }
