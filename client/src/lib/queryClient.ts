@@ -7,9 +7,7 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       queryFn: async ({ queryKey }) => {
         if (typeof queryKey[0] === 'string') {
-          console.log(`[Default QueryFn] Carregando: ${queryKey[0]}`);
           const response = await fetch(queryKey[0] as string);
-          console.log(`[Default QueryFn] Status: ${response.status}`);
           
           if (!response.ok) {
             throw new Error(`Erro ao buscar dados: ${response.statusText}`);
@@ -42,17 +40,10 @@ export async function apiRequest(
 
   if (data) {
     options.body = JSON.stringify(data);
-    console.log(`[API ${method}] ${url}`, data);
-  } else {
-    console.log(`[API ${method}] ${url}`);
   }
 
   try {
     const response = await fetch(url, options);
-    
-    // Logar resultado básico
-    console.log(`[API Response] ${url} - Status: ${response.status}`);
-    
     return response;
   } catch (error) {
     console.error(`[API Error] ${url}:`, error);
@@ -88,8 +79,6 @@ export function getQueryFn({
         url = `${baseUrl}?${queryString}`;
       }
     }
-    
-    console.log(`Fazendo requisição para: ${url}`);
     
     const response = await apiRequest("GET", url);
 
