@@ -291,6 +291,34 @@ export type UserInsert = z.infer<typeof userInsertSchema>;
 export const userSelectSchema = createSelectSchema(users);
 export type User = z.infer<typeof userSelectSchema>;
 
+// Tabela para sessões de usuário e gerenciamento multi-dispositivo
+export const userSessions = pgTable("user_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  sessionId: text("session_id").notNull().unique(),
+  deviceInfo: text("device_info").notNull(),
+  ipAddress: text("ip_address").notNull(),
+  userAgent: text("user_agent").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  lastActivity: timestamp("last_activity").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull()
+});
+
+export const userSessionsRelations = relations(userSessions, ({ one }) => ({
+  user: one(users, { fields: [userSessions.userId], references: [users.id] }),
+}));
+
+export const userSessionInsertSchema = createInsertSchema(userSessions, {
+  sessionId: (schema) => schema.min(1, "Session ID é obrigatório"),
+  deviceInfo: (schema) => schema.min(1, "Informações do dispositivo são obrigatórias"),
+  ipAddress: (schema) => schema.min(1, "Endereço IP é obrigatório"),
+  userAgent: (schema) => schema.min(1, "User Agent é obrigatório")
+});
+export type UserSessionInsert = z.infer<typeof userSessionInsertSchema>;
+export const userSessionSelectSchema = createSelectSchema(userSessions);
+export type UserSession = z.infer<typeof userSessionSelectSchema>;
+
 // Tabela para permissões personalizadas por papel
 export const customPermissions = pgTable("custom_permissions", {
   id: serial("id").primaryKey(),
