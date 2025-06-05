@@ -1,0 +1,39 @@
+VehicleList.tsx:34 
+            
+            
+           GET https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/api/vehicles/export 400 (Bad Request)
+handleExportCSV @ VehicleList.tsx:34
+callCallback2 @ chunk-WERSD76P.js?v=77ed2556:3674
+invokeGuardedCallbackDev @ chunk-WERSD76P.js?v=77ed2556:3699
+invokeGuardedCallback @ chunk-WERSD76P.js?v=77ed2556:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-WERSD76P.js?v=77ed2556:3736
+executeDispatch @ chunk-WERSD76P.js?v=77ed2556:7014
+processDispatchQueueItemsInOrder @ chunk-WERSD76P.js?v=77ed2556:7034
+processDispatchQueue @ chunk-WERSD76P.js?v=77ed2556:7043
+dispatchEventsForPlugins @ chunk-WERSD76P.js?v=77ed2556:7051
+(anonymous) @ chunk-WERSD76P.js?v=77ed2556:7174
+batchedUpdates$1 @ chunk-WERSD76P.js?v=77ed2556:18913
+batchedUpdates @ chunk-WERSD76P.js?v=77ed2556:3579
+dispatchEventForPluginEventSystem @ chunk-WERSD76P.js?v=77ed2556:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-WERSD76P.js?v=77ed2556:5478
+dispatchEvent @ chunk-WERSD76P.js?v=77ed2556:5472
+dispatchDiscreteEvent @ chunk-WERSD76P.js?v=77ed2556:5449
+VehicleList.tsx:55 Erro ao exportar veículos: Error: Falha ao exportar veículos
+    at handleExportCSV (VehicleList.tsx:42:15)
+handleExportCSV @ VehicleList.tsx:55
+await in handleExportCSV
+callCallback2 @ chunk-WERSD76P.js?v=77ed2556:3674
+invokeGuardedCallbackDev @ chunk-WERSD76P.js?v=77ed2556:3699
+invokeGuardedCallback @ chunk-WERSD76P.js?v=77ed2556:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-WERSD76P.js?v=77ed2556:3736
+executeDispatch @ chunk-WERSD76P.js?v=77ed2556:7014
+processDispatchQueueItemsInOrder @ chunk-WERSD76P.js?v=77ed2556:7034
+processDispatchQueue @ chunk-WERSD76P.js?v=77ed2556:7043
+dispatchEventsForPlugins @ chunk-WERSD76P.js?v=77ed2556:7051
+(anonymous) @ chunk-WERSD76P.js?v=77ed2556:7174
+batchedUpdates$1 @ chunk-WERSD76P.js?v=77ed2556:18913
+batchedUpdates @ chunk-WERSD76P.js?v=77ed2556:3579
+dispatchEventForPluginEventSystem @ chunk-WERSD76P.js?v=77ed2556:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-WERSD76P.js?v=77ed2556:5478
+dispatchEvent @ chunk-WERSD76P.js?v=77ed2556:5472
+dispatchDiscreteEvent @ chunk-WERSD76P.js?v=77ed2556:5449

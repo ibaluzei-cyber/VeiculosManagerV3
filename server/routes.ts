@@ -555,6 +555,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Vehicle export endpoint - deve vir antes do endpoint :id
+  app.get(`${apiPrefix}/vehicles/export`, isAuthenticated, async (req, res) => {
+    try {
+      // Query SQL direta para evitar problemas com ORM
+      const query = `
+        SELECT 
+          v.id,
+          v.year,
+          v.public_price,
+          v.pcd_ipi_icms,
+          v.pcd_ipi,
+          v.taxi_ipi_icms,
+          v.taxi_ipi,
+          ver.name as version_name,
+          m.name as model_name,
+          b.name as brand_name,
+          v.version_id
+        FROM vehicles v
+        LEFT JOIN versions ver ON v.version_id = ver.id
+        LEFT JOIN models m ON ver.model_id = m.id
+        LEFT JOIN brands b ON m.brand_id = b.id
+        ORDER BY b.name, m.name, ver.name
+      `;
+
+      const result = await db.execute(query);
+      const vehicles = result.rows;
+
+      // Processar dados e buscar cores
+      const vehiclesWithDetails = [];
+      
+      for (const vehicle of vehicles) {
+        let colors = '';
+        
+        // Buscar cores da versão se tiver version_id válido
+        if (vehicle.version_id && Number.isInteger(Number(vehicle.version_id))) {
+          try {
+            const colorQuery = `
+              SELECT c.name
+              FROM version_colors vc
+              JOIN colors c ON vc.color_id = c.id
+              WHERE vc.version_id = $1
+            `;
+            const colorResult = await db.execute(colorQuery, [Number(vehicle.version_id)]);
+            colors = colorResult.rows.map(row => row.name).filter(Boolean).join(', ');
+          } catch (colorError) {
+            colors = '';
+          }
+        }
+        
+        vehiclesWithDetails.push({
+          marca: vehicle.brand_name || '',
+          modelo: vehicle.model_name || '',
+          versao: vehicle.version_name || '',
+          ano: vehicle.year?.toString() || '',
+          precoPublico: vehicle.public_price || '',
+          defFisicoIpiIcms: vehicle.pcd_ipi_icms || '',
+          defFisicoIpi: vehicle.pcd_ipi || '',
+          taxiIpiIcms: vehicle.taxi_ipi_icms || '',
+          taxiIpi: vehicle.taxi_ipi || '',
+          cores: colors
+        });
+      }
+
+      // Gerar CSV
+      const csvHeader = 'Marca,Modelo,Versão,Ano,Preço Público,Def. Físico (IPI/ICMS),Def. Físico (IPI),Taxi (IPI/ICMS),Taxi (IPI),Cores\n';
+      const csvRows = vehiclesWithDetails.map(vehicle => {
+        const escapeCSV = (value) => String(value || '').replace(/"/g, '""');
+        
+        return [
+          `"${escapeCSV(vehicle.marca)}"`,
+          `"${escapeCSV(vehicle.modelo)}"`,
+          `"${escapeCSV(vehicle.versao)}"`,
+          `"${escapeCSV(vehicle.ano)}"`,
+          `"${escapeCSV(vehicle.precoPublico)}"`,
+          `"${escapeCSV(vehicle.defFisicoIpiIcms)}"`,
+          `"${escapeCSV(vehicle.defFisicoIpi)}"`,
+          `"${escapeCSV(vehicle.taxiIpiIcms)}"`,
+          `"${escapeCSV(vehicle.taxiIpi)}"`,
+          `"${escapeCSV(vehicle.cores)}"`
+        ].join(',');
+      }).join('\n');
+
+      const csv = csvHeader + csvRows;
+
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="veiculos.csv"');
+      res.send('\uFEFF' + csv);
+    } catch (error) {
+      console.error("Erro ao exportar veículos:", error);
+      res.status(500).json({ message: "Erro ao exportar veículos" });
+    }
+  });
+
   app.get(`${apiPrefix}/vehicles/:id`, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -1559,98 +1652,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Vehicle export endpoint
-  app.get(`${apiPrefix}/vehicles/export`, isAuthenticated, async (req, res) => {
-    try {
-      // Query SQL direta para evitar problemas com ORM
-      const query = `
-        SELECT 
-          v.id,
-          v.year,
-          v.public_price,
-          v.pcd_ipi_icms,
-          v.pcd_ipi,
-          v.taxi_ipi_icms,
-          v.taxi_ipi,
-          ver.name as version_name,
-          m.name as model_name,
-          b.name as brand_name,
-          v.version_id
-        FROM vehicles v
-        LEFT JOIN versions ver ON v.version_id = ver.id
-        LEFT JOIN models m ON ver.model_id = m.id
-        LEFT JOIN brands b ON m.brand_id = b.id
-        ORDER BY b.name, m.name, ver.name
-      `;
 
-      const result = await db.execute(query);
-      const vehicles = result.rows;
-
-      // Processar dados e buscar cores
-      const vehiclesWithDetails = [];
-      
-      for (const vehicle of vehicles) {
-        let colors = '';
-        
-        // Buscar cores da versão se tiver version_id válido
-        if (vehicle.version_id && Number.isInteger(Number(vehicle.version_id))) {
-          try {
-            const colorQuery = `
-              SELECT c.name
-              FROM version_colors vc
-              JOIN colors c ON vc.color_id = c.id
-              WHERE vc.version_id = $1
-            `;
-            const colorResult = await db.execute(colorQuery, [Number(vehicle.version_id)]);
-            colors = colorResult.rows.map(row => row.name).filter(Boolean).join(', ');
-          } catch (colorError) {
-            colors = '';
-          }
-        }
-        
-        vehiclesWithDetails.push({
-          marca: vehicle.brand_name || '',
-          modelo: vehicle.model_name || '',
-          versao: vehicle.version_name || '',
-          ano: vehicle.year?.toString() || '',
-          precoPublico: vehicle.public_price || '',
-          defFisicoIpiIcms: vehicle.pcd_ipi_icms || '',
-          defFisicoIpi: vehicle.pcd_ipi || '',
-          taxiIpiIcms: vehicle.taxi_ipi_icms || '',
-          taxiIpi: vehicle.taxi_ipi || '',
-          cores: colors
-        });
-      }
-
-      // Gerar CSV
-      const csvHeader = 'Marca,Modelo,Versão,Ano,Preço Público,Def. Físico (IPI/ICMS),Def. Físico (IPI),Taxi (IPI/ICMS),Taxi (IPI),Cores\n';
-      const csvRows = vehiclesWithDetails.map(vehicle => {
-        const escapeCSV = (value) => String(value || '').replace(/"/g, '""');
-        
-        return [
-          `"${escapeCSV(vehicle.marca)}"`,
-          `"${escapeCSV(vehicle.modelo)}"`,
-          `"${escapeCSV(vehicle.versao)}"`,
-          `"${escapeCSV(vehicle.ano)}"`,
-          `"${escapeCSV(vehicle.precoPublico)}"`,
-          `"${escapeCSV(vehicle.defFisicoIpiIcms)}"`,
-          `"${escapeCSV(vehicle.defFisicoIpi)}"`,
-          `"${escapeCSV(vehicle.taxiIpiIcms)}"`,
-          `"${escapeCSV(vehicle.taxiIpi)}"`,
-          `"${escapeCSV(vehicle.cores)}"`
-        ].join(',');
-      }).join('\n');
-
-      const csv = csvHeader + csvRows;
-
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', 'attachment; filename="veiculos.csv"');
-      res.send('\uFEFF' + csv);
-    } catch (error) {
-      console.error("Erro ao exportar veículos:", error);
-      res.status(500).json({ message: "Erro ao exportar veículos" });
-    }
-  });
 
   // Admin user management endpoints
   app.get(`${apiPrefix}/admin/users`, isAuthenticated, isAdmin, async (req, res) => {
