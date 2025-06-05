@@ -274,12 +274,17 @@ export function setupAuth(app: Express) {
   });
 
   // Rotas de autenticação
-  app.post("/api/login", (req, res, next) => {
+  app.post("/api/login", loginLimiter, (req, res, next) => {
     passport.authenticate("local", async (err: Error, user: Express.User, info: { message: string }) => {
       if (err) {
+        logSecurityEvent("LOGIN_ERROR", { error: err.message }, req);
         return next(err);
       }
       if (!user) {
+        logSecurityEvent("LOGIN_FAILED", { 
+          email: req.body.email,
+          reason: info.message 
+        }, req);
         return res.status(401).json({ message: info.message });
       }
       
@@ -289,8 +294,18 @@ export function setupAuth(app: Express) {
         
         req.logIn(user, (err) => {
           if (err) {
+            logSecurityEvent("LOGIN_SESSION_ERROR", { 
+              userId: user.id,
+              error: err.message 
+            }, req);
             return next(err);
           }
+          
+          logSecurityEvent("LOGIN_SUCCESS", { 
+            userId: user.id,
+            email: user.email,
+            role: user.role?.name 
+          }, req);
           
           return res.status(200).json({
             id: user.id,
@@ -300,12 +315,24 @@ export function setupAuth(app: Express) {
             lastLogin: lastLogin
           });
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erro ao atualizar último acesso:", error);
+        logSecurityEvent("LOGIN_UPDATE_ERROR", { 
+          userId: user.id,
+          error: error instanceof Error ? error.message : String(error)
+        }, req);
+        
         req.logIn(user, (err) => {
           if (err) {
             return next(err);
           }
+          
+          logSecurityEvent("LOGIN_SUCCESS", { 
+            userId: user.id,
+            email: user.email,
+            role: user.role?.name 
+          }, req);
+          
           return res.status(200).json({
             id: user.id,
             name: user.name,
@@ -352,25 +379,37 @@ export function setupAuth(app: Express) {
   app.post("/api/logout", (req, res) => {
     // Registramos o usuário atual para log
     const userId = req.user?.id;
-    console.log(`Tentativa de logout para usuário ID: ${userId || 'desconhecido'}`);
+    const userEmail = req.user?.email;
+    
+    logSecurityEvent("LOGOUT_ATTEMPT", { 
+      userId: userId || 'unknown',
+      email: userEmail || 'unknown'
+    }, req);
     
     // Primeiro, fazemos logout pela função do Passport
     req.logout((err) => {
       if (err) {
-        console.error(`Erro no processo de logout:`, err);
+        logSecurityEvent("LOGOUT_ERROR", { 
+          userId: userId || 'unknown',
+          error: err.message 
+        }, req);
         return res.status(500).json({ message: "Erro ao fazer logout" });
       }
-      
-      console.log(`Logout do Passport realizado para usuário ID: ${userId || 'desconhecido'}`);
       
       // Depois, explicitamente destruímos a sessão para garantir que todos os dados sejam removidos
       req.session.destroy((sessionErr) => {
         if (sessionErr) {
-          console.error(`Erro ao destruir sessão:`, sessionErr);
+          logSecurityEvent("LOGOUT_SESSION_ERROR", { 
+            userId: userId || 'unknown',
+            error: sessionErr.message 
+          }, req);
           return res.status(500).json({ message: "Erro ao destruir sessão" });
         }
         
-        console.log(`Sessão destruída com sucesso para usuário ID: ${userId || 'desconhecido'}`);
+        logSecurityEvent("LOGOUT_SUCCESS", { 
+          userId: userId || 'unknown',
+          email: userEmail || 'unknown'
+        }, req);
         
         // Limpa o cookie da sessão no cliente com o nome personalizado
         res.clearCookie('auto-plus.sid', { 

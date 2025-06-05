@@ -20,6 +20,7 @@ import {
   updateUserStatus,
   getAllRoles
 } from "./auth";
+import { sensitiveApiLimiter, logSecurityEvent } from "./security";
 import { 
   brandInsertSchema, 
   modelInsertSchema, 
