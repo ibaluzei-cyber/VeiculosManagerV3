@@ -126,6 +126,7 @@ const menuStructure = [
   { path: "/configurator2", label: "Monte seu Veículo", icon: <Car className="h-5 w-5 mr-2" /> },
   { path: "/settings", label: "Configurações", icon: <Settings className="h-5 w-5 mr-2" /> },
   { path: "/admin/users", label: "Usuários", icon: <Users className="h-5 w-5 mr-2" /> },
+  { path: "/admin/active-users", label: "Usuários Logados", icon: <Users className="h-5 w-5 mr-2" /> },
   { path: "/admin/permissions", label: "Visualizar Permissões", icon: <Shield className="h-5 w-5 mr-2" /> },
   { path: "/admin/permission-settings", label: "Configurar Permissões", icon: <ShieldCheck className="h-5 w-5 mr-2" /> },
 ];

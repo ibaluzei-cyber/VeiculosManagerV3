@@ -66,6 +66,7 @@ import CompanySettingsPage from "@/pages/settings/CompanySettingsPage";
 import UserManagement from "@/pages/admin/UserManagement";
 import AccessPermissions from "@/pages/admin/AccessPermissions";
 import PermissionSettings from "@/pages/admin/PermissionSettings";
+import ActiveUsers from "@/pages/admin/ActiveUsers";
 
 // Layout componente
 import AdminLayout from "@/components/layout/AdminLayout";
@@ -162,6 +163,7 @@ function AppContent() {
         
         {/* Rotas administrativas */}
         <ProtectedRoute path="/admin/users" component={UserManagement} />
+        <ProtectedRoute path="/admin/active-users" component={ActiveUsers} />
         <ProtectedRoute path="/admin/permissions" component={AccessPermissions} />
         <ProtectedRoute path="/admin/permission-settings" component={PermissionSettings} />
         

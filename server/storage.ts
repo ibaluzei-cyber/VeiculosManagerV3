@@ -733,7 +733,8 @@ export const storage = {
   deactivateSession,
   deactivateAllUserSessions,
   cleanupExpiredSessions,
-  getActiveSessionsCount
+  getActiveSessionsCount,
+  getAllActiveUsersWithSessions
 };
 
 // Funções para gerenciar permissões personalizadas
@@ -862,4 +863,50 @@ export async function getActiveSessionsCount(userId: number) {
     )
   });
   return sessions.length;
+}
+
+export async function getAllActiveUsersWithSessions() {
+  // Get all active sessions with user information
+  const activeSessions = await db.query.userSessions.findMany({
+    where: and(
+      eq(userSessions.isActive, true),
+      gt(userSessions.expiresAt, new Date())
+    ),
+    with: {
+      user: {
+        with: {
+          role: true
+        }
+      }
+    },
+    orderBy: desc(userSessions.lastActivity)
+  });
+
+  // Group sessions by user
+  const userSessionsMap = new Map();
+  
+  activeSessions.forEach(session => {
+    const userId = session.userId;
+    
+    if (!userSessionsMap.has(userId)) {
+      userSessionsMap.set(userId, {
+        userId: session.user.id,
+        userName: session.user.name,
+        userEmail: session.user.email,
+        userRole: session.user.role?.name || 'Unknown',
+        sessions: []
+      });
+    }
+    
+    userSessionsMap.get(userId).sessions.push({
+      id: session.id,
+      deviceInfo: session.deviceInfo,
+      ipAddress: session.ipAddress,
+      lastActivity: session.lastActivity,
+      createdAt: session.createdAt,
+      sessionId: session.sessionId
+    });
+  });
+
+  return Array.from(userSessionsMap.values());
 }

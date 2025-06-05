@@ -1476,5 +1476,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoints for managing all user sessions
+  
+  // Get all active users and their sessions (Admin only)
+  app.get(`${apiPrefix}/admin/active-users`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const activeUsers = await storage.getAllActiveUsersWithSessions();
+      res.json(activeUsers);
+    } catch (error) {
+      console.error("Erro ao buscar usuários ativos:", error);
+      res.status(500).json({ message: "Erro ao buscar usuários ativos" });
+    }
+  });
+
+  // Terminate specific session by admin
+  app.post(`${apiPrefix}/admin/sessions/:sessionId/terminate`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      // @ts-ignore - req.user exists due to middleware
+      const adminUserId = req.user.id;
+      const { sessionId } = req.params;
+      const { userId } = req.body;
+      
+      // Verify session exists and belongs to specified user
+      const session = await storage.getSessionById(sessionId);
+      if (!session) {
+        return res.status(404).json({ message: "Sessão não encontrada" });
+      }
+      
+      if (session.userId !== userId) {
+        return res.status(400).json({ message: "Sessão não pertence ao usuário especificado" });
+      }
+      
+      await storage.deactivateSession(sessionId);
+      
+      logSecurityEvent("ADMIN_SESSION_TERMINATED", {
+        terminatedSessionId: sessionId,
+        targetUserId: userId,
+        adminUserId: adminUserId,
+        adminIp: req.ip
+      }, req);
+      
+      res.json({ message: "Sessão encerrada com sucesso" });
+    } catch (error) {
+      console.error("Erro ao encerrar sessão:", error);
+      res.status(500).json({ message: "Erro ao encerrar sessão" });
+    }
+  });
+
+  // Terminate all sessions for a specific user (Admin only)
+  app.post(`${apiPrefix}/admin/users/:userId/terminate-all-sessions`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      // @ts-ignore - req.user exists due to middleware
+      const adminUserId = req.user.id;
+      const targetUserId = parseInt(req.params.userId);
+      
+      if (isNaN(targetUserId)) {
+        return res.status(400).json({ message: "ID de usuário inválido" });
+      }
+      
+      const terminatedSessions = await storage.deactivateAllUserSessions(targetUserId);
+      
+      logSecurityEvent("ADMIN_ALL_USER_SESSIONS_TERMINATED", {
+        targetUserId: targetUserId,
+        adminUserId: adminUserId,
+        adminIp: req.ip,
+        terminatedCount: terminatedSessions.length
+      }, req);
+      
+      res.json({ 
+        message: `Todas as sessões do usuário foram encerradas`,
+        terminatedCount: terminatedSessions.length
+      });
+    } catch (error) {
+      console.error("Erro ao encerrar sessões do usuário:", error);
+      res.status(500).json({ message: "Erro ao encerrar sessões do usuário" });
+    }
+  });
+
   return httpServer;
 }
