@@ -1096,12 +1096,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put(`${apiPrefix}/users/:id`, isAuthenticated, async (req, res) => {
+  app.put(`${apiPrefix}/users/:id`, isAuthenticated, sensitiveApiLimiter, async (req, res) => {
     const userId = parseInt(req.params.id);
     
     // Verificar se o usuário está tentando editar seu próprio perfil
     // @ts-ignore - Sabemos que req.user existe devido ao middleware isAuthenticated
     if (req.user.id !== userId && req.user.role.name !== "Administrador") {
+      logSecurityEvent("USER_UPDATE_UNAUTHORIZED", {
+        attemptedUserId: userId,
+        currentUserId: req.user.id,
+        currentUserRole: req.user.role.name
+      }, req);
       return res.status(403).json({ message: "Você não tem permissão para editar este perfil" });
     }
     
@@ -1121,21 +1126,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       
+      logSecurityEvent("USER_UPDATE_SUCCESS", {
+        updatedUserId: userId,
+        updatedBy: req.user!.id,
+        changes: { name, email }
+      }, req);
+      
       res.json(updatedUser);
     } catch (error) {
+      logSecurityEvent("USER_UPDATE_ERROR", {
+        userId,
+        error: error instanceof Error ? error.message : String(error)
+      }, req);
       console.error("Erro ao atualizar usuário:", error);
       res.status(500).json({ message: "Erro ao atualizar usuário" });
     }
   });
 
-  app.put(`${apiPrefix}/users/:id/password`, isAuthenticated, async (req, res) => {
+  app.put(`${apiPrefix}/users/:id/password`, isAuthenticated, sensitiveApiLimiter, async (req, res) => {
     const userId = parseInt(req.params.id);
-    console.log(`Solicitação de alteração de senha recebida para o usuário ${userId}`);
+    const currentUser = req.user as any;
+    
+    logSecurityEvent("PASSWORD_CHANGE_ATTEMPT", {
+      targetUserId: userId,
+      requestedBy: currentUser.id
+    }, req);
     
     // Verificar se o usuário está tentando alterar sua própria senha
-    // @ts-ignore - Sabemos que req.user existe devido ao middleware isAuthenticated
-    if (req.user.id !== userId) {
-      console.log(`Tentativa de alteração de senha rejeitada: usuário ${req.user.id} tentou alterar senha do usuário ${userId}`);
+    if (currentUser.id !== userId) {
+      logSecurityEvent("PASSWORD_CHANGE_UNAUTHORIZED", {
+        targetUserId: userId,
+        attemptedBy: currentUser.id
+      }, req);
       return res.status(403).json({ message: "Você não tem permissão para alterar esta senha" });
     }
     
@@ -1157,33 +1179,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verificar senha atual
-      console.log(`Verificando se a senha atual está correta para o usuário ${userId}`);
       const isPasswordCorrect = await comparePasswords(currentPassword, user.password);
       if (!isPasswordCorrect) {
-        console.log(`Senha atual incorreta para o usuário ${userId}`);
+        logSecurityEvent("PASSWORD_CHANGE_WRONG_CURRENT", {
+          userId,
+          attemptedBy: currentUser.id
+        }, req);
         return res.status(400).json({ message: "Senha atual incorreta" });
       }
       
       // Hash da nova senha e atualização
-      console.log(`Gerando hash para a nova senha do usuário ${userId}`);
       const hashedPassword = await hashPassword(newPassword);
-      
-      console.log(`Atualizando senha do usuário ${userId} no banco de dados`);
       const updateResult = await updateUserPassword(userId, hashedPassword);
-      console.log(`Resultado da atualização de senha: ${JSON.stringify(updateResult)}`);
       
-      console.log(`Senha atualizada com sucesso para o usuário ${userId}`);
+      logSecurityEvent("PASSWORD_CHANGE_SUCCESS", {
+        userId,
+        changedBy: currentUser.id
+      }, req);
+      
       res.json({ message: "Senha atualizada com sucesso" });
     } catch (error) {
+      logSecurityEvent("PASSWORD_CHANGE_ERROR", {
+        userId,
+        error: error instanceof Error ? error.message : String(error)
+      }, req);
       console.error("Erro ao atualizar senha:", error);
       res.status(500).json({ message: "Erro ao atualizar senha" });
     }
   });
 
   // Rota para atualizar o papel de um usuário (apenas para administradores)
-  app.put(`${apiPrefix}/users/:id/role`, isAuthenticated, isAdmin, async (req, res) => {
+  app.put(`${apiPrefix}/users/:id/role`, isAuthenticated, isAdmin, sensitiveApiLimiter, async (req, res) => {
     const userId = parseInt(req.params.id);
     const { roleId } = req.body;
+    const currentUser = req.user as any;
+    
+    logSecurityEvent("USER_ROLE_CHANGE_ATTEMPT", {
+      targetUserId: userId,
+      newRoleId: roleId,
+      changedBy: currentUser.id
+    }, req);
     
     // Validação básica
     if (!roleId || typeof roleId !== 'number') {
@@ -1197,17 +1232,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       
+      logSecurityEvent("USER_ROLE_CHANGE_SUCCESS", {
+        targetUserId: userId,
+        newRoleId: roleId,
+        changedBy: currentUser.id
+      }, req);
+      
       res.json(updatedUser);
     } catch (error) {
+      logSecurityEvent("USER_ROLE_CHANGE_ERROR", {
+        targetUserId: userId,
+        error: error instanceof Error ? error.message : String(error)
+      }, req);
       console.error("Erro ao atualizar papel do usuário:", error);
       res.status(500).json({ message: "Erro ao atualizar papel do usuário" });
     }
   });
 
   // Rota para atualizar o status de um usuário (apenas para administradores)
-  app.put(`${apiPrefix}/users/:id/status`, isAuthenticated, isAdmin, async (req, res) => {
+  app.put(`${apiPrefix}/users/:id/status`, isAuthenticated, isAdmin, sensitiveApiLimiter, async (req, res) => {
     const userId = parseInt(req.params.id);
     const { isActive } = req.body;
+    const currentUser = req.user as any;
+    
+    logSecurityEvent("USER_STATUS_CHANGE_ATTEMPT", {
+      targetUserId: userId,
+      newStatus: isActive,
+      changedBy: currentUser.id
+    }, req);
     
     // Validação básica
     if (typeof isActive !== 'boolean') {
@@ -1221,8 +1273,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       
+      logSecurityEvent("USER_STATUS_CHANGE_SUCCESS", {
+        targetUserId: userId,
+        newStatus: isActive,
+        changedBy: currentUser.id
+      }, req);
+      
       res.json(updatedUser);
     } catch (error) {
+      logSecurityEvent("USER_STATUS_CHANGE_ERROR", {
+        targetUserId: userId,
+        error: error instanceof Error ? error.message : String(error)
+      }, req);
       console.error("Erro ao atualizar status do usuário:", error);
       res.status(500).json({ message: "Erro ao atualizar status do usuário" });
     }
