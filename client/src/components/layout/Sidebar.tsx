@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Car, Building, FileText, Palette, Settings, ListPlus, Menu, X, LogOut, User, Users, Shield, ShieldCheck, Loader2 } from "lucide-react";
+import { Home, Car, Building, FileText, Palette, Settings, ListPlus, Menu, X, LogOut, User, Users, Shield, ShieldCheck, Loader2, Activity } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -126,7 +126,7 @@ const menuStructure = [
   { path: "/configurator2", label: "Monte seu Veículo", icon: <Car className="h-5 w-5 mr-2" /> },
   { path: "/settings", label: "Configurações", icon: <Settings className="h-5 w-5 mr-2" /> },
   { path: "/admin/users", label: "Usuários", icon: <Users className="h-5 w-5 mr-2" /> },
-  { path: "/admin/active-users", label: "Usuários Logados", icon: <Users className="h-5 w-5 mr-2" /> },
+  { path: "/admin/active-users", label: "Usuários Logados", icon: <Activity className="h-5 w-5 mr-2" /> },
   { path: "/admin/permissions", label: "Visualizar Permissões", icon: <Shield className="h-5 w-5 mr-2" /> },
   { path: "/admin/permission-settings", label: "Configurar Permissões", icon: <ShieldCheck className="h-5 w-5 mr-2" /> },
 ];
@@ -155,9 +155,12 @@ export default function Sidebar() {
             setFilteredMenuItems(userOnlyMenus);
           } else {
             // Para administradores e cadastradores, usar o sistema normal de permissões
-            const filtered = menuStructure.filter(item => 
-              hasPermission(item.path, user?.role?.name)
-            );
+            const filtered = menuStructure.filter(item => {
+              const permission = hasPermission(item.path, user?.role?.name);
+              console.log(`Permission check for ${item.path} (${item.label}): ${permission}`);
+              return permission;
+            });
+            console.log('Filtered menu items:', filtered.map(item => item.label));
             setFilteredMenuItems(filtered);
           }
           
