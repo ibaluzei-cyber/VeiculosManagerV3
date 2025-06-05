@@ -174,27 +174,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Mutação para logout
   const logoutMutation = useMutation<void, Error, void>({
     mutationFn: async () => {
-      console.log("Iniciando processo de logout no cliente");
       const response = await apiRequest("POST", "/api/logout");
-      console.log(`Resposta do servidor para logout: ${response.status}`);
       
       if (!response.ok) {
         throw new Error("Falha ao realizar logout");
       }
       
-      // Retorna os dados da resposta para log
-      try {
-        const data = await response.json();
-        console.log("Dados da resposta de logout:", data);
-      } catch (e) {
-        console.log("Sem dados JSON na resposta de logout");
-      }
-      
       return;
     },
     onSuccess: () => {
-      console.log("Logout bem-sucedido, redirecionando imediatamente");
-      
       // Redirecionamento IMEDIATO para /auth sem delays ou toasts
       window.location.href = "/auth";
     },

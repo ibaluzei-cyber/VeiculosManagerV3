@@ -44,13 +44,13 @@ app.use((req, res, next) => {
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
+      // Log seguro - apenas método, path, status e duração
+      // NUNCA logar dados de resposta que podem conter informações sensíveis
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
+      
+      // Para rotas sensíveis, adicionar indicador sem expor dados
+      if (path.includes('/login') || path.includes('/users') || path.includes('/password')) {
+        logLine += ' [SENSITIVE]';
       }
 
       log(logLine);

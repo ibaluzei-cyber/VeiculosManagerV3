@@ -1162,19 +1162,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     try {
-      console.log(`Verificando dados para alteração de senha do usuário ${userId}`);
       const { currentPassword, newPassword } = req.body;
       
       if (!currentPassword || !newPassword) {
-        console.log(`Dados de senha incompletos: currentPassword=${!!currentPassword}, newPassword=${!!newPassword}`);
         return res.status(400).json({ message: "Senha atual e nova senha são obrigatórias" });
       }
       
       // Obter usuário com senha
-      console.log(`Buscando informações do usuário ${userId} no banco de dados`);
       const user = await getUserWithPassword(userId);
       if (!user) {
-        console.log(`Usuário ${userId} não encontrado no banco de dados`);
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       
