@@ -155,14 +155,15 @@ export default function Sidebar() {
             setFilteredMenuItems(userOnlyMenus);
           } else {
             // Para administradores e cadastradores, usar o sistema normal de permissões
-            const filtered = menuStructure.filter(item => {
-              // Garantir que administradores sempre vejam todos os menus administrativos
-              if (user?.role?.name === "Administrador") {
-                return true;
-              }
-              return hasPermission(item.path, user?.role?.name);
-            });
-            setFilteredMenuItems(filtered);
+            // Administrador sempre vê todos os menus - garantir acesso total
+            if (user?.role?.name === "Administrador") {
+              setFilteredMenuItems(menuStructure);
+            } else {
+              const filtered = menuStructure.filter(item => 
+                hasPermission(item.path, user?.role?.name)
+              );
+              setFilteredMenuItems(filtered);
+            }
           }
           
           setPermissionsLoaded(true);
@@ -207,7 +208,7 @@ export default function Sidebar() {
                 (item.path !== '/' && location === item.path);
           
           return (
-            <li key={index}>
+            <li key={`menu-${index}-${item.path}`}>
               <Link 
                 href={item.path} 
                 className={`sidebar-item ${isActive ? 'active' : ''}`}
