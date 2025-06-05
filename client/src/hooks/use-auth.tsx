@@ -60,7 +60,20 @@ async function processApiResponse<T>(response: Response): Promise<T> {
     try {
       const errorData = JSON.parse(text);
       message = errorData.message || message;
-    } catch {
+      
+      // Para casos especiais como múltiplos logins, preservar dados adicionais
+      if (response.status === 409 && errorData.alreadyAuthenticated) {
+        const error = new Error(message) as any;
+        error.status = response.status;
+        error.alreadyAuthenticated = errorData.alreadyAuthenticated;
+        error.currentUser = errorData.currentUser;
+        throw error;
+      }
+    } catch (e) {
+      // Se for um erro customizado já processado, re-throw
+      if (e instanceof Error && (e as any).status === 409) {
+        throw e;
+      }
       // Se não for um JSON válido, usar o texto como mensagem
       if (text) message = text;
     }
@@ -140,12 +153,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Se estiver em uma página específica (como configurator), mantém onde está
       }
     },
-    onError: (error) => {
-      toast({
-        title: "Falha no login",
-        description: error.message,
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      // Verificar se é o caso específico de usuário já autenticado
+      if (error.status === 409 && error.alreadyAuthenticated) {
+        toast({
+          title: "Sessão ativa detectada",
+          description: `Você já está conectado como ${error.currentUser?.name || 'usuário'}. Para fazer login com outra conta, primeiro faça logout.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Falha no login",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     },
   });
 

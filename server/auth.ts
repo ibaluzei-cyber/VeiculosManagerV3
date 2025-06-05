@@ -275,6 +275,24 @@ export function setupAuth(app: Express) {
 
   // Rotas de autenticação
   app.post("/api/login", loginLimiter, (req, res, next) => {
+    // Verificar se o usuário já está autenticado
+    if (req.isAuthenticated()) {
+      logSecurityEvent("LOGIN_ATTEMPT_WHILE_AUTHENTICATED", {
+        currentUserId: req.user!.id,
+        currentUserEmail: req.user!.email,
+        attemptedEmail: req.body.email
+      }, req);
+      
+      return res.status(409).json({ 
+        message: "Você já está conectado ao sistema. Para fazer login com outra conta, primeiro faça logout da conta atual.",
+        alreadyAuthenticated: true,
+        currentUser: {
+          name: req.user!.name,
+          email: req.user!.email
+        }
+      });
+    }
+
     passport.authenticate("local", async (err: Error, user: Express.User, info: { message: string }) => {
       if (err) {
         logSecurityEvent("LOGIN_ERROR", { error: err.message }, req);
