@@ -10,9 +10,74 @@ import { eq, and } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db/index";
 import { loginLimiter, logSecurityEvent } from "./security";
-import { createUserSession, deactivateSession, updateSessionActivity } from "./storage";
+import * as storage from "./storage";
 
 const PostgresSessionStore = connectPg(session);
+
+// Device information detection function
+function getDeviceInfo(userAgent: string): string {
+  if (!userAgent) return "Unknown Device";
+  
+  // Detect mobile devices
+  if (/Mobile|Android|iPhone|iPad/.test(userAgent)) {
+    if (/iPhone/.test(userAgent)) return "iPhone";
+    if (/iPad/.test(userAgent)) return "iPad";
+    if (/Android/.test(userAgent)) return "Android Device";
+    return "Mobile Device";
+  }
+  
+  // Detect desktop browsers
+  if (/Chrome/.test(userAgent)) return "Chrome Browser";
+  if (/Firefox/.test(userAgent)) return "Firefox Browser";
+  if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) return "Safari Browser";
+  if (/Edge/.test(userAgent)) return "Edge Browser";
+  
+  return "Desktop Browser";
+}
+
+// Session creation and tracking functions
+async function createSessionForUser(req: Request, user: UserWithRole) {
+  try {
+    const sessionId = req.sessionID;
+    const userAgent = req.get('User-Agent') || 'Unknown';
+    const ipAddress = req.ip || req.connection.remoteAddress || 'Unknown';
+    const deviceInfo = getDeviceInfo(userAgent);
+    
+    // Session expires in 24 hours
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    
+    await storage.createUserSession({
+      userId: user.id,
+      sessionId,
+      deviceInfo,
+      ipAddress,
+      userAgent,
+      expiresAt
+    });
+    
+    logSecurityEvent("SESSION_CREATED", {
+      userId: user.id,
+      sessionId,
+      deviceInfo,
+      ipAddress
+    }, req);
+  } catch (error) {
+    console.error("Error creating user session:", error);
+    // Don't fail login if session creation fails
+  }
+}
+
+async function updateUserSessionActivity(req: Request) {
+  try {
+    const sessionId = req.sessionID;
+    if (sessionId) {
+      await storage.updateSessionActivity(sessionId);
+    }
+  } catch (error) {
+    console.error("Error updating session activity:", error);
+    // Don't fail request if session update fails
+  }
+}
 
 // Definir a interface de usuário para autenticação
 type UserWithRole = {
@@ -311,7 +376,7 @@ export function setupAuth(app: Express) {
       try {
         const lastLogin = await updateUserLastLogin(user.id);
         
-        req.logIn(user, (err) => {
+        req.logIn(user, async (err) => {
           if (err) {
             logSecurityEvent("LOGIN_SESSION_ERROR", { 
               userId: user.id,
@@ -319,6 +384,9 @@ export function setupAuth(app: Express) {
             }, req);
             return next(err);
           }
+          
+          // Create session tracking for multi-device management
+          await createSessionForUser(req, user);
           
           logSecurityEvent("LOGIN_SUCCESS", { 
             userId: user.id,
@@ -395,15 +463,30 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/logout", (req, res) => {
+  app.post("/api/logout", async (req, res) => {
     // Registramos o usuário atual para log
     const userId = req.user?.id;
     const userEmail = req.user?.email;
+    const sessionId = req.sessionID;
     
     logSecurityEvent("LOGOUT_ATTEMPT", { 
       userId: userId || 'unknown',
       email: userEmail || 'unknown'
     }, req);
+    
+    // Deactivate the session in our tracking system
+    if (sessionId) {
+      try {
+        await storage.deactivateSession(sessionId);
+        logSecurityEvent("SESSION_DEACTIVATED", {
+          sessionId,
+          userId: userId || 'unknown'
+        }, req);
+      } catch (error) {
+        console.error("Error deactivating session:", error);
+        // Continue with logout even if session deactivation fails
+      }
+    }
     
     // Primeiro, fazemos logout pela função do Passport
     req.logout((err) => {
@@ -431,10 +514,10 @@ export function setupAuth(app: Express) {
         }, req);
         
         // Limpa o cookie da sessão no cliente com o nome personalizado
-        res.clearCookie('auto-plus.sid', { 
+        res.clearCookie('autoplus_session', { 
           path: '/',
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
+          httpOnly: false,
+          secure: false,
           sameSite: 'lax'
         });
         

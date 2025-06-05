@@ -723,7 +723,17 @@ export const storage = {
   getCustomPermissions,
   getCustomPermissionsByRole,
   createOrUpdateCustomPermissions,
-  deleteCustomPermissions
+  deleteCustomPermissions,
+  
+  // Funções para gerenciar sessões de usuário
+  createUserSession,
+  getUserSessions,
+  updateSessionActivity,
+  getSessionById,
+  deactivateSession,
+  deactivateAllUserSessions,
+  cleanupExpiredSessions,
+  getActiveSessionsCount
 };
 
 // Funções para gerenciar permissões personalizadas

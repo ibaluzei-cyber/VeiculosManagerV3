@@ -56,6 +56,7 @@ import DirectSaleForm from "@/pages/direct-sales/DirectSaleForm";
 
 // Páginas de usuário
 import UserProfile from "@/pages/user/profile";
+import SessionsPage from "@/pages/user/sessions";
 
 // Páginas de configurações
 import Settings from "@/pages/settings/Settings";
