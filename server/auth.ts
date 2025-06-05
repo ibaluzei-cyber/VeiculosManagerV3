@@ -496,16 +496,15 @@ export function setupAuth(app: Express) {
       email: userEmail || 'unknown'
     }, req);
     
-    // Deactivate the session in our tracking system
-    if (sessionId) {
+    // Deactivate ALL sessions for this user to ensure clean logout
+    if (userId) {
       try {
-        await storage.deactivateSession(sessionId);
-        logSecurityEvent("SESSION_DEACTIVATED", {
-          sessionId,
-          userId: userId || 'unknown'
+        await storage.deactivateAllUserSessions(userId);
+        logSecurityEvent("ALL_SESSIONS_DEACTIVATED", {
+          userId: userId
         }, req);
       } catch (error) {
-        console.error("Error deactivating session:", error);
+        console.error("Error deactivating all user sessions:", error);
         // Continue with logout even if session deactivation fails
       }
     }

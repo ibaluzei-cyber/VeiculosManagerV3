@@ -205,11 +205,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     },
     onSuccess: () => {
-      // Redirecionamento IMEDIATO para /auth sem delays ou toasts
+      // Limpar todos os dados do query client
+      queryClient.clear();
+      
+      // Limpar dados de usuário do cache específico
+      queryClient.setQueryData(["/api/user"], null);
+      
+      // Limpar localStorage e sessionStorage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Redirecionamento IMEDIATO para /auth
       window.location.href = "/auth";
     },
     onError: (error) => {
       console.error("Erro durante o logout:", error);
+      
+      // Mesmo com erro, limpar dados locais e redirecionar
+      queryClient.clear();
+      queryClient.setQueryData(["/api/user"], null);
+      localStorage.clear();
+      sessionStorage.clear();
+      
       toast({
         title: "Falha no logout",
         description: error.message,
