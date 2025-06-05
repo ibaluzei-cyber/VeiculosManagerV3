@@ -1553,6 +1553,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Vehicle export endpoint
+  app.get(`${apiPrefix}/vehicles/export`, isAuthenticated, async (req, res) => {
+    try {
+      const vehicles = await storage.getVehicles();
+      
+      // Buscar dados relacionados para cada veículo
+      const vehiclesWithDetails = await Promise.all(vehicles.map(async (vehicle) => {
+        // Buscar cores associadas à versão
+        const versionColors = await storage.getVersionColors({ versionId: vehicle.versionId });
+        const colors = versionColors.map(vc => vc.color?.name || '').filter(Boolean).join(', ');
+        
+        return {
+          marca: vehicle.version?.model?.brand?.name || '',
+          modelo: vehicle.version?.model?.name || '',
+          versao: vehicle.version?.name || '',
+          ano: vehicle.year || '',
+          precoPublico: vehicle.publicPrice || '',
+          defFisicoIpiIcms: vehicle.pcdIpiIcms || '',
+          defFisicoIpi: vehicle.pcdIpi || '',
+          taxiIpiIcms: vehicle.taxiIpiIcms || '',
+          taxiIpi: vehicle.taxiIpi || '',
+          cores: colors
+        };
+      }));
+
+      // Gerar CSV
+      const csvHeader = 'Marca,Modelo,Versão,Ano,Preço Público,Def. Físico (IPI/ICMS),Def. Físico (IPI),Taxi (IPI/ICMS),Taxi (IPI),Cores\n';
+      const csvRows = vehiclesWithDetails.map(vehicle => {
+        return [
+          vehicle.marca,
+          vehicle.modelo,
+          vehicle.versao,
+          vehicle.ano,
+          vehicle.precoPublico,
+          vehicle.defFisicoIpiIcms,
+          vehicle.defFisicoIpi,
+          vehicle.taxiIpiIcms,
+          vehicle.taxiIpi,
+          `"${vehicle.cores}"`
+        ].join(',');
+      }).join('\n');
+
+      const csv = csvHeader + csvRows;
+
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="veiculos.csv"');
+      res.send('\uFEFF' + csv); // BOM para UTF-8
+    } catch (error) {
+      console.error("Erro ao exportar veículos:", error);
+      res.status(500).json({ message: "Erro ao exportar veículos" });
+    }
+  });
+
   // Admin user management endpoints
   app.get(`${apiPrefix}/admin/users`, isAuthenticated, isAdmin, async (req, res) => {
     try {

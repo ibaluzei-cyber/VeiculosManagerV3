@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Pencil, Trash } from "lucide-react";
+import { Plus, Search, Pencil, Trash, Download } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Vehicle, VehicleStatus } from "@/lib/types";
@@ -26,6 +26,33 @@ export default function VehicleList() {
       queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
     } catch (error) {
       console.error("Failed to delete vehicle:", error);
+    }
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      const response = await fetch('/api/vehicles/export', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao exportar veículos');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `veiculos_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Erro ao exportar veículos:", error);
     }
   };
   
@@ -74,12 +101,18 @@ export default function VehicleList() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Veículos</h1>
-        <Link href="/vehicles/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Veículo
+        <div className="flex gap-2">
+          <Button onClick={handleExportCSV} variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Exportar Veículos
           </Button>
-        </Link>
+          <Link href="/vehicles/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Veículo
+            </Button>
+          </Link>
+        </div>
       </div>
       
       <Card>
