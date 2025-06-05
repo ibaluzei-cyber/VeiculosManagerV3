@@ -8,8 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Search, Pencil, Trash, Download, CheckCircle, FileText } from "lucide-react";
+import { Plus, Search, Pencil, Trash, Download, CheckCircle, FileText, Loader2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Vehicle, VehicleStatus } from "@/lib/types";
 import { formatCurrency } from "@/lib/formatters";
@@ -26,6 +27,8 @@ export default function VehicleList() {
     isComplete: false
   });
   
+  const { toast } = useToast();
+  
   const { data: vehicles = [], isLoading } = useQuery<Vehicle[]>({
     queryKey: ["/api/vehicles"],
   });
@@ -41,6 +44,12 @@ export default function VehicleList() {
 
   const handleExportCSV = async () => {
     try {
+      // Toast de início
+      toast({
+        title: "Iniciando exportação",
+        description: `Preparando exportação de ${vehicles.length} veículos...`,
+      });
+
       // Inicializar progresso
       setDownloadProgress({
         isDownloading: true,
@@ -105,6 +114,13 @@ export default function VehicleList() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
+      // Toast de sucesso
+      toast({
+        title: "Exportação concluída com sucesso!",
+        description: `Arquivo CSV com ${vehicles.length} veículos foi baixado para sua pasta de downloads.`,
+        variant: "default",
+      });
+
       // Auto-fechar o dialog após sucesso
       setTimeout(() => {
         setDownloadProgress(prev => ({ ...prev, isDownloading: false }));
@@ -112,6 +128,14 @@ export default function VehicleList() {
 
     } catch (error) {
       console.error("Erro ao exportar veículos:", error);
+      
+      // Toast de erro
+      toast({
+        title: "Erro na exportação",
+        description: "Não foi possível exportar os veículos. Tente novamente.",
+        variant: "destructive",
+      });
+
       setDownloadProgress(prev => ({
         ...prev,
         stage: 'Erro ao exportar veículos',
@@ -172,9 +196,22 @@ export default function VehicleList() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Veículos</h1>
         <div className="flex gap-2">
-          <Button onClick={handleExportCSV} variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Exportar Veículos
+          <Button 
+            onClick={handleExportCSV} 
+            variant="outline"
+            disabled={downloadProgress.isDownloading}
+            className={`transition-all duration-200 ${
+              downloadProgress.isDownloading 
+                ? 'bg-blue-50 border-blue-200 text-blue-700' 
+                : 'hover:bg-gray-50'
+            }`}
+          >
+            {downloadProgress.isDownloading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            {downloadProgress.isDownloading ? 'Exportando...' : 'Exportar Veículos'}
           </Button>
           <Link href="/vehicles/new">
             <Button>
