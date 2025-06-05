@@ -28,10 +28,15 @@ export default function SessionsPage() {
   // Terminate specific session
   const terminateSessionMutation = useMutation({
     mutationFn: async (sessionId: string) => {
-      const response = await apiRequest(`/api/sessions/${sessionId}`, {
+      const response = await fetch(`/api/sessions/${sessionId}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
-      return response;
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Erro ao encerrar sessão');
+      }
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -52,10 +57,15 @@ export default function SessionsPage() {
   // Terminate all other sessions
   const terminateAllOthersMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('/api/sessions/terminate-others', {
+      const response = await fetch('/api/sessions/terminate-others', {
         method: 'POST',
+        credentials: 'include',
       });
-      return response;
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Erro ao encerrar outras sessões');
+      }
+      return response.json();
     },
     onSuccess: (data: any) => {
       toast({

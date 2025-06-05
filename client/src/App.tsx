@@ -154,6 +154,7 @@ function AppContent() {
         
         {/* Rotas de usuário */}
         <ProtectedRoute path="/user/profile" component={UserProfile} />
+        <ProtectedRoute path="/user/sessions" component={SessionsPage} />
         
         {/* Rotas de configurações */}
         <ProtectedRoute path="/settings" component={Settings} />
