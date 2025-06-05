@@ -558,6 +558,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/vehicles/:id`, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Validar se o ID é um número válido
+      if (isNaN(id) || id <= 0) {
+        return res.status(400).json({ message: "Invalid vehicle ID" });
+      }
+      
       const vehicle = await storage.getVehicleById(id);
       
       if (!vehicle) {
