@@ -372,8 +372,24 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ message: info.message });
       }
       
-      // Atualizar o último acesso do usuário
+      // Verificar e encerrar sessões existentes do usuário (prevenção de múltiplos logins)
       try {
+        // Importar função para encerrar sessões
+        const { deactivateAllUserSessions } = await import("./storage");
+        
+        // Encerrar todas as sessões existentes do usuário antes de criar uma nova
+        const terminatedSessions = await deactivateAllUserSessions(user.id);
+        
+        if (terminatedSessions.length > 0) {
+          logSecurityEvent("PREVIOUS_SESSIONS_TERMINATED_ON_LOGIN", {
+            userId: user.id,
+            email: user.email,
+            terminatedSessionsCount: terminatedSessions.length,
+            newLoginIp: req.ip
+          }, req);
+        }
+        
+        // Atualizar o último acesso do usuário
         const lastLogin = await updateUserLastLogin(user.id);
         
         req.logIn(user, async (err) => {
@@ -391,7 +407,8 @@ export function setupAuth(app: Express) {
           logSecurityEvent("LOGIN_SUCCESS", { 
             userId: user.id,
             email: user.email,
-            role: user.role?.name 
+            role: user.role?.name,
+            multipleSessionsPrevented: terminatedSessions.length > 0
           }, req);
           
           return res.status(200).json({
