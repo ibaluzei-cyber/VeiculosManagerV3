@@ -112,9 +112,6 @@ export function hasPermission(path: string, userRole?: string): boolean {
   // Converter para o tipo UserRole (com verificação de tipo)
   const role = userRole as UserRole;
   
-  // Administrador sempre tem permissão total
-  if (role === "Administrador") return true;
-  
   // Se as permissões personalizadas ainda não foram carregadas, usar permissões padrão
   if (!permissionsLoaded) {
     // Encontrar a definição de permissão para o caminho
@@ -211,7 +208,13 @@ export function hasPermission(path: string, userRole?: string): boolean {
   }
   
   // Se não encontrou nenhuma regra, negar o acesso
-  if (!matchingPermission) return false;
+  if (!matchingPermission) {
+    // Administrador sempre tem acesso total mesmo se não há regra específica
+    return role === "Administrador";
+  }
+  
+  // Administrador sempre tem permissão total
+  if (role === "Administrador") return true;
   
   // Se encontrou a regra, verificar se existem permissões personalizadas
   const rolePermissions = customPermissionsCache[role];
