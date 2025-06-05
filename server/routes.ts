@@ -618,23 +618,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Gerar CSV
+      // Gerar CSV com formatação otimizada para planilhas
       const csvHeader = 'Marca,Modelo,Versão,Ano,Preço Público,Def. Físico (IPI/ICMS),Def. Físico (IPI),Taxi (IPI/ICMS),Taxi (IPI),Cores\n';
+      
       const csvRows = vehiclesWithDetails.map(vehicle => {
-        const escapeCSV = (value) => String(value || '').replace(/"/g, '""');
+        // Função para escapar e formatar valores CSV corretamente
+        const formatCSVField = (value) => {
+          if (value === null || value === undefined) return '';
+          
+          const stringValue = String(value).trim();
+          
+          // Se contém vírgula, quebra de linha ou aspas, envolver em aspas
+          if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+            // Escapar aspas duplicando-as
+            const escapedValue = stringValue.replace(/"/g, '""');
+            return `"${escapedValue}"`;
+          }
+          
+          return stringValue;
+        };
         
-        return [
-          `"${escapeCSV(vehicle.marca)}"`,
-          `"${escapeCSV(vehicle.modelo)}"`,
-          `"${escapeCSV(vehicle.versao)}"`,
-          `"${escapeCSV(vehicle.ano)}"`,
-          `"${escapeCSV(vehicle.precoPublico)}"`,
-          `"${escapeCSV(vehicle.defFisicoIpiIcms)}"`,
-          `"${escapeCSV(vehicle.defFisicoIpi)}"`,
-          `"${escapeCSV(vehicle.taxiIpiIcms)}"`,
-          `"${escapeCSV(vehicle.taxiIpi)}"`,
-          `"${escapeCSV(vehicle.cores)}"`
-        ].join(',');
+        // Criar array com todos os campos formatados
+        const fields = [
+          formatCSVField(vehicle.marca),
+          formatCSVField(vehicle.modelo), 
+          formatCSVField(vehicle.versao),
+          formatCSVField(vehicle.ano),
+          formatCSVField(vehicle.precoPublico),
+          formatCSVField(vehicle.defFisicoIpiIcms),
+          formatCSVField(vehicle.defFisicoIpi),
+          formatCSVField(vehicle.taxiIpiIcms),
+          formatCSVField(vehicle.taxiIpi),
+          formatCSVField(vehicle.cores)
+        ];
+        
+        // Unir com vírgulas para formar a linha CSV
+        return fields.join(',');
       }).join('\n');
 
       const csv = csvHeader + csvRows;
