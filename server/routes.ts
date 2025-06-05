@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { db } from "@db";
 import { eq } from "drizzle-orm";
+import { versionColors } from "@shared/schema";
 import { 
   setupAuth, 
   isAuthenticated, 
@@ -589,17 +590,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let colors = '';
         
         // Buscar cores da versão se tiver version_id válido
-        if (vehicle.version_id && Number.isInteger(Number(vehicle.version_id))) {
+        if (vehicle.version_id) {
           try {
-            const colorQuery = `
-              SELECT c.name
-              FROM version_colors vc
-              JOIN colors c ON vc.color_id = c.id
-              WHERE vc.version_id = $1
-            `;
-            const colorResult = await db.execute(colorQuery, [Number(vehicle.version_id)]);
-            colors = colorResult.rows.map(row => row.name).filter(Boolean).join(', ');
+            const versionId = parseInt(vehicle.version_id);
+            if (!isNaN(versionId)) {
+              const colorResult = await storage.getVersionColors({ versionId });
+              
+              colors = colorResult
+                .map((vc: any) => vc.color?.name)
+                .filter(Boolean)
+                .join(', ');
+            }
           } catch (colorError) {
+            console.log(`Erro ao buscar cores para versão ${vehicle.version_id}:`, colorError);
             colors = '';
           }
         }
