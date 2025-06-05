@@ -1556,36 +1556,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Vehicle export endpoint
   app.get(`${apiPrefix}/vehicles/export`, isAuthenticated, async (req, res) => {
     try {
-      // Usar função existente do storage e processar os dados diretamente
-      const vehicles = await storage.getVehicles();
-      
-      // Processar dados dos veículos de forma segura
+      // Query SQL direta para evitar problemas com ORM
+      const query = `
+        SELECT 
+          v.id,
+          v.year,
+          v.public_price,
+          v.pcd_ipi_icms,
+          v.pcd_ipi,
+          v.taxi_ipi_icms,
+          v.taxi_ipi,
+          ver.name as version_name,
+          m.name as model_name,
+          b.name as brand_name,
+          v.version_id
+        FROM vehicles v
+        LEFT JOIN versions ver ON v.version_id = ver.id
+        LEFT JOIN models m ON ver.model_id = m.id
+        LEFT JOIN brands b ON m.brand_id = b.id
+        ORDER BY b.name, m.name, ver.name
+      `;
+
+      const result = await db.execute(query);
+      const vehicles = result.rows;
+
+      // Processar dados e buscar cores
       const vehiclesWithDetails = [];
       
       for (const vehicle of vehicles) {
         let colors = '';
         
-        // Tentar buscar cores da versão
-        try {
-          if (vehicle.versionId) {
-            const versionColors = await storage.getVersionColors({ versionId: vehicle.versionId });
-            colors = versionColors.map(vc => vc.color?.name || '').filter(Boolean).join(', ');
+        // Buscar cores da versão se tiver version_id válido
+        if (vehicle.version_id && Number.isInteger(Number(vehicle.version_id))) {
+          try {
+            const colorQuery = `
+              SELECT c.name
+              FROM version_colors vc
+              JOIN colors c ON vc.color_id = c.id
+              WHERE vc.version_id = $1
+            `;
+            const colorResult = await db.execute(colorQuery, [Number(vehicle.version_id)]);
+            colors = colorResult.rows.map(row => row.name).filter(Boolean).join(', ');
+          } catch (colorError) {
+            colors = '';
           }
-        } catch (error) {
-          // Se houver erro, continuar sem as cores
-          colors = '';
         }
         
         vehiclesWithDetails.push({
-          marca: vehicle.version?.model?.brand?.name || '',
-          modelo: vehicle.version?.model?.name || '',
-          versao: vehicle.version?.name || '',
-          ano: vehicle.year || '',
-          precoPublico: vehicle.publicPrice || '',
-          defFisicoIpiIcms: vehicle.pcdIpiIcms || '',
-          defFisicoIpi: vehicle.pcdIpi || '',
-          taxiIpiIcms: vehicle.taxiIpiIcms || '',
-          taxiIpi: vehicle.taxiIpi || '',
+          marca: vehicle.brand_name || '',
+          modelo: vehicle.model_name || '',
+          versao: vehicle.version_name || '',
+          ano: vehicle.year?.toString() || '',
+          precoPublico: vehicle.public_price || '',
+          defFisicoIpiIcms: vehicle.pcd_ipi_icms || '',
+          defFisicoIpi: vehicle.pcd_ipi || '',
+          taxiIpiIcms: vehicle.taxi_ipi_icms || '',
+          taxiIpi: vehicle.taxi_ipi || '',
           cores: colors
         });
       }
@@ -1593,8 +1619,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Gerar CSV
       const csvHeader = 'Marca,Modelo,Versão,Ano,Preço Público,Def. Físico (IPI/ICMS),Def. Físico (IPI),Taxi (IPI/ICMS),Taxi (IPI),Cores\n';
       const csvRows = vehiclesWithDetails.map(vehicle => {
-        // Escapar aspas duplas nos valores
-        const escapeCSV = (value: string) => value.replace(/"/g, '""');
+        const escapeCSV = (value) => String(value || '').replace(/"/g, '""');
         
         return [
           `"${escapeCSV(vehicle.marca)}"`,
@@ -1614,7 +1639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader('Content-Disposition', 'attachment; filename="veiculos.csv"');
-      res.send('\uFEFF' + csv); // BOM para UTF-8
+      res.send('\uFEFF' + csv);
     } catch (error) {
       console.error("Erro ao exportar veículos:", error);
       res.status(500).json({ message: "Erro ao exportar veículos" });
