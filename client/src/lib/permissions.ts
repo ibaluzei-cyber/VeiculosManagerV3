@@ -44,7 +44,6 @@ export const ROUTE_PERMISSIONS: RoutePermission[] = [
   // Rotas exclusivas para Administradores
   { path: "/settings", allowedRoles: ["Administrador"], description: "Configurações do sistema" },
   { path: "/admin/users", allowedRoles: ["Administrador"], description: "Gerenciamento de usuários" },
-  { path: "/admin/active-users", allowedRoles: ["Administrador"], description: "Monitoramento de usuários logados" },
   // Página de permissões - visível a todos os usuários para consulta
   { path: "/admin/permissions", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Visualizar permissões do sistema" },
   // Página para configuração de permissões - acesso apenas para administradores
