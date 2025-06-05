@@ -9,6 +9,7 @@ import { users, User as UserType, userRoles } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db/index";
+import { loginLimiter, logSecurityEvent } from "./security";
 
 const PostgresSessionStore = connectPg(session);
 
