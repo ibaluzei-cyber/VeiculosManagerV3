@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Table, 
   TableBody, 
@@ -59,61 +59,77 @@ const UserManagement = () => {
 
   // Buscar todos os usuários
   const { data: users = [], isLoading: isLoadingUsers } = useQuery<User[]>({
-    queryKey: ["/api/admin/users"],
-    queryFn: getQueryFn(),
+    queryKey: ['/api/admin/users'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) {
+        throw new Error('Falha ao carregar usuários');
+      }
+      return response.json();
+    },
+    enabled: !!currentUser && currentUser.role?.name === "Administrador"
   });
 
-  // Buscar todos os papéis
+  // Buscar todos os papéis de usuário
   const { data: roles = [], isLoading: isLoadingRoles } = useQuery<Role[]>({
-    queryKey: ["/api/admin/roles"],
-    queryFn: getQueryFn(),
+    queryKey: ['/api/admin/roles'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/roles');
+      if (!response.ok) {
+        throw new Error('Falha ao carregar papéis');
+      }
+      return response.json();
+    },
+    enabled: !!currentUser && currentUser.role?.name === "Administrador"
   });
 
-  // Mutation para alterar papel do usuário
+  // Mutation para atualizar o papel de um usuário
   const updateRoleMutation = useMutation({
-    mutationFn: async ({ userId, roleId }: { userId: number; roleId: number }) => {
-      return apiRequest("/api/admin/users/role", {
-        method: "PATCH",
-        body: JSON.stringify({ userId, roleId }),
+    mutationFn: async (data: { userId: number, roleId: number }) => {
+      const response = await apiRequest(`/api/admin/users/${data.userId}/role`, {
+        method: 'PUT',
+        body: JSON.stringify({ roleId: data.roleId }),
       });
+      return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
       setShowRoleDialog(false);
       toast({
         title: "Sucesso",
-        description: "Papel do usuário alterado com sucesso!",
+        description: "Papel do usuário atualizado com sucesso!",
       });
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Erro",
-        description: "Erro ao alterar papel do usuário.",
+        description: "Erro ao atualizar papel do usuário.",
         variant: "destructive",
       });
     },
   });
 
-  // Mutation para alterar status do usuário
+  // Mutation para atualizar o status de um usuário
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ userId, isActive }: { userId: number; isActive: boolean }) => {
-      return apiRequest("/api/admin/users/status", {
-        method: "PATCH",
-        body: JSON.stringify({ userId, isActive }),
+    mutationFn: async (data: { userId: number, isActive: boolean }) => {
+      const response = await apiRequest(`/api/admin/users/${data.userId}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ isActive: data.isActive }),
       });
+      return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
       setShowStatusDialog(false);
       toast({
         title: "Sucesso",
-        description: "Status do usuário alterado com sucesso!",
+        description: "Status do usuário atualizado com sucesso!",
       });
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Erro",
-        description: "Erro ao alterar status do usuário.",
+        description: "Erro ao atualizar status do usuário.",
         variant: "destructive",
       });
     },
@@ -163,10 +179,7 @@ const UserManagement = () => {
     );
   }
 
-  console.log("Debug - Users data:", users);
-  console.log("Debug - Users length:", users?.length);
-  console.log("Debug - Users type:", typeof users);
-  console.log("Debug - Is array:", Array.isArray(users));
+
 
   return (
     <div className="container mx-auto py-8">
