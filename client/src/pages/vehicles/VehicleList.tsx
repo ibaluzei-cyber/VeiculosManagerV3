@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Pencil, Trash, Download } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Plus, Search, Pencil, Trash, Download, CheckCircle, FileText } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Vehicle, VehicleStatus } from "@/lib/types";
@@ -15,6 +17,14 @@ import { formatCurrency } from "@/lib/formatters";
 export default function VehicleList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [downloadProgress, setDownloadProgress] = useState({
+    isDownloading: false,
+    progress: 0,
+    stage: '',
+    recordsProcessed: 0,
+    totalRecords: 0,
+    isComplete: false
+  });
   
   const { data: vehicles = [], isLoading } = useQuery<Vehicle[]>({
     queryKey: ["/api/vehicles"],
@@ -31,6 +41,38 @@ export default function VehicleList() {
 
   const handleExportCSV = async () => {
     try {
+      // Inicializar progresso
+      setDownloadProgress({
+        isDownloading: true,
+        progress: 0,
+        stage: 'Iniciando exportação...',
+        recordsProcessed: 0,
+        totalRecords: vehicles.length,
+        isComplete: false
+      });
+
+      // Simular etapas de progresso para melhor UX
+      const stages = [
+        { stage: 'Conectando ao servidor...', progress: 10 },
+        { stage: 'Processando dados dos veículos...', progress: 30 },
+        { stage: 'Buscando informações das cores...', progress: 60 },
+        { stage: 'Gerando arquivo CSV...', progress: 80 },
+        { stage: 'Preparando download...', progress: 95 }
+      ];
+
+      let currentStage = 0;
+      const progressInterval = setInterval(() => {
+        if (currentStage < stages.length) {
+          setDownloadProgress(prev => ({
+            ...prev,
+            stage: stages[currentStage].stage,
+            progress: stages[currentStage].progress,
+            recordsProcessed: Math.floor((stages[currentStage].progress / 100) * vehicles.length)
+          }));
+          currentStage++;
+        }
+      }, 800);
+
       const response = await fetch('/api/vehicles/export', {
         method: 'GET',
         headers: {
@@ -38,9 +80,20 @@ export default function VehicleList() {
         },
       });
 
+      clearInterval(progressInterval);
+
       if (!response.ok) {
         throw new Error('Falha ao exportar veículos');
       }
+
+      // Finalizar progresso
+      setDownloadProgress(prev => ({
+        ...prev,
+        stage: 'Download concluído!',
+        progress: 100,
+        recordsProcessed: vehicles.length,
+        isComplete: true
+      }));
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -51,8 +104,25 @@ export default function VehicleList() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+
+      // Auto-fechar o dialog após sucesso
+      setTimeout(() => {
+        setDownloadProgress(prev => ({ ...prev, isDownloading: false }));
+      }, 2000);
+
     } catch (error) {
       console.error("Erro ao exportar veículos:", error);
+      setDownloadProgress(prev => ({
+        ...prev,
+        stage: 'Erro ao exportar veículos',
+        progress: 0,
+        isComplete: false
+      }));
+      
+      // Fechar dialog após erro
+      setTimeout(() => {
+        setDownloadProgress(prev => ({ ...prev, isDownloading: false }));
+      }, 3000);
     }
   };
   
@@ -247,6 +317,79 @@ export default function VehicleList() {
           )}
         </CardContent>
       </Card>
+
+      {/* Download Progress Dialog */}
+      <Dialog open={downloadProgress.isDownloading} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {downloadProgress.isComplete ? (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              ) : (
+                <FileText className="h-5 w-5 text-blue-500" />
+              )}
+              Exportando Veículos
+            </DialogTitle>
+            <DialogDescription>
+              {downloadProgress.isComplete 
+                ? "Arquivo CSV gerado com sucesso!"
+                : "Por favor aguarde enquanto processamos seus dados..."
+              }
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="font-medium">{downloadProgress.stage}</span>
+                <span className="text-muted-foreground">
+                  {downloadProgress.progress}%
+                </span>
+              </div>
+              <Progress 
+                value={downloadProgress.progress} 
+                className="w-full"
+              />
+            </div>
+            
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>
+                Registros processados: {downloadProgress.recordsProcessed} de {downloadProgress.totalRecords}
+              </span>
+              <span>
+                {downloadProgress.isComplete && "✓ Concluído"}
+              </span>
+            </div>
+            
+            {downloadProgress.isComplete && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 text-green-800">
+                  <CheckCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    Download iniciado automaticamente
+                  </span>
+                </div>
+                <p className="text-sm text-green-700 mt-1">
+                  O arquivo CSV foi baixado para sua pasta de downloads com {downloadProgress.totalRecords} veículos.
+                </p>
+              </div>
+            )}
+            
+            {downloadProgress.stage === 'Erro ao exportar veículos' && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 text-red-800">
+                  <span className="text-sm font-medium">
+                    Falha na exportação
+                  </span>
+                </div>
+                <p className="text-sm text-red-700 mt-1">
+                  Ocorreu um erro durante a exportação. Tente novamente.
+                </p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
