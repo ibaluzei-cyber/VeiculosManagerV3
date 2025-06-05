@@ -156,31 +156,10 @@ export default function Sidebar() {
           } else {
             // Para administradores e cadastradores, usar o sistema normal de permissões
             // Administrador sempre vê todos os menus - garantir acesso total
-            if (user?.role?.name === "Administrador") {
-              const adminMenus = [
-                { path: "/", label: "Dashboard", icon: <Home className="h-5 w-5 mr-2" /> },
-                { path: "/vehicles", label: "Veículos", icon: <Car className="h-5 w-5 mr-2" /> },
-                { path: "/brands", label: "Marcas", icon: <Building className="h-5 w-5 mr-2" /> },
-                { path: "/models", label: "Modelos", icon: <FileText className="h-5 w-5 mr-2" /> },
-                { path: "/versions", label: "Versões", icon: <FileText className="h-5 w-5 mr-2" /> },
-                { path: "/colors", label: "Cores/Pinturas", icon: <Palette className="h-5 w-5 mr-2" /> },
-                { path: "/paint-types", label: "Tipos de Pintura", icon: <Palette className="h-5 w-5 mr-2" /> },
-                { path: "/optionals", label: "Opcionais", icon: <ListPlus className="h-5 w-5 mr-2" /> },
-                { path: "/configurator", label: "Configurador", icon: <Car className="h-5 w-5 mr-2" /> },
-                { path: "/configurator2", label: "Monte seu Veículo", icon: <Car className="h-5 w-5 mr-2" /> },
-                { path: "/settings", label: "Configurações", icon: <Settings className="h-5 w-5 mr-2" /> },
-                { path: "/admin/users", label: "Usuários", icon: <Users className="h-5 w-5 mr-2" /> },
-                { path: "/admin/active-users", label: "Usuários Logados", icon: <Activity className="h-5 w-5 mr-2" /> },
-                { path: "/admin/permissions", label: "Visualizar Permissões", icon: <Shield className="h-5 w-5 mr-2" /> },
-                { path: "/admin/permission-settings", label: "Configurar Permissões", icon: <ShieldCheck className="h-5 w-5 mr-2" /> }
-              ];
-              setFilteredMenuItems(adminMenus);
-            } else {
-              const filtered = menuStructure.filter(item => 
-                hasPermission(item.path, user?.role?.name)
-              );
-              setFilteredMenuItems(filtered);
-            }
+            const filtered = menuStructure.filter(item => 
+              hasPermission(item.path, user?.role?.name)
+            );
+            setFilteredMenuItems(filtered);
           }
           
           setPermissionsLoaded(true);

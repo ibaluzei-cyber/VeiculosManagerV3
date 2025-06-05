@@ -72,9 +72,9 @@ const UserManagement = () => {
   // Mutation para alterar papel do usuário
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, roleId }: { userId: number; roleId: number }) => {
-      return apiRequest(`/api/admin/users/${userId}/role`, {
+      return apiRequest("/api/admin/users/role", {
         method: "PATCH",
-        body: JSON.stringify({ roleId }),
+        body: JSON.stringify({ userId, roleId }),
       });
     },
     onSuccess: () => {
@@ -97,9 +97,9 @@ const UserManagement = () => {
   // Mutation para alterar status do usuário
   const updateStatusMutation = useMutation({
     mutationFn: async ({ userId, isActive }: { userId: number; isActive: boolean }) => {
-      return apiRequest(`/api/admin/users/${userId}/status`, {
+      return apiRequest("/api/admin/users/status", {
         method: "PATCH",
-        body: JSON.stringify({ isActive }),
+        body: JSON.stringify({ userId, isActive }),
       });
     },
     onSuccess: () => {
