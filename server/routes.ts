@@ -618,24 +618,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Gerar CSV com formatação otimizada para planilhas
-      const csvHeader = 'Marca,Modelo,Versão,Ano,Preço Público,Def. Físico (IPI/ICMS),Def. Físico (IPI),Taxi (IPI/ICMS),Taxi (IPI),Cores\n';
+      // Gerar CSV com formatação específica para Excel
+      const csvHeader = '"Marca";"Modelo";"Versão";"Ano";"Preço Público";"Def. Físico (IPI/ICMS)";"Def. Físico (IPI)";"Taxi (IPI/ICMS)";"Taxi (IPI)";"Cores"\n';
       
       const csvRows = vehiclesWithDetails.map(vehicle => {
-        // Função para escapar e formatar valores CSV corretamente
+        // Função para formatar valores CSV com ponto e vírgula como separador
         const formatCSVField = (value) => {
-          if (value === null || value === undefined) return '';
+          if (value === null || value === undefined) return '""';
           
           const stringValue = String(value).trim();
           
-          // Se contém vírgula, quebra de linha ou aspas, envolver em aspas
-          if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
-            // Escapar aspas duplicando-as
-            const escapedValue = stringValue.replace(/"/g, '""');
-            return `"${escapedValue}"`;
-          }
-          
-          return stringValue;
+          // Sempre envolver em aspas e escapar aspas internas
+          const escapedValue = stringValue.replace(/"/g, '""');
+          return `"${escapedValue}"`;
         };
         
         // Criar array com todos os campos formatados
@@ -652,15 +647,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           formatCSVField(vehicle.cores)
         ];
         
-        // Unir com vírgulas para formar a linha CSV
-        return fields.join(',');
+        // Unir com ponto e vírgula para compatibilidade com Excel brasileiro
+        return fields.join(';');
       }).join('\n');
 
       const csv = csvHeader + csvRows;
 
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader('Content-Disposition', 'attachment; filename="veiculos.csv"');
-      res.send('\uFEFF' + csv);
+      res.setHeader('Cache-Control', 'no-cache');
+      
+      // Adicionar BOM UTF-8 e configurar para compatibilidade com Excel
+      const bom = '\uFEFF';
+      const csvWithBom = bom + csv;
+      
+      res.send(csvWithBom);
     } catch (error) {
       console.error("Erro ao exportar veículos:", error);
       res.status(500).json({ message: "Erro ao exportar veículos" });
