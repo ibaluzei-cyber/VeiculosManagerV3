@@ -412,8 +412,7 @@ export function setupAuth(app: Express) {
           logSecurityEvent("LOGIN_SUCCESS", { 
             userId: user.id,
             email: user.email,
-            role: user.role?.name,
-            multipleSessionsPrevented: terminatedSessions.length > 0
+            role: user.role?.name
           }, req);
           
           return res.status(200).json({
