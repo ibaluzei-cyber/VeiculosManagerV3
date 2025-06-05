@@ -58,13 +58,13 @@ const UserManagement = () => {
   const [showStatusDialog, setShowStatusDialog] = useState(false);
 
   // Buscar todos os usuários
-  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery<User[]>({
     queryKey: ["/api/admin/users"],
     queryFn: getQueryFn(),
   });
 
   // Buscar todos os papéis
-  const { data: roles = [], isLoading: isLoadingRoles } = useQuery({
+  const { data: roles = [], isLoading: isLoadingRoles } = useQuery<Role[]>({
     queryKey: ["/api/admin/roles"],
     queryFn: getQueryFn(),
   });
@@ -162,6 +162,11 @@ const UserManagement = () => {
       </div>
     );
   }
+
+  console.log("Debug - Users data:", users);
+  console.log("Debug - Users length:", users?.length);
+  console.log("Debug - Users type:", typeof users);
+  console.log("Debug - Is array:", Array.isArray(users));
 
   return (
     <div className="container mx-auto py-8">
