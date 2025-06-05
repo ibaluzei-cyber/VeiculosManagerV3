@@ -372,21 +372,26 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ message: info.message });
       }
       
-      // Verificar e encerrar sessões existentes do usuário (prevenção de múltiplos logins)
+      // Verificar se já existe uma sessão ativa (prevenção de múltiplos logins)
       try {
-        // Importar função para encerrar sessões
-        const { deactivateAllUserSessions } = await import("./storage");
+        // Importar funções para verificar e encerrar sessões
+        const { getActiveSessionsCount, deactivateAllUserSessions } = await import("./storage");
         
-        // Encerrar todas as sessões existentes do usuário antes de criar uma nova
-        const terminatedSessions = await deactivateAllUserSessions(user.id);
+        // Verificar se o usuário já tem sessões ativas
+        const activeSessionsCount = await getActiveSessionsCount(user.id);
         
-        if (terminatedSessions.length > 0) {
-          logSecurityEvent("PREVIOUS_SESSIONS_TERMINATED_ON_LOGIN", {
+        if (activeSessionsCount > 0) {
+          logSecurityEvent("MULTIPLE_LOGIN_BLOCKED", {
             userId: user.id,
             email: user.email,
-            terminatedSessionsCount: terminatedSessions.length,
-            newLoginIp: req.ip
+            activeSessionsCount: activeSessionsCount,
+            blockedLoginIp: req.ip
           }, req);
+          
+          return res.status(409).json({ 
+            message: "Este usuário já está conectado ao sistema em outro dispositivo. Apenas uma sessão por usuário é permitida.",
+            multipleLoginBlocked: true
+          });
         }
         
         // Atualizar o último acesso do usuário
