@@ -58,73 +58,65 @@ const UserManagement = () => {
   const [showStatusDialog, setShowStatusDialog] = useState(false);
 
   // Buscar todos os usuários
-  const { data: users = [], isLoading: isLoadingUsers } = useQuery<User[]>({
-    queryKey: ['/api/users'],
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+    queryKey: ["/api/admin/users"],
     queryFn: getQueryFn(),
-    enabled: !!currentUser && currentUser.role?.name === "Administrador"
   });
 
-  // Buscar todos os papéis de usuário
-  const { data: roles = [], isLoading: isLoadingRoles } = useQuery<Role[]>({
-    queryKey: ['/api/roles'],
+  // Buscar todos os papéis
+  const { data: roles = [], isLoading: isLoadingRoles } = useQuery({
+    queryKey: ["/api/admin/roles"],
     queryFn: getQueryFn(),
-    enabled: !!currentUser && currentUser.role?.name === "Administrador"
   });
 
-  // Mutation para atualizar o papel de um usuário
+  // Mutation para alterar papel do usuário
   const updateRoleMutation = useMutation({
-    mutationFn: async (data: { userId: number, roleId: number }) => {
-      const response = await apiRequest(
-        'PUT', 
-        `/api/users/${data.userId}/role`, 
-        { roleId: data.roleId }
-      );
-      return await response.json();
+    mutationFn: async ({ userId, roleId }: { userId: number; roleId: number }) => {
+      return apiRequest(`/api/admin/users/${userId}/role`, {
+        method: "PATCH",
+        body: JSON.stringify({ roleId }),
+      });
     },
     onSuccess: () => {
-      // Atualizar lista de usuários
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      toast({
-        title: "Papel atualizado",
-        description: "O papel do usuário foi atualizado com sucesso.",
-      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       setShowRoleDialog(false);
+      toast({
+        title: "Sucesso",
+        description: "Papel do usuário alterado com sucesso!",
+      });
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast({
         title: "Erro",
-        description: `Erro ao atualizar papel: ${error.message}`,
-        variant: "destructive"
+        description: "Erro ao alterar papel do usuário.",
+        variant: "destructive",
       });
-    }
+    },
   });
 
-  // Mutation para atualizar o status de um usuário
+  // Mutation para alterar status do usuário
   const updateStatusMutation = useMutation({
-    mutationFn: async (data: { userId: number, isActive: boolean }) => {
-      const response = await apiRequest(
-        'PUT', 
-        `/api/users/${data.userId}/status`, 
-        { isActive: data.isActive }
-      );
-      return await response.json();
+    mutationFn: async ({ userId, isActive }: { userId: number; isActive: boolean }) => {
+      return apiRequest(`/api/admin/users/${userId}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ isActive }),
+      });
     },
     onSuccess: () => {
-      // Atualizar lista de usuários
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      toast({
-        title: "Status atualizado",
-        description: "O status do usuário foi atualizado com sucesso.",
-      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       setShowStatusDialog(false);
+      toast({
+        title: "Sucesso",
+        description: "Status do usuário alterado com sucesso!",
+      });
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast({
         title: "Erro",
-        description: `Erro ao atualizar status: ${error.message}`,
-        variant: "destructive"
+        description: "Erro ao alterar status do usuário.",
+        variant: "destructive",
       });
-    }
+    },
   });
 
   const handleOpenRoleDialog = (user: User) => {
@@ -184,62 +176,64 @@ const UserManagement = () => {
         <TabsContent value="users" className="mt-6">
           <div className="bg-white shadow rounded-lg overflow-hidden">
             <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50px]">ID</TableHead>
-              <TableHead>Nome</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Papel</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.id}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="bg-primary/10">
-                    {user.role?.name || "Sem papel"}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  {user.isActive ? (
-                    <Badge variant="default" className="bg-green-500">Ativo</Badge>
-                  ) : (
-                    <Badge variant="secondary" className="bg-gray-300">Inativo</Badge>
-                  )}
-                </TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenRoleDialog(user)}
-                  >
-                    Alterar Papel
-                  </Button>
-                  <Button
-                    variant={user.isActive ? "destructive" : "default"}
-                    size="sm"
-                    onClick={() => handleOpenStatusDialog(user)}
-                  >
-                    {user.isActive ? "Desativar" : "Ativar"}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            
-            {users.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  Nenhum usuário encontrado.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">ID</TableHead>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Papel</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.isArray(users) && users.map((user: any) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">{user.id}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {user.role?.name || 'Sem papel'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.isActive ? "default" : "destructive"}>
+                        {user.isActive ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleOpenRoleDialog(user)}
+                          disabled={currentUser?.id === user.id}
+                        >
+                          Alterar Papel
+                        </Button>
+                        <Button
+                          variant={user.isActive ? "destructive" : "default"}
+                          size="sm"
+                          onClick={() => handleOpenStatusDialog(user)}
+                          disabled={currentUser?.id === user.id}
+                        >
+                          {user.isActive ? "Desativar" : "Ativar"}
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                
+                {Array.isArray(users) && users.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8">
+                      Nenhum usuário encontrado.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
         </TabsContent>
         
@@ -267,7 +261,7 @@ const UserManagement = () => {
                 <SelectValue placeholder="Selecione um papel" />
               </SelectTrigger>
               <SelectContent>
-                {roles.map((role) => (
+                {Array.isArray(roles) && roles.map((role: any) => (
                   <SelectItem key={role.id} value={role.id.toString()}>
                     {role.name}
                   </SelectItem>
