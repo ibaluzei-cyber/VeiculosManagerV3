@@ -5,6 +5,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
+import { useHeartbeat } from "@/hooks/use-heartbeat";
 import { Loader2 } from "lucide-react";
 
 // Importar todas as páginas necessárias
@@ -72,6 +73,9 @@ import AdminLayout from "@/components/layout/AdminLayout";
 
 function AppContent() {
   const { user, isLoading } = useAuth();
+  
+  // Ativar heartbeat para usuários logados
+  useHeartbeat();
 
   if (isLoading) {
     return (
