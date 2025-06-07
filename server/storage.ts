@@ -848,10 +848,32 @@ export async function deactivateAllUserSessions(userId: number, exceptSessionId?
 }
 
 export async function cleanupExpiredSessions() {
-  return await db.update(userSessions)
+  const now = new Date();
+  
+  // Remove sessões que expiraram oficialmente
+  const expiredSessions = await db.update(userSessions)
     .set({ isActive: false })
-    .where(lt(userSessions.expiresAt, new Date()))
+    .where(
+      and(
+        eq(userSessions.isActive, true),
+        lt(userSessions.expiresAt, now)
+      )
+    )
     .returning();
+    
+  // Remove sessões inativas há mais de 30 minutos (possível fechamento abrupto do browser)
+  const thirtyMinutesAgo = new Date(now.getTime() - (30 * 60 * 1000));
+  const staleSessions = await db.update(userSessions)
+    .set({ isActive: false })
+    .where(
+      and(
+        eq(userSessions.isActive, true),
+        lt(userSessions.lastActivity, thirtyMinutesAgo)
+      )
+    )
+    .returning();
+    
+  return [...expiredSessions, ...staleSessions];
 }
 
 export async function getActiveSessionsCount(userId: number) {

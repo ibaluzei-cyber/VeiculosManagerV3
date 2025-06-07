@@ -67,7 +67,7 @@ async function createSessionForUser(req: Request, user: UserWithRole) {
   }
 }
 
-async function updateUserSessionActivity(req: Request) {
+export async function updateUserSessionActivity(req: Request) {
   try {
     const sessionId = req.sessionID;
     if (sessionId) {

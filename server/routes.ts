@@ -19,7 +19,8 @@ import {
   updateUserPassword,
   updateUserRole,
   updateUserStatus,
-  getAllRoles
+  getAllRoles,
+  updateUserSessionActivity
 } from "./auth";
 import { sensitiveApiLimiter, logSecurityEvent } from "./security";
 import { 
@@ -45,6 +46,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Configurar autenticação
   setupAuth(app);
+  
+  // Iniciar limpeza automática de sessões órfãs a cada 5 minutos
+  setInterval(async () => {
+    try {
+      const cleanedSessions = await storage.cleanupExpiredSessions();
+      if (cleanedSessions.length > 0) {
+        console.log(`[SESSION CLEANUP] Removidas ${cleanedSessions.length} sessões órfãs/expiradas`);
+      }
+    } catch (error) {
+      console.error("[SESSION CLEANUP] Erro na limpeza automática:", error);
+    }
+  }, 5 * 60 * 1000); // 5 minutos
   
   // Middleware para logar todas as solicitações de API
   app.use(apiPrefix, (req, res, next) => {
@@ -1511,6 +1524,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Session Management APIs
+  
+  // Heartbeat endpoint to keep session alive
+  app.post(`${apiPrefix}/heartbeat`, isAuthenticated, async (req, res) => {
+    try {
+      await updateUserSessionActivity(req);
+      res.json({ status: 'ok', timestamp: new Date() });
+    } catch (error) {
+      console.error("Erro no heartbeat:", error);
+      res.status(500).json({ message: "Erro no heartbeat" });
+    }
+  });
   
   // Get user's active sessions
   app.get(`${apiPrefix}/sessions`, isAuthenticated, async (req, res) => {
