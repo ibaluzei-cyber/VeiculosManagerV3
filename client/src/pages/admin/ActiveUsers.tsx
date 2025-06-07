@@ -173,30 +173,32 @@ export default function ActiveUsersPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <div className="space-y-4">
         <div>
-          <h1 className="text-3xl font-bold">Usuários Logados</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-2xl md:text-3xl font-bold">Usuários Logados</h1>
+          <p className="text-gray-600 mt-2 text-sm md:text-base">
             Visualize e gerencie todos os usuários conectados ao sistema
           </p>
         </div>
-        <div className="flex items-center space-x-4">
-          <Card className="p-4">
+        
+        {/* Cards de estatísticas - responsivos */}
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
+          <Card className="p-3 md:p-4">
             <div className="flex items-center space-x-2">
-              <Users className="w-5 h-5 text-blue-600" />
+              <Users className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
               <div>
-                <p className="text-sm text-gray-600">Usuários Ativos</p>
-                <p className="text-2xl font-bold">{activeUsers.length}</p>
+                <p className="text-xs md:text-sm text-gray-600">Usuários Ativos</p>
+                <p className="text-lg md:text-2xl font-bold">{activeUsers.length}</p>
               </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-3 md:p-4">
             <div className="flex items-center space-x-2">
-              <Monitor className="w-5 h-5 text-green-600" />
+              <Monitor className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
               <div>
-                <p className="text-sm text-gray-600">Sessões Ativas</p>
-                <p className="text-2xl font-bold">{getTotalSessions()}</p>
+                <p className="text-xs md:text-sm text-gray-600">Sessões Ativas</p>
+                <p className="text-lg md:text-2xl font-bold">{getTotalSessions()}</p>
               </div>
             </div>
           </Card>
@@ -219,23 +221,26 @@ export default function ActiveUsersPage() {
         <div className="space-y-4">
           {activeUsers.map((user) => (
             <Card key={user.userId} className="border-l-4 border-l-blue-500">
-              <CardHeader>
-                <div className="flex justify-between items-start">
+              <CardHeader className="pb-3">
+                <div className="space-y-3">
                   <div>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Users className="w-5 h-5" />
+                    <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
+                      <Users className="w-4 h-4 md:w-5 md:h-5" />
                       <span>{user.userName}</span>
                       <Badge className={getRoleColor(user.userRole)}>
                         {user.userRole}
                       </Badge>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-xs md:text-sm mt-1">
                       {user.userEmail} • {user.sessions.length} sessão{user.sessions.length !== 1 ? 'ões' : ''} ativa{user.sessions.length !== 1 ? 's' : ''}
                     </CardDescription>
                   </div>
+                  
+                  {/* Botão responsivo - stack no mobile */}
                   <Button
                     variant="destructive"
                     size="sm"
+                    className="w-full md:w-auto text-xs md:text-sm"
                     onClick={() => terminateAllUserSessionsMutation.mutate(user.userId)}
                     disabled={terminateAllUserSessionsMutation.isPending}
                   >
@@ -246,38 +251,44 @@ export default function ActiveUsersPage() {
               <CardContent>
                 <div className="space-y-3">
                   {user.sessions.map((session) => (
-                    <div key={session.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        {getDeviceIcon(session.deviceInfo)}
-                        <div>
-                          <p className="font-medium">{session.deviceInfo}</p>
-                          <div className="flex items-center space-x-4 text-sm text-gray-600">
-                            <div className="flex items-center space-x-1">
-                              <MapPin className="w-3 h-3" />
-                              <span>{session.ipAddress}</span>
+                    <div key={session.id} className="p-3 bg-gray-50 rounded-lg space-y-3">
+                      {/* Mobile: Layout vertical */}
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+                        <div className="flex items-center space-x-3">
+                          {getDeviceIcon(session.deviceInfo)}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm md:text-base truncate">{session.deviceInfo}</p>
+                            <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-1 md:space-y-0 text-xs md:text-sm text-gray-600">
+                              <div className="flex items-center space-x-1">
+                                <MapPin className="w-3 h-3" />
+                                <span className="truncate">{session.ipAddress}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Clock className="w-3 h-3" />
+                                <span>{getTimeAgo(session.lastActivity)}</span>
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-1">
-                              <Clock className="w-3 h-3" />
-                              <span>{getTimeAgo(session.lastActivity)}</span>
-                            </div>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Iniciada: {formatDate(session.createdAt)}
+                            </p>
                           </div>
-                          <p className="text-xs text-gray-500">
-                            Iniciada: {formatDate(session.createdAt)}
-                          </p>
                         </div>
+                        
+                        {/* Botão responsivo */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full md:w-auto text-xs md:text-sm"
+                          onClick={() => terminateSessionMutation.mutate({ 
+                            userId: user.userId, 
+                            sessionId: session.sessionId 
+                          })}
+                          disabled={terminateSessionMutation.isPending}
+                        >
+                          <Trash2 className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                          Encerrar
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => terminateSessionMutation.mutate({ 
-                          userId: user.userId, 
-                          sessionId: session.sessionId 
-                        })}
-                        disabled={terminateSessionMutation.isPending}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Encerrar
-                      </Button>
                     </div>
                   ))}
                 </div>
