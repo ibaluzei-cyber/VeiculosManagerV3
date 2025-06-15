@@ -341,23 +341,23 @@ export function setupAuth(app: Express) {
 
   // Rotas de autenticação
   app.post("/api/login", loginLimiter, (req, res, next) => {
-    // Verificar se o usuário já está autenticado
-    if (req.isAuthenticated()) {
-      logSecurityEvent("LOGIN_ATTEMPT_WHILE_AUTHENTICATED", {
-        currentUserId: req.user!.id,
-        currentUserEmail: req.user!.email,
-        attemptedEmail: req.body.email
-      }, req);
-      
-      return res.status(409).json({ 
-        message: "Você já está conectado ao sistema. Para fazer login com outra conta, primeiro faça logout da conta atual.",
-        alreadyAuthenticated: true,
-        currentUser: {
-          name: req.user!.name,
-          email: req.user!.email
-        }
-      });
-    }
+    // COMENTADO: Verificação se usuário já está autenticado - agora permitimos override
+    // if (req.isAuthenticated()) {
+    //   logSecurityEvent("LOGIN_ATTEMPT_WHILE_AUTHENTICATED", {
+    //     currentUserId: req.user!.id,
+    //     currentUserEmail: req.user!.email,
+    //     attemptedEmail: req.body.email
+    //   }, req);
+    //   
+    //   return res.status(409).json({ 
+    //     message: "Você já está conectado ao sistema. Para fazer login com outra conta, primeiro faça logout da conta atual.",
+    //     alreadyAuthenticated: true,
+    //     currentUser: {
+    //       name: req.user!.name,
+    //       email: req.user!.email
+    //     }
+    //   });
+    // }
 
     passport.authenticate("local", async (err: Error, user: Express.User, info: { message: string }) => {
       if (err) {
@@ -372,7 +372,7 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ message: info.message });
       }
       
-      // Verificar se já existe uma sessão ativa (prevenção de múltiplos logins)
+      // NOVA LÓGICA: Encerrar todas as sessões ativas do usuário antes de criar nova sessão
       try {
         // Importar funções para verificar e encerrar sessões
         const { getActiveSessionsCount, deactivateAllUserSessions } = await import("./storage");
@@ -381,17 +381,16 @@ export function setupAuth(app: Express) {
         const activeSessionsCount = await getActiveSessionsCount(user.id);
         
         if (activeSessionsCount > 0) {
-          logSecurityEvent("MULTIPLE_LOGIN_BLOCKED", {
+          // NOVA FUNCIONALIDADE: Encerrar todas as sessões do usuário (kick dos outros logins)
+          await deactivateAllUserSessions(user.id);
+          
+          logSecurityEvent("USER_SESSIONS_KICKED", {
             userId: user.id,
             email: user.email,
-            activeSessionsCount: activeSessionsCount,
-            blockedLoginIp: req.ip
+            kickedSessionsCount: activeSessionsCount,
+            newLoginIp: req.ip,
+            userAgent: req.get('User-Agent')
           }, req);
-          
-          return res.status(409).json({ 
-            message: "Este usuário já está conectado ao sistema em outro dispositivo. Apenas uma sessão por usuário é permitida.",
-            multipleLoginBlocked: true
-          });
         }
         
         // Atualizar o último acesso do usuário
