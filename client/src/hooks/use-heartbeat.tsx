@@ -21,13 +21,21 @@ export function useHeartbeat() {
       if (!isActiveRef.current) return;
       
       try {
-        await fetch('/api/heartbeat', {
+        const response = await fetch('/api/heartbeat', {
           method: 'POST',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
         });
+        
+        // Se a resposta indica que a sessão não é mais válida, forçar logout
+        if (response.status === 401 || response.status === 403) {
+          console.log('Sessão invalidada no servidor - forçando logout');
+          // Recarregar a página para forçar logout
+          window.location.href = '/auth';
+          return;
+        }
       } catch (error) {
         console.log('Heartbeat falhou - possível desconexão:', error);
       }
@@ -51,8 +59,8 @@ export function useHeartbeat() {
       }
     };
 
-    // Configurar heartbeat a cada 2 minutos
-    intervalRef.current = setInterval(sendHeartbeat, 2 * 60 * 1000);
+    // Configurar heartbeat a cada 10 segundos para detecção rápida de kick
+    intervalRef.current = setInterval(sendHeartbeat, 10 * 1000);
 
     // Enviar heartbeat inicial
     sendHeartbeat();

@@ -377,20 +377,24 @@ export function setupAuth(app: Express) {
         // Importar funções para verificar e encerrar sessões
         const { getActiveSessionsCount, deactivateAllUserSessions } = await import("./storage");
         
-        // Verificar se o usuário já tem sessões ativas
+        // SEMPRE encerrar todas as sessões ativas do usuário quando ele fizer login
+        // Isso garante que apenas uma sessão permaneça ativa por vez
         const activeSessionsCount = await getActiveSessionsCount(user.id);
         
         if (activeSessionsCount > 0) {
-          // NOVA FUNCIONALIDADE: Encerrar todas as sessões do usuário (kick dos outros logins)
-          await deactivateAllUserSessions(user.id);
+          // Encerrar TODAS as sessões do usuário antes de criar a nova
+          const kickedSessions = await deactivateAllUserSessions(user.id);
           
           logSecurityEvent("USER_SESSIONS_KICKED", {
             userId: user.id,
             email: user.email,
             kickedSessionsCount: activeSessionsCount,
+            actualKickedSessions: kickedSessions.length,
             newLoginIp: req.ip,
             userAgent: req.get('User-Agent')
           }, req);
+          
+          console.log(`[LOGIN KICK] Usuário ${user.email} (ID: ${user.id}) teve ${kickedSessions.length} sessões encerradas`);
         }
         
         // Atualizar o último acesso do usuário

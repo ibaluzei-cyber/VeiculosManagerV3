@@ -1528,6 +1528,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heartbeat endpoint to keep session alive
   app.post(`${apiPrefix}/heartbeat`, isAuthenticated, async (req, res) => {
     try {
+      // Verificar se a sessão ainda está ativa no banco de dados
+      const sessionId = req.sessionID;
+      const sessionExists = await storage.getSessionById(sessionId);
+      
+      if (!sessionExists || !sessionExists.isActive) {
+        console.log(`[HEARTBEAT] Sessão ${sessionId} não encontrada ou inativa - forçando logout`);
+        return res.status(401).json({ 
+          message: "Sessão inválida", 
+          sessionKicked: true 
+        });
+      }
+      
       await updateUserSessionActivity(req);
       res.json({ status: 'ok', timestamp: new Date() });
     } catch (error) {
