@@ -1532,10 +1532,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sessionId = req.sessionID;
       const sessionExists = await storage.getSessionById(sessionId);
       
-      if (!sessionExists || !sessionExists.isActive) {
-        console.log(`[HEARTBEAT] Sessão ${sessionId} não encontrada ou inativa - forçando logout`);
+      if (sessionExists && !sessionExists.isActive) {
+        // Se a sessão existe mas foi desativada, força logout
+        console.log(`[HEARTBEAT] Sessão ${sessionId} foi desativada - forçando logout`);
+        req.logout((err) => {
+          if (err) console.error("Erro no logout:", err);
+        });
         return res.status(401).json({ 
-          message: "Sessão inválida", 
+          message: "Sessão invalidada", 
           sessionKicked: true 
         });
       }

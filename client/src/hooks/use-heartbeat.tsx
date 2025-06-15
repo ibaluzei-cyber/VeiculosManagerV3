@@ -59,8 +59,8 @@ export function useHeartbeat() {
       }
     };
 
-    // Configurar heartbeat a cada 10 segundos para detecção rápida de kick
-    intervalRef.current = setInterval(sendHeartbeat, 10 * 1000);
+    // Configurar heartbeat a cada 5 segundos para detecção rápida de kick
+    intervalRef.current = setInterval(sendHeartbeat, 5 * 1000);
 
     // Enviar heartbeat inicial
     sendHeartbeat();

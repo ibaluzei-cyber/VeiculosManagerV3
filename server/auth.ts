@@ -36,7 +36,7 @@ function getDeviceInfo(userAgent: string): string {
 }
 
 // Session creation and tracking functions
-async function createSessionForUser(req: Request, user: UserWithRole) {
+export async function createSessionForUser(req: Request, user: UserWithRole) {
   try {
     const sessionId = req.sessionID;
     const userAgent = req.get('User-Agent') || 'Unknown';
@@ -409,7 +409,7 @@ export function setupAuth(app: Express) {
             return next(err);
           }
           
-          // Create session tracking for multi-device management
+          // Create session tracking for multi-device management AFTER Express session is created
           await createSessionForUser(req, user);
           
           logSecurityEvent("LOGIN_SUCCESS", { 
