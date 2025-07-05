@@ -191,7 +191,14 @@ export async function getUserWithPassword(id: number) {
   });
 }
 
-export async function updateUser(id: number, data: { name: string; email: string }) {
+export async function updateUser(id: number, data: { 
+  name: string; 
+  email: string; 
+  cnpj?: string; 
+  logoUrl?: string; 
+  address?: string; 
+  phone?: string; 
+}) {
   const [updatedUser] = await db.update(users)
     .set({
       ...data,

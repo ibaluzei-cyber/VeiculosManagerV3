@@ -263,6 +263,11 @@ export const users = pgTable("users", {
   roleId: integer("role_id").references(() => userRoles.id).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   lastLogin: timestamp("last_login"),
+  // Novos campos do perfil
+  cnpj: text("cnpj"),
+  logoUrl: text("logo_url"),
+  address: text("address"),
+  phone: text("phone"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -286,6 +291,10 @@ export const userInsertSchema = createInsertSchema(users, {
   name: (schema) => schema.min(3, "Nome deve ter pelo menos 3 caracteres"),
   email: (schema) => schema.email("Email inválido"),
   password: (schema) => schema.min(6, "Senha deve ter pelo menos 6 caracteres"),
+  cnpj: (schema) => schema.optional(),
+  logoUrl: (schema) => schema.optional(),
+  address: (schema) => schema.optional(),
+  phone: (schema) => schema.optional(),
 });
 export type UserInsert = z.infer<typeof userInsertSchema>;
 export const userSelectSchema = createSelectSchema(users);
