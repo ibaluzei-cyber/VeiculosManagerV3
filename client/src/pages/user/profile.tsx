@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ type PasswordFormData = z.infer<typeof passwordSchema>;
 export default function ProfilePage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [updating, setUpdating] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   // Obter parâmetro de query string para a aba ativa
@@ -75,6 +77,20 @@ export default function ProfilePage() {
     },
   });
 
+  // Atualizar valores do formulário quando os dados do usuário mudarem
+  useEffect(() => {
+    if (user) {
+      profileForm.reset({
+        name: user.name || "",
+        email: user.email || "",
+        cnpj: (user as any)?.cnpj || "",
+        logoUrl: (user as any)?.logoUrl || "",
+        address: (user as any)?.address || "",
+        phone: (user as any)?.phone || "",
+      });
+    }
+  }, [user, profileForm]);
+
   // Função para atualizar o perfil
   const onProfileSubmit = async (data: ProfileFormData) => {
     if (!user) return;
@@ -87,6 +103,21 @@ export default function ProfilePage() {
         const error = await response.json();
         throw new Error(error.message || "Erro ao atualizar perfil");
       }
+
+      const updatedUser = await response.json();
+      
+      // Invalidar cache do usuário para forçar recarregamento dos dados
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      
+      // Atualizar os valores padrão do formulário com os dados atualizados
+      profileForm.reset({
+        name: updatedUser.name || "",
+        email: updatedUser.email || "",
+        cnpj: updatedUser.cnpj || "",
+        logoUrl: updatedUser.logoUrl || "",
+        address: updatedUser.address || "",
+        phone: updatedUser.phone || "",
+      });
       
       toast({
         title: "Perfil atualizado",
