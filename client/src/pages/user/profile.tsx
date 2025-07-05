@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { X } from "lucide-react";
+import InputMask from "react-input-mask";
 
 // Schema para validação do formulário de perfil
 const profileSchema = z.object({
@@ -278,7 +279,19 @@ export default function ProfilePage() {
                         <FormItem>
                           <FormLabel>CNPJ</FormLabel>
                           <FormControl>
-                            <Input placeholder="00.000.000/0000-00" {...field} />
+                            <InputMask
+                              mask="99.999.999/9999-99"
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                            >
+                              {(inputProps: any) => (
+                                <Input 
+                                  {...inputProps}
+                                  placeholder="00.000.000/0000-00"
+                                />
+                              )}
+                            </InputMask>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -320,7 +333,19 @@ export default function ProfilePage() {
                         <FormItem>
                           <FormLabel>Telefone</FormLabel>
                           <FormControl>
-                            <Input placeholder="(00) 00000-0000" {...field} />
+                            <InputMask
+                              mask="(99) 99999-9999"
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                            >
+                              {(inputProps: any) => (
+                                <Input 
+                                  {...inputProps}
+                                  placeholder="(00) 00000-0000"
+                                />
+                              )}
+                            </InputMask>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
