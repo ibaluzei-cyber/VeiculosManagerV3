@@ -19,7 +19,9 @@ const profileSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   email: z.string().email("Email inválido"),
   cnpj: z.string().optional(),
-  logoUrl: z.string().url("URL da logo inválida").optional().or(z.literal("")),
+  logoUrl: z.string().optional().refine((val) => !val || z.string().url().safeParse(val).success, {
+    message: "URL da logo inválida"
+  }),
   address: z.string().optional(),
   phone: z.string().optional(),
 });

@@ -1246,7 +1246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     try {
-      const { name, email } = req.body;
+      const { name, email, cnpj, logoUrl, address, phone } = req.body;
       
       // Verificar se o e-mail já existe (exceto para o próprio usuário)
       const existingUser = await getUserByEmail(email);
@@ -1254,8 +1254,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Este e-mail já está em uso" });
       }
       
+      // Preparar dados para atualização (incluindo novos campos)
+      const updateData = {
+        name,
+        email,
+        ...(cnpj !== undefined && { cnpj }),
+        ...(logoUrl !== undefined && { logoUrl }),
+        ...(address !== undefined && { address }),
+        ...(phone !== undefined && { phone }),
+      };
+      
       // Atualizar usuário
-      const updatedUser = await updateUser(userId, { name, email });
+      const updatedUser = await updateUser(userId, updateData);
       
       if (!updatedUser) {
         return res.status(404).json({ message: "Usuário não encontrado" });
@@ -1264,7 +1274,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       logSecurityEvent("USER_UPDATE_SUCCESS", {
         updatedUserId: userId,
         updatedBy: req.user!.id,
-        changes: { name, email }
+        changes: updateData
       }, req);
       
       res.json(updatedUser);
