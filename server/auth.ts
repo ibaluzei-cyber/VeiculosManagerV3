@@ -559,14 +559,18 @@ export function setupAuth(app: Express) {
   app.get("/api/user", async (req, res) => {
     if (req.isAuthenticated()) {
       const user = req.user;
-      // Busca informações atualizadas do usuário, incluindo o último login
+      // Busca informações atualizadas do usuário, incluindo todos os campos
       const userDetails = await getUser(user.id);
       return res.status(200).json({
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
-        lastLogin: userDetails?.lastLogin
+        lastLogin: userDetails?.lastLogin,
+        cnpj: userDetails?.cnpj,
+        logoUrl: userDetails?.logoUrl,
+        address: userDetails?.address,
+        phone: userDetails?.phone
       });
     }
     return res.status(401).json({ message: "Não autenticado" });
