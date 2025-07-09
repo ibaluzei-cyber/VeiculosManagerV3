@@ -86,10 +86,7 @@ const UserManagement = () => {
   // Mutation para atualizar o papel de um usuário
   const updateRoleMutation = useMutation({
     mutationFn: async (data: { userId: number, roleId: number }) => {
-      const response = await apiRequest(`/api/admin/users/${data.userId}/role`, {
-        method: 'PUT',
-        body: JSON.stringify({ roleId: data.roleId }),
-      });
+      const response = await apiRequest('PUT', `/api/admin/users/${data.userId}/role`, { roleId: data.roleId });
       return response;
     },
     onSuccess: () => {
@@ -112,10 +109,7 @@ const UserManagement = () => {
   // Mutation para atualizar o status de um usuário
   const updateStatusMutation = useMutation({
     mutationFn: async (data: { userId: number, isActive: boolean }) => {
-      const response = await apiRequest(`/api/admin/users/${data.userId}/status`, {
-        method: 'PUT',
-        body: JSON.stringify({ isActive: data.isActive }),
-      });
+      const response = await apiRequest('PUT', `/api/admin/users/${data.userId}/status`, { isActive: data.isActive });
       return response;
     },
     onSuccess: () => {
