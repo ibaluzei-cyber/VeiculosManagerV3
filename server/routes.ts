@@ -1753,19 +1753,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = parseInt(req.params.id);
       const { roleId } = req.body;
 
+      console.log(`Tentando atualizar papel do usuário: userId=${userId}, roleId=${roleId}`);
+
       if (!roleId) {
+        console.log("Erro: roleId não fornecido");
         return res.status(400).json({ message: "roleId é obrigatório" });
+      }
+
+      if (isNaN(userId)) {
+        console.log("Erro: userId inválido");
+        return res.status(400).json({ message: "ID do usuário inválido" });
       }
 
       const updatedUser = await updateUserRole(userId, roleId);
       
       if (!updatedUser) {
+        console.log("Erro: Usuário não encontrado após atualização");
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
+      console.log("Papel do usuário atualizado com sucesso:", updatedUser);
       res.json(updatedUser);
     } catch (error) {
-      console.error("Erro ao atualizar papel do usuário:", error);
+      console.error("Erro detalhado ao atualizar papel do usuário:", error);
       res.status(500).json({ message: "Erro ao atualizar papel do usuário" });
     }
   });

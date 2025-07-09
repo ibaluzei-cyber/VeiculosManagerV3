@@ -232,17 +232,31 @@ export async function updateUserPassword(id: number, hashedPassword: string) {
 }
 
 export async function updateUserRole(id: number, roleId: number) {
-  const [updatedUser] = await db.update(users)
-    .set({
-      roleId,
-      updatedAt: new Date()
-    })
-    .where(eq(users.id, id))
-    .returning();
+  console.log(`updateUserRole chamada: id=${id}, roleId=${roleId}`);
+  
+  try {
+    const [updatedUser] = await db.update(users)
+      .set({
+        roleId,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, id))
+      .returning();
 
-  if (!updatedUser) return null;
+    console.log("Resultado da atualização:", updatedUser);
 
-  return getUser(id);
+    if (!updatedUser) {
+      console.log("Nenhum usuário foi atualizado");
+      return null;
+    }
+
+    const userWithRole = await getUser(id);
+    console.log("Usuário com papel atualizado:", userWithRole);
+    return userWithRole;
+  } catch (error) {
+    console.error("Erro na função updateUserRole:", error);
+    throw error;
+  }
 }
 
 export async function updateUserStatus(id: number, isActive: boolean) {
