@@ -1072,7 +1072,7 @@ export default function Configurator2() {
     const selectedDirectSale = selectedDirectSaleId ? directSales.find(ds => ds.id === parseInt(selectedDirectSaleId)) : null;
     
     const selectedOptionalsList = selectedOptionals.map(optId => {
-      const optional = versionOptionals.find(vo => vo.id === optId);
+      const optional = versionOptionals.find(vo => vo.optionalId === optId);
       return {
         name: optional?.optional?.name || '',
         price: optional?.price || 0
