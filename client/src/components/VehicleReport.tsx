@@ -41,12 +41,8 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
     queryFn: getQueryFn()
   });
 
-  const companyLogo = settings.find((s: any) => s.key === 'company_logo')?.value || user?.logoUrl;
+  const companyLogo = user?.logoUrl || settings.find((s: any) => s.key === 'company_logo_url')?.value;
   const companyName = settings.find((s: any) => s.key === 'company_name')?.value || 'Empresa';
-  
-  console.log('DEBUG - settings:', settings);
-  console.log('DEBUG - companyLogo:', companyLogo);
-  console.log('DEBUG - user:', user);
 
   // Separar itens de série em duas colunas
   const seriesItems = vehicleData.vehicleDescription?.split('\n').filter(item => item.trim()) || [];
