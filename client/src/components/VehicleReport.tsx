@@ -176,7 +176,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
           </div>
 
           {/* Seção de opcionais e resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
             {/* Opcionais selecionados */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Opcionais Selecionados</h3>
@@ -238,7 +238,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
 
           {/* Itens de série em duas colunas */}
           {vehicleData.vehicleDescription && (
-            <div className="mb-4">
+            <div className="mb-3">
               <h3 className="text-lg font-semibold mb-2">Itens de Série</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>

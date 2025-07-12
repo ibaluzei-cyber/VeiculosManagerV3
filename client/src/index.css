@@ -290,22 +290,21 @@
     padding: 0.5rem !important;
   }
   
-  /* Controle de quebras de página para evitar páginas em branco */
+  /* Controle de quebras de página mais flexível */
   .vehicle-report-modal {
     page-break-after: avoid !important;
-    page-break-inside: avoid !important;
   }
   
-  /* Evitar quebras de página desnecessárias */
-  h1, h2, h3, h4, h5, h6 {
+  /* Evitar quebras apenas após títulos principais */
+  h1, h2 {
     page-break-after: avoid !important;
     break-after: avoid !important;
   }
   
-  /* Manter seções unidas */
-  .grid {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+  /* Permitir quebras em grids menores, mas manter itens importantes unidos */
+  .grid.grid-cols-2 {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
   }
   
   /* Evitar órfãos e viúvas */
@@ -335,8 +334,14 @@
     padding-top: 0.5rem !important;
   }
   
-  /* Evitar quebras no meio de itens importantes */
+  /* Permitir quebras mais naturais, mantendo apenas itens críticos unidos */
   .flex.justify-between {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  
+  /* Manter apenas seções críticas unidas */
+  .font-bold.text-lg {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
@@ -356,6 +361,10 @@
   
   .mb-2 {
     margin-bottom: 0.5rem !important;
+  }
+  
+  .mb-3 {
+    margin-bottom: 0.75rem !important;
   }
   
   .mb-4 {
