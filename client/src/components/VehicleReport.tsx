@@ -298,28 +298,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                 </div>
               )}
 
-              {/* Itens de série em 2 colunas */}
-              {seriesItems.length > 0 && (
-                <div>
-                  <h3 className="text-md font-medium mb-2">Itens de Série</h3>
-                  <div className="series-grid">
-                    <div className="series-column">
-                      <ul>
-                        {leftColumn.map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="series-column">
-                      <ul>
-                        {rightColumn.map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
+
             </div>
             
             {/* Coluna direita: Imagem e resumo financeiro */}
@@ -396,7 +375,28 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
             </div>
           </div>
 
-
+          {/* Itens de série em seção separada ocupando toda a largura */}
+          {seriesItems.length > 0 && (
+            <div className="mt-6 border-t pt-4">
+              <h3 className="text-md font-medium mb-3">Itens de Série</h3>
+              <div className="series-grid">
+                <div className="series-column">
+                  <ul>
+                    {leftColumn.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="series-column">
+                  <ul>
+                    {rightColumn.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Dados do usuário */}
           <div className="border-t pt-4">
