@@ -114,17 +114,28 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
             
             {/* Imagem do veículo */}
             <div className="flex justify-center">
-              {vehicleData.vehicleImage || vehicleData.selectedColor?.imageUrl ? (
-                <img 
-                  src={vehicleData.vehicleImage || vehicleData.selectedColor?.imageUrl} 
-                  alt={`${vehicleData.brand} ${vehicleData.model}`}
-                  className="max-w-full max-h-40 object-contain"
-                />
-              ) : (
-                <div className="w-full h-40 bg-gray-100 rounded flex items-center justify-center">
-                  <span className="text-gray-500">Imagem não disponível</span>
-                </div>
-              )}
+              {(() => {
+                const imageUrl = vehicleData.vehicleImage || vehicleData.selectedColor?.imageUrl;
+                console.log('Vehicle Image URL:', vehicleData.vehicleImage);
+                console.log('Selected Color Image URL:', vehicleData.selectedColor?.imageUrl);
+                console.log('Final Image URL:', imageUrl);
+                
+                return imageUrl ? (
+                  <img 
+                    src={imageUrl} 
+                    alt={`${vehicleData.brand} ${vehicleData.model}`}
+                    className="max-w-full max-h-40 object-contain"
+                    onError={(e) => {
+                      console.error('Erro ao carregar imagem:', imageUrl);
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-40 bg-gray-100 rounded flex items-center justify-center">
+                    <span className="text-gray-500">Imagem não disponível</span>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
