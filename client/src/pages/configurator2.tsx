@@ -19,6 +19,7 @@ import { formatCurrency } from "@/lib/formatters";
 import { hasPermission } from "@/lib/permissions";
 import { useAuth } from "@/hooks/use-auth";
 import { getQueryFn } from "@/lib/queryClient";
+import VehicleReport from "@/components/VehicleReport";
 
 
 interface Brand {
@@ -136,6 +137,7 @@ export default function Configurator2() {
   const [selectedOptionals, setSelectedOptionals] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState("equipment");
   const [optionalsExpanded, setOptionalsExpanded] = useState(true);
+  const [showReport, setShowReport] = useState(false);
   
   // Valores calculados
   const [publicPrice, setPublicPrice] = useState(0);
@@ -1033,7 +1035,8 @@ export default function Configurator2() {
           <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6">
             <Button 
               className="bg-[#082a58] text-white hover:bg-[#0a3675] px-8 py-2 uppercase w-full md:w-auto"
-              onClick={() => window.print()}
+              onClick={() => setShowReport(true)}
+              disabled={!selectedVehicle}
             >
               <Printer className="mr-2 h-4 w-4" />
               VISUALIZAR/IMPRIMIR
@@ -1048,7 +1051,54 @@ export default function Configurator2() {
           </div>
         </div>
       )}
+      
+      {/* Relatório de Impressão */}
+      {showReport && selectedVehicle && (
+        <VehicleReport 
+          vehicleData={getReportData()}
+          onClose={() => setShowReport(false)}
+        />
+      )}
       </div>
     </div>
   );
+
+  // Função para gerar dados do relatório
+  function getReportData() {
+    const selectedBrand = brands.find(b => b.id === parseInt(selectedBrandId));
+    const selectedModel = models.find(m => m.id === parseInt(selectedModelId));
+    const selectedVersion = versions.find(v => v.id === parseInt(selectedVersionId));
+    const selectedColor = selectedColorId ? versionColors.find(vc => vc.id === parseInt(selectedColorId)) : null;
+    const selectedDirectSale = selectedDirectSaleId ? directSales.find(ds => ds.id === parseInt(selectedDirectSaleId)) : null;
+    
+    const selectedOptionalsList = selectedOptionals.map(optId => {
+      const optional = versionOptionals.find(vo => vo.id === optId);
+      return {
+        name: optional?.optional?.name || '',
+        price: optional?.price || 0
+      };
+    });
+
+    return {
+      brand: selectedBrand?.name || '',
+      model: selectedModel?.name || '',
+      version: selectedVersion?.name || '',
+      year: selectedVehicle?.year || new Date().getFullYear(),
+      fuelType: selectedVehicle?.fuelType || '',
+      selectedColor: selectedColor ? {
+        name: selectedColor.color?.name || '',
+        price: selectedColor.price || 0,
+        imageUrl: selectedColor.imageUrl
+      } : undefined,
+      selectedOptionals: selectedOptionalsList,
+      basePrice: publicPrice,
+      discountPercent: discountPercentage,
+      discountAmount: discountAmount,
+      markupAmount: surchargeAmount,
+      finalPrice: finalPrice,
+      quantity: 1,
+      vehicleDescription: selectedVehicle?.description,
+      vehicleImage: selectedColor?.imageUrl
+    };
+  }
 }
