@@ -137,6 +137,34 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
               .max-h-20 { max-height: 5rem; }
               .object-contain { object-fit: contain; }
               .mx-auto { margin-left: auto; margin-right: auto; }
+              
+              /* Layout específico para itens de série em 2 colunas */
+              .series-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                margin-top: 0.5rem;
+              }
+              .series-column {
+                display: flex;
+                flex-direction: column;
+              }
+              .series-column ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+              }
+              .series-column li {
+                padding: 0.125rem 0;
+                font-size: 0.875rem;
+                line-height: 1.25;
+              }
+              .series-column li:before {
+                content: "• ";
+                color: #6b7280;
+                margin-right: 0.25rem;
+              }
+              
               @media print {
                 body { margin: 0; padding: 10px; }
                 @page { margin: 0.3in; size: A4; }
