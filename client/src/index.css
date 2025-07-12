@@ -315,13 +315,8 @@
   
   /* Controlar tamanho da página e eliminar páginas vazias */
   @page {
-    margin: 0.5in;
+    margin: 0.3in;
     size: A4;
-  }
-  
-  @page:blank {
-    @top-center { content: none; }
-    @bottom-center { content: none; }
   }
   
   /* Remover margens desnecessárias no final e compactar */
@@ -337,14 +332,37 @@
     max-height: none !important;
   }
   
-  /* Eliminar espaços vazios que podem gerar páginas extras */
+  /* Eliminar completamente espaços vazios que podem gerar páginas extras */
   .vehicle-report-modal::after {
     content: "";
-    display: block;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    page-break-after: avoid !important;
+    display: none !important;
+  }
+  
+  /* Forçar que todo o conteúdo caiba ajustando height */
+  .vehicle-report-modal {
+    height: fit-content !important;
+    min-height: auto !important;
+  }
+  
+  /* Eliminar margens em todos os elementos para compactar ao máximo */
+  .vehicle-report-modal * {
+    margin-bottom: 0 !important;
+  }
+  
+  /* Restaurar apenas margens essenciais */
+  .vehicle-report-modal h1, 
+  .vehicle-report-modal h2, 
+  .vehicle-report-modal h3 {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .vehicle-report-modal .grid {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .vehicle-report-modal .border-t {
+    margin-top: 0.75rem !important;
+    padding-top: 0.5rem !important;
   }
   
   /* Compactar conteúdo para caber em menos páginas */
