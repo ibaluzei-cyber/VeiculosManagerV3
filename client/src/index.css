@@ -289,6 +289,82 @@
   .p-2 {
     padding: 0.5rem !important;
   }
+  
+  /* Controle de quebras de página para evitar páginas em branco */
+  .vehicle-report-modal {
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  
+  /* Evitar quebras de página desnecessárias */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  
+  /* Manter seções unidas */
+  .grid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Evitar órfãos e viúvas */
+  p, li {
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+  
+  /* Controlar tamanho da página */
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+  
+  /* Remover margens desnecessárias no final */
+  .vehicle-report-modal > *:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Compactar conteúdo para caber em menos páginas */
+  .mb-6 {
+    margin-bottom: 1rem !important;
+  }
+  
+  .pt-4 {
+    padding-top: 0.5rem !important;
+  }
+  
+  /* Evitar quebras no meio de itens importantes */
+  .flex.justify-between {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Otimizar espaçamento para impressão */
+  .space-y-0\.5 > * + * {
+    margin-top: 0.125rem !important;
+  }
+  
+  .space-y-1 > * + * {
+    margin-top: 0.25rem !important;
+  }
+  
+  .space-y-2 > * + * {
+    margin-top: 0.25rem !important;
+  }
+  
+  .mb-2 {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1rem !important;
+  }
+  
+  .gap-3 {
+    gap: 0.75rem !important;
+  }
 }
 
 @layer components {

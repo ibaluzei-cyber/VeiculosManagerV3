@@ -176,7 +176,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
           </div>
 
           {/* Seção de opcionais e resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             {/* Opcionais selecionados */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Opcionais Selecionados</h3>
@@ -238,11 +238,11 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
 
           {/* Itens de série em duas colunas */}
           {vehicleData.vehicleDescription && (
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-3">Itens de Série</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">Itens de Série</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <ul className="text-sm space-y-1">
+                  <ul className="text-sm space-y-0.5">
                     {leftColumn.map((item, index) => (
                       <li key={index} className="flex items-start">
                         <span className="mr-2">•</span>
@@ -252,7 +252,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                   </ul>
                 </div>
                 <div>
-                  <ul className="text-sm space-y-1">
+                  <ul className="text-sm space-y-0.5">
                     {rightColumn.map((item, index) => (
                       <li key={index} className="flex items-start">
                         <span className="mr-2">•</span>
