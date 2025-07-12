@@ -344,25 +344,14 @@
     min-height: auto !important;
   }
   
-  /* Eliminar margens em todos os elementos para compactar ao máximo */
-  .vehicle-report-modal * {
-    margin-bottom: 0 !important;
-  }
-  
-  /* Restaurar apenas margens essenciais */
-  .vehicle-report-modal h1, 
-  .vehicle-report-modal h2, 
-  .vehicle-report-modal h3 {
+  /* Abordagem mais seletiva para evitar afetar cabeçalho/rodapé */
+  .vehicle-report-modal > div:not(.print\\:hidden) {
     margin-bottom: 0.5rem !important;
   }
   
-  .vehicle-report-modal .grid {
-    margin-bottom: 0.75rem !important;
-  }
-  
-  .vehicle-report-modal .border-t {
-    margin-top: 0.75rem !important;
-    padding-top: 0.5rem !important;
+  .vehicle-report-modal > div:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
   
   /* Compactar conteúdo para caber em menos páginas */

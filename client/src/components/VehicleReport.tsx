@@ -71,17 +71,104 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
   const rightColumn = seriesItems.slice(midPoint);
 
   const handlePrint = () => {
-    // Adicionar classe de impressão temporariamente
-    document.body.classList.add('printing');
-    
-    setTimeout(() => {
-      window.print();
-      
-      // Remover classe após impressão
+    // Criar uma nova janela para impressão apenas do conteúdo
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (printWindow) {
+      const modalContent = document.querySelector('.vehicle-report-modal');
+      if (modalContent) {
+        // Clonar o conteúdo e remover botões
+        const contentClone = modalContent.cloneNode(true) as HTMLElement;
+        const printHiddenElements = contentClone.querySelectorAll('.print\\:hidden');
+        printHiddenElements.forEach(el => el.remove());
+        
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Relatório do Veículo</title>
+            <meta charset="UTF-8">
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { 
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                line-height: 1.5;
+                color: #374151;
+                padding: 20px;
+              }
+              .grid { display: grid; }
+              .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+              .gap-3 { gap: 0.75rem; }
+              .gap-4 { gap: 1rem; }
+              .gap-6 { gap: 1.5rem; }
+              .flex { display: flex; }
+              .justify-between { justify-content: space-between; }
+              .justify-center { justify-content: center; }
+              .items-center { align-items: center; }
+              .items-start { align-items: flex-start; }
+              .text-center { text-align: center; }
+              .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+              .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+              .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+              .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+              .font-medium { font-weight: 500; }
+              .font-semibold { font-weight: 600; }
+              .font-bold { font-weight: 700; }
+              .mb-2 { margin-bottom: 0.5rem; }
+              .mb-3 { margin-bottom: 0.75rem; }
+              .mb-4 { margin-bottom: 1rem; }
+              .mb-6 { margin-bottom: 1.5rem; }
+              .mt-4 { margin-top: 1rem; }
+              .pt-3 { padding-top: 0.75rem; }
+              .p-2 { padding: 0.5rem; }
+              .p-6 { padding: 1.5rem; }
+              .space-y-0\\.5 > * + * { margin-top: 0.125rem; }
+              .space-y-1 > * + * { margin-top: 0.25rem; }
+              .space-y-2 > * + * { margin-top: 0.5rem; }
+              .bg-gray-50 { background-color: #f9fafb; }
+              .bg-blue-50 { background-color: #eff6ff; }
+              .text-blue-700 { color: #1d4ed8; }
+              .text-blue-900 { color: #1e3a8a; }
+              .text-gray-500 { color: #6b7280; }
+              .text-red-600 { color: #dc2626; }
+              .text-green-600 { color: #16a34a; }
+              .border { border: 1px solid #e5e7eb; }
+              .border-t { border-top: 1px solid #e5e7eb; }
+              .rounded { border-radius: 0.25rem; }
+              .max-h-20 { max-height: 5rem; }
+              .object-contain { object-fit: contain; }
+              .mx-auto { margin-left: auto; margin-right: auto; }
+              @media print {
+                body { margin: 0; padding: 10px; }
+                @page { margin: 0.3in; size: A4; }
+              }
+            </style>
+          </head>
+          <body>
+            ${contentClone.innerHTML}
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        
+        // Aguardar carregamento e imprimir
+        printWindow.onload = () => {
+          setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+          }, 500);
+        };
+      }
+    } else {
+      // Fallback para impressão normal se popup for bloqueado
+      document.body.classList.add('printing');
       setTimeout(() => {
-        document.body.classList.remove('printing');
-      }, 1000);
-    }, 100);
+        window.print();
+        setTimeout(() => {
+          document.body.classList.remove('printing');
+        }, 1000);
+      }, 100);
+    }
   };
 
   return (
