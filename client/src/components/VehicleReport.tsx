@@ -281,7 +281,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
           </div>
 
           {/* Rodapé */}
-          <div className="text-center mt-6 pt-4 border-t">
+          <div className="text-center mt-4 pt-3 border-t">
             <p className="text-sm text-gray-500">
               Relatório gerado em {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}
             </p>

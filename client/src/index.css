@@ -313,16 +313,38 @@
     widows: 3 !important;
   }
   
-  /* Controlar tamanho da página */
+  /* Controlar tamanho da página e eliminar páginas vazias */
   @page {
     margin: 0.5in;
     size: A4;
   }
   
-  /* Remover margens desnecessárias no final */
+  @page:blank {
+    @top-center { content: none; }
+    @bottom-center { content: none; }
+  }
+  
+  /* Remover margens desnecessárias no final e compactar */
   .vehicle-report-modal > *:last-child {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
+    page-break-after: avoid !important;
+  }
+  
+  /* Forçar que tudo caiba em menos páginas */
+  .vehicle-report-modal {
+    height: auto !important;
+    max-height: none !important;
+  }
+  
+  /* Eliminar espaços vazios que podem gerar páginas extras */
+  .vehicle-report-modal::after {
+    content: "";
+    display: block;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    page-break-after: avoid !important;
   }
   
   /* Compactar conteúdo para caber em menos páginas */
@@ -332,6 +354,18 @@
   
   .pt-4 {
     padding-top: 0.5rem !important;
+  }
+  
+  /* Forçar fim da impressão após última seção */
+  .border-t.pt-4:last-of-type {
+    page-break-after: avoid !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Remover altura mínima que pode causar páginas vazias */
+  body, html {
+    height: auto !important;
+    min-height: auto !important;
   }
   
   /* Permitir quebras mais naturais, mantendo apenas itens críticos unidos */
@@ -373,6 +407,14 @@
   
   .gap-3 {
     gap: 0.75rem !important;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem !important;
+  }
+  
+  .pt-3 {
+    padding-top: 0.75rem !important;
   }
 }
 
