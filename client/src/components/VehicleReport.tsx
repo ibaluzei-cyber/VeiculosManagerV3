@@ -78,16 +78,17 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
 
         {/* Conteúdo do relatório */}
         <div className="p-6 print:p-0">
-          {/* Cabeçalho com logo */}
+          {/* Cabeçalho com logo da Cota Zero KM */}
           <div className="text-center mb-6">
-            {companyLogo && (
+            {companyLogo ? (
               <img 
                 src={companyLogo} 
-                alt={companyName}
+                alt="Cota Zero KM"
                 className="mx-auto mb-4 max-h-20 object-contain"
               />
+            ) : (
+              <h1 className="text-2xl font-bold text-gray-800">Cota Zero KM</h1>
             )}
-            <h1 className="text-2xl font-bold text-gray-800">{companyName}</h1>
           </div>
 
           {/* Informações do veículo e imagem */}
@@ -116,9 +117,6 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
             <div className="flex justify-center">
               {(() => {
                 const imageUrl = vehicleData.vehicleImage || vehicleData.selectedColor?.imageUrl;
-                console.log('Vehicle Image URL:', vehicleData.vehicleImage);
-                console.log('Selected Color Image URL:', vehicleData.selectedColor?.imageUrl);
-                console.log('Final Image URL:', imageUrl);
                 
                 return imageUrl ? (
                   <img 
@@ -126,7 +124,6 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                     alt={`${vehicleData.brand} ${vehicleData.model}`}
                     className="max-w-full max-h-40 object-contain"
                     onError={(e) => {
-                      console.error('Erro ao carregar imagem:', imageUrl);
                       e.currentTarget.style.display = 'none';
                     }}
                   />

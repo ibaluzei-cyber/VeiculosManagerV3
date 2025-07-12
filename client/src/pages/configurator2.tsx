@@ -1065,16 +1065,11 @@ export default function Configurator2() {
 
   // Função para gerar dados do relatório
   function getReportData() {
-    console.log('DEBUG - selectedColorId:', selectedColorId);
-    console.log('DEBUG - versionColors:', versionColors);
-    
     const selectedBrand = brands.find(b => b.id === parseInt(selectedBrandId));
     const selectedModel = allModels.find(m => m.id === parseInt(selectedModelId));
     const selectedVersion = allVersions.find(v => v.id === parseInt(selectedVersionId));
     const selectedColor = selectedColorId ? versionColors.find(vc => vc.colorId === parseInt(selectedColorId)) : null;
     const selectedDirectSale = selectedDirectSaleId ? directSales.find(ds => ds.id === parseInt(selectedDirectSaleId)) : null;
-    
-    console.log('DEBUG - selectedColor encontrada:', selectedColor);
     
     const selectedOptionalsList = selectedOptionals.map(optId => {
       const optional = versionOptionals.find(vo => vo.id === optId);
