@@ -86,7 +86,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
 
   return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 print:static print:bg-transparent print:p-0">
-        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto print:max-w-none print:max-h-none print:overflow-visible print:rounded-none">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto print:max-w-none print:max-h-none print:overflow-visible print:rounded-none vehicle-report-modal">
           {/* Cabeçalho com botões - não imprime */}
           <div className="flex justify-between items-center p-4 border-b print:hidden">
             <h2 className="text-xl font-bold">Relatório do Veículo</h2>

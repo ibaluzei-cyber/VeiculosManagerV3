@@ -73,8 +73,37 @@
 
 /* CSS específico para impressão do relatório */
 @media print {
+  /* Esconder tudo por padrão */
+  * {
+    visibility: hidden;
+  }
+  
+  /* Mostrar apenas o modal do relatório */
+  .vehicle-report-modal,
+  .vehicle-report-modal * {
+    visibility: visible;
+  }
+  
+  /* Posicionar o modal para impressão */
+  .vehicle-report-modal {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: white !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 20px !important;
+    margin: 0 !important;
+  }
+  
   /* Esconder elementos da interface quando imprimindo */
   .print\:hidden {
+    visibility: hidden !important;
     display: none !important;
   }
   
