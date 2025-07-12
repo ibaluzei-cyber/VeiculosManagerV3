@@ -71,33 +71,43 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
   const rightColumn = seriesItems.slice(midPoint);
 
   const handlePrint = () => {
-    window.print();
+    // Adicionar classe de impressão temporariamente
+    document.body.classList.add('printing');
+    
+    setTimeout(() => {
+      window.print();
+      
+      // Remover classe após impressão
+      setTimeout(() => {
+        document.body.classList.remove('printing');
+      }, 1000);
+    }, 100);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
-        {/* Cabeçalho com botões - não imprime */}
-        <div className="flex justify-between items-center p-4 border-b print:hidden">
-          <h2 className="text-xl font-bold">Relatório do Veículo</h2>
-          <div className="flex gap-2">
-            <button 
-              onClick={handlePrint}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Imprimir
-            </button>
-            <button 
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Fechar
-            </button>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 print:static print:bg-transparent print:p-0">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto print-content print:max-w-none print:max-h-none print:overflow-visible print:rounded-none">
+          {/* Cabeçalho com botões - não imprime */}
+          <div className="flex justify-between items-center p-4 border-b print:hidden">
+            <h2 className="text-xl font-bold">Relatório do Veículo</h2>
+            <div className="flex gap-2">
+              <button 
+                onClick={handlePrint}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Imprimir
+              </button>
+              <button 
+                onClick={onClose}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Fechar
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* Conteúdo do relatório */}
-        <div className="p-6 print:p-0">
+          {/* Conteúdo do relatório */}
+          <div className="p-6 print:p-4">
           {/* Cabeçalho com logo da Cota Zero KM */}
           <div className="text-center mb-6">
             {companyLogo ? (
@@ -278,43 +288,6 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
           </div>
         </div>
       </div>
-
-      {/* Estilos CSS para impressão */}
-      <style jsx>{`
-        @media print {
-          .print\\:hidden {
-            display: none !important;
-          }
-          .print\\:p-0 {
-            padding: 0 !important;
-          }
-          body {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          .fixed {
-            position: static !important;
-          }
-          .bg-black {
-            background-color: transparent !important;
-          }
-          .bg-opacity-50 {
-            background-color: transparent !important;
-          }
-          .rounded-lg {
-            border-radius: 0 !important;
-          }
-          .max-w-4xl {
-            max-width: 100% !important;
-          }
-          .max-h-\\[90vh\\] {
-            max-height: none !important;
-          }
-          .overflow-auto {
-            overflow: visible !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

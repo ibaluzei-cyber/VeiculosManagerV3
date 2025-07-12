@@ -71,6 +71,78 @@
   }
 }
 
+/* CSS específico para impressão do relatório */
+@media print {
+  /* Esconder elementos da interface quando imprimindo */
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  /* Ajustar espaçamento para impressão */
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+  
+  .print\:p-4 {
+    padding: 1rem !important;
+  }
+  
+  /* Esconder barra lateral e header quando imprimindo */
+  .sidebar, .header, .navigation {
+    display: none !important;
+  }
+  
+  /* Tornar o modal estático para impressão */
+  .print\:static {
+    position: static !important;
+  }
+  
+  .print\:bg-transparent {
+    background-color: transparent !important;
+  }
+  
+  .print\:max-w-none {
+    max-width: none !important;
+  }
+  
+  .print\:max-h-none {
+    max-height: none !important;
+  }
+  
+  .print\:overflow-visible {
+    overflow: visible !important;
+  }
+  
+  .print\:rounded-none {
+    border-radius: 0 !important;
+  }
+  
+  /* Garantir que cores sejam impressas */
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Esconder todos os elementos exceto o relatório */
+  body > *:not([class*="print-content"]) {
+    display: none !important;
+  }
+  
+  /* Mostrar apenas o conteúdo do relatório */
+  .print-content {
+    display: block !important;
+    position: static !important;
+    background: white !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
 @layer components {
   .sidebar-item {
     @apply flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md;
