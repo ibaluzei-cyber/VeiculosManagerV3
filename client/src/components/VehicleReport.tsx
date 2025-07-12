@@ -41,10 +41,25 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
     queryFn: getQueryFn()
   });
 
-  const companyLogo = user?.logoUrl || settings.find((s: any) => s.key === 'company_logo_url')?.value;
+  // Função para converter URL do PostImg para formato direto
+  const convertPostImgUrl = (url: string): string => {
+    if (!url) return url;
+    
+    // Se for URL do PostImg no formato https://postimg.cc/[id]
+    const postImgMatch = url.match(/https:\/\/postimg\.cc\/([a-zA-Z0-9]+)/);
+    if (postImgMatch) {
+      // Infelizmente não conseguimos converter automaticamente sem saber o nome do arquivo
+      // Vamos usar o fallback da configuração do sistema
+      return settings.find((s: any) => s.key === 'company_logo_url')?.value || url;
+    }
+    
+    return url;
+  };
+
+  const userLogo = user?.logoUrl ? convertPostImgUrl(user.logoUrl) : null;
+  const systemLogo = settings.find((s: any) => s.key === 'company_logo_url')?.value;
+  const companyLogo = userLogo || systemLogo;
   const companyName = settings.find((s: any) => s.key === 'company_name')?.value || 'Empresa';
-  
-  console.log('DEBUG - Final companyLogo:', companyLogo);
 
   // Separar itens de série em duas colunas
   const seriesItems = vehicleData.vehicleDescription?.split('\n').filter(item => item.trim()) || [];
