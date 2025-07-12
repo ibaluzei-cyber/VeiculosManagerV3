@@ -87,11 +87,6 @@
     padding: 1rem !important;
   }
   
-  /* Esconder barra lateral e header quando imprimindo */
-  .sidebar, .header, .navigation {
-    display: none !important;
-  }
-  
   /* Tornar o modal estático para impressão */
   .print\:static {
     position: static !important;
@@ -121,25 +116,6 @@
   body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-  
-  /* Esconder todos os elementos exceto o relatório */
-  body > *:not([class*="print-content"]) {
-    display: none !important;
-  }
-  
-  /* Mostrar apenas o conteúdo do relatório */
-  .print-content {
-    display: block !important;
-    position: static !important;
-    background: white !important;
-    border-radius: 0 !important;
-    max-width: none !important;
-    max-height: none !important;
-    overflow: visible !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
   }
 }
 
