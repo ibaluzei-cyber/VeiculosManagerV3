@@ -1066,8 +1066,8 @@ export default function Configurator2() {
   // Função para gerar dados do relatório
   function getReportData() {
     const selectedBrand = brands.find(b => b.id === parseInt(selectedBrandId));
-    const selectedModel = models.find(m => m.id === parseInt(selectedModelId));
-    const selectedVersion = versions.find(v => v.id === parseInt(selectedVersionId));
+    const selectedModel = allModels.find(m => m.id === parseInt(selectedModelId));
+    const selectedVersion = allVersions.find(v => v.id === parseInt(selectedVersionId));
     const selectedColor = selectedColorId ? versionColors.find(vc => vc.id === parseInt(selectedColorId)) : null;
     const selectedDirectSale = selectedDirectSaleId ? directSales.find(ds => ds.id === parseInt(selectedDirectSaleId)) : null;
     
