@@ -1071,7 +1071,7 @@ export default function Configurator2() {
     const selectedBrand = brands.find(b => b.id === parseInt(selectedBrandId));
     const selectedModel = allModels.find(m => m.id === parseInt(selectedModelId));
     const selectedVersion = allVersions.find(v => v.id === parseInt(selectedVersionId));
-    const selectedColor = selectedColorId ? versionColors.find(vc => vc.id === parseInt(selectedColorId)) : null;
+    const selectedColor = selectedColorId ? versionColors.find(vc => vc.colorId === parseInt(selectedColorId)) : null;
     const selectedDirectSale = selectedDirectSaleId ? directSales.find(ds => ds.id === parseInt(selectedDirectSaleId)) : null;
     
     console.log('DEBUG - selectedColor encontrada:', selectedColor);

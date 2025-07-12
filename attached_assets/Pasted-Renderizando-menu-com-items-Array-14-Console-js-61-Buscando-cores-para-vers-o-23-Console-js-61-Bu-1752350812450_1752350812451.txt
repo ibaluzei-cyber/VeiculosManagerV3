@@ -1,0 +1,30 @@
+Renderizando menu com items: Array(14)
+Console.js:61 Buscando cores para versão: 23
+Console.js:61 Buscando opcionais para versão: 23
+Console.js:61 DEBUG - selectedColorId: 15
+Console.js:61 DEBUG - versionColors: Array(5)
+Console.js:61 DEBUG - selectedColor encontrada: undefined
+Console.js:61 Vehicle Image URL: undefined
+Console.js:61 Selected Color Image URL: undefined
+Console.js:61 Final Image URL: undefined
+Console.js:61 Warning: Received `true` for a non-boolean attribute `jsx`.
+
+If you want to write it to the DOM, pass a string instead: jsx="true" or jsx={value.toString()}.
+    at style
+    at div
+    at VehicleReport (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/components/VehicleReport.tsx:22:41)
+    at div
+    at div
+    at Configurator2 (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/pages/configurator2.tsx:39:31)
+    at Route (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=4d68815c:280:16)
+    at ProtectedRoute (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/lib/protected-route.tsx:68:3)
+    at Switch (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=4d68815c:336:17)
+    at main
+    at div
+    at div
+    at AdminLayout (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/components/layout/AdminLayout.tsx:25:39)
+    at AppContent (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/App.tsx?v=ANZbeQBE9uDbeBxouvxwn:65:31)
+    at AuthProvider (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/hooks/use-auth.tsx:55:32)
+    at QueryClientProvider (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=4d68815c:2879:3)
+    at App
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
