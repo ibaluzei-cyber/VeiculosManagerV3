@@ -43,6 +43,8 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
 
   const companyLogo = user?.logoUrl || settings.find((s: any) => s.key === 'company_logo_url')?.value;
   const companyName = settings.find((s: any) => s.key === 'company_name')?.value || 'Empresa';
+  
+  console.log('DEBUG - Final companyLogo:', companyLogo);
 
   // Separar itens de série em duas colunas
   const seriesItems = vehicleData.vehicleDescription?.split('\n').filter(item => item.trim()) || [];
@@ -85,6 +87,15 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                 src={companyLogo} 
                 alt="Cota Zero KM"
                 className="mx-auto mb-4 max-h-20 object-contain"
+                onError={(e) => {
+                  console.error('Erro ao carregar logo:', companyLogo);
+                  e.currentTarget.style.display = 'none';
+                  // Mostrar texto como fallback
+                  const fallbackDiv = document.createElement('h1');
+                  fallbackDiv.className = 'text-2xl font-bold text-gray-800';
+                  fallbackDiv.textContent = 'Cota Zero KM';
+                  e.currentTarget.parentNode?.appendChild(fallbackDiv);
+                }}
               />
             ) : (
               <h1 className="text-2xl font-bold text-gray-800">Cota Zero KM</h1>
