@@ -138,11 +138,27 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
               .object-contain { object-fit: contain; }
               .mx-auto { margin-left: auto; margin-right: auto; }
               
-              /* Layout específico para itens de série em 2 colunas */
+              /* Layout principal em 2 colunas para o relatório completo */
+              .report-main-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                margin-top: 1rem;
+              }
+              .report-left-column {
+                display: flex;
+                flex-direction: column;
+              }
+              .report-right-column {
+                display: flex;
+                flex-direction: column;
+              }
+              
+              /* Layout específico para itens de série em 2 colunas dentro da coluna esquerda */
               .series-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 1rem;
+                gap: 0.75rem;
                 margin-top: 0.5rem;
               }
               .series-column {
@@ -156,8 +172,8 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
               }
               .series-column li {
                 padding: 0.125rem 0;
-                font-size: 0.875rem;
-                line-height: 1.25;
+                font-size: 0.75rem;
+                line-height: 1.2;
               }
               .series-column li:before {
                 content: "• ";
@@ -245,9 +261,10 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
             )}
           </div>
 
-          {/* Informações do veículo e imagem */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
+          {/* Layout principal em 2 colunas */}
+          <div className="report-main-grid">
+            {/* Coluna esquerda: Informações principais */}
+            <div className="report-left-column">
               <h2 className="text-lg font-semibold mb-2">
                 {vehicleData.brand} {vehicleData.model} {vehicleData.version}
               </h2>
@@ -259,126 +276,127 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                   Cor: {vehicleData.selectedColor.name}
                 </p>
               )}
-              <div className="bg-blue-50 p-3 rounded">
+              <div className="bg-blue-50 p-3 rounded mb-4">
                 <p className="text-sm text-blue-700">PREÇO PÚBLICO</p>
                 <p className="text-xl font-bold text-blue-900">
                   {formatCurrency(vehicleData.basePrice)}
                 </p>
               </div>
-            </div>
-            
-            {/* Imagem do veículo */}
-            <div className="flex justify-center">
-              {(() => {
-                const imageUrl = vehicleData.vehicleImage || vehicleData.selectedColor?.imageUrl;
-                
-                return imageUrl ? (
-                  <img 
-                    src={imageUrl} 
-                    alt={`${vehicleData.brand} ${vehicleData.model}`}
-                    className="max-w-full max-h-40 object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-40 bg-gray-100 rounded flex items-center justify-center">
-                    <span className="text-gray-500">Imagem não disponível</span>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
 
-          {/* Seção de opcionais e resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
-            {/* Opcionais selecionados */}
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Opcionais Selecionados</h3>
-              {vehicleData.selectedOptionals.length > 0 ? (
-                <div className="space-y-2">
-                  {vehicleData.selectedOptionals.map((optional, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                      <span className="text-sm">{optional.name}</span>
-                      <span className="font-medium">{formatCurrency(optional.price)}</span>
-                    </div>
-                  ))}
+              {/* Opcionais selecionados */}
+              {vehicleData.selectedOptionals.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="text-md font-medium mb-2">Opcionais Selecionados</h3>
+                  <div className="space-y-1">
+                    {vehicleData.selectedOptionals.map((optional, index) => (
+                      <div key={index} className="flex justify-between text-sm">
+                        <span>{optional.name}</span>
+                        <span className="font-medium">{formatCurrency(optional.price)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <p className="text-gray-500">Nenhum opcional selecionado</p>
+              )}
+
+              {/* Itens de série em 2 colunas */}
+              {seriesItems.length > 0 && (
+                <div>
+                  <h3 className="text-md font-medium mb-2">Itens de Série</h3>
+                  <div className="series-grid">
+                    <div className="series-column">
+                      <ul>
+                        {leftColumn.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="series-column">
+                      <ul>
+                        {rightColumn.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
+            
+            {/* Coluna direita: Imagem e resumo financeiro */}
+            <div className="report-right-column">
+              {/* Imagem do veículo */}
+              <div className="flex justify-center mb-4">
+                {(() => {
+                  const imageUrl = vehicleData.vehicleImage || vehicleData.selectedColor?.imageUrl;
+                  
+                  return imageUrl ? (
+                    <img 
+                      src={imageUrl} 
+                      alt={`${vehicleData.brand} ${vehicleData.model}`}
+                      className="max-w-full max-h-40 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-40 bg-gray-100 rounded flex items-center justify-center">
+                      <span className="text-gray-500">Imagem não disponível</span>
+                    </div>
+                  );
+                })()}
+              </div>
 
-            {/* Resumo financeiro */}
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Resumo Financeiro</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Preço base:</span>
-                  <span>{formatCurrency(vehicleData.basePrice)}</span>
-                </div>
-                {vehicleData.selectedColor && vehicleData.selectedColor.price > 0 && (
+              {/* Resumo financeiro */}
+              <div className="bg-gray-50 p-4 rounded">
+                <h3 className="text-md font-medium mb-3">Resumo Financeiro</h3>
+                <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>Cor ({vehicleData.selectedColor.name}):</span>
-                    <span>{formatCurrency(vehicleData.selectedColor.price)}</span>
+                    <span>Preço base:</span>
+                    <span className="font-medium">{formatCurrency(vehicleData.basePrice)}</span>
                   </div>
-                )}
-                {vehicleData.selectedOptionals.length > 0 && (
-                  <div className="flex justify-between">
-                    <span>Opcionais:</span>
-                    <span>{formatCurrency(vehicleData.selectedOptionals.reduce((total, opt) => total + opt.price, 0))}</span>
-                  </div>
-                )}
-                {vehicleData.discountAmount > 0 && (
-                  <div className="flex justify-between text-red-600">
-                    <span>Desconto ({vehicleData.discountPercent}%):</span>
-                    <span>-{formatCurrency(vehicleData.discountAmount)}</span>
-                  </div>
-                )}
-                {vehicleData.markupAmount > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Acréscimo:</span>
-                    <span>+{formatCurrency(vehicleData.markupAmount)}</span>
-                  </div>
-                )}
-                <div className="border-t pt-2">
-                  <div className="flex justify-between font-bold text-lg">
-                    <span>Total (x{vehicleData.quantity}):</span>
-                    <span>{formatCurrency(vehicleData.finalPrice)}</span>
+                  
+                  {vehicleData.selectedColor && vehicleData.selectedColor.price > 0 && (
+                    <div className="flex justify-between">
+                      <span>Cor ({vehicleData.selectedColor.name}):</span>
+                      <span className="font-medium">{formatCurrency(vehicleData.selectedColor.price)}</span>
+                    </div>
+                  )}
+                  
+                  {vehicleData.selectedOptionals.length > 0 && (
+                    <div className="flex justify-between">
+                      <span>Opcionais:</span>
+                      <span className="font-medium">
+                        {formatCurrency(vehicleData.selectedOptionals.reduce((sum, opt) => sum + opt.price, 0))}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {vehicleData.discountAmount > 0 && (
+                    <div className="flex justify-between text-red-600">
+                      <span>Desconto ({vehicleData.discountPercent}%):</span>
+                      <span>-{formatCurrency(vehicleData.discountAmount)}</span>
+                    </div>
+                  )}
+                  
+                  {vehicleData.markupAmount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Acréscimo:</span>
+                      <span>+{formatCurrency(vehicleData.markupAmount)}</span>
+                    </div>
+                  )}
+                  
+                  <div className="border-t pt-2 mt-2">
+                    <div className="flex justify-between font-bold text-lg">
+                      <span>Total (x{vehicleData.quantity}):</span>
+                      <span>{formatCurrency(vehicleData.finalPrice)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Itens de série em duas colunas */}
-          {vehicleData.vehicleDescription && (
-            <div className="mb-3">
-              <h3 className="text-lg font-semibold mb-2">Itens de Série</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <ul className="text-sm space-y-0.5">
-                    {leftColumn.map((item, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="mr-2">•</span>
-                        <span>{item.trim()}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <ul className="text-sm space-y-0.5">
-                    {rightColumn.map((item, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="mr-2">•</span>
-                        <span>{item.trim()}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {/* Dados do usuário */}
           <div className="border-t pt-4">
