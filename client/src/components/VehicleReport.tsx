@@ -252,50 +252,13 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
         `);
         printWindow.document.close();
         
-        // Detectar se é mobile e ajustar layout
-        const script = printWindow.document.createElement('script');
-        script.textContent = `
-          function isMobile() {
-            return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-          }
-          
-          if (isMobile()) {
-            document.body.classList.add('mobile-print');
-            // Adicionar CSS específico para mobile
-            const mobileStyle = document.createElement('style');
-            mobileStyle.textContent = \`
-              @media print {
-                .mobile-print * { font-size: 10px !important; }
-                .mobile-print h1 { font-size: 14px !important; }
-                .mobile-print h2 { font-size: 12px !important; }
-                .mobile-print h3 { font-size: 11px !important; }
-                .mobile-print .report-main-grid { 
-                  display: grid !important; 
-                  grid-template-columns: 1fr 1fr !important; 
-                  gap: 0.5rem !important; 
-                }
-                .mobile-print .mb-3 { margin-bottom: 4px !important; }
-                .mobile-print .mb-4 { margin-bottom: 6px !important; }
-                .mobile-print .mb-6 { margin-bottom: 8px !important; }
-                .mobile-print .p-6 { padding: 8px !important; }
-                .mobile-print .p-2 { padding: 3px !important; }
-                .mobile-print img { max-height: 60px !important; }
-                .mobile-print .bg-gray-50 { padding: 3px !important; }
-                .mobile-print .series-column li { font-size: 10px !important; line-height: 1.2 !important; }
-              }
-            \`;
-            document.head.appendChild(mobileStyle);
-          }
-        `;
-        printWindow.document.head.appendChild(script);
-        
         // Aguardar carregamento e imprimir
         printWindow.onload = () => {
           setTimeout(() => {
             printWindow.focus();
             printWindow.print();
             printWindow.close();
-          }, 800);
+          }, 500);
         };
       }
     } else {
