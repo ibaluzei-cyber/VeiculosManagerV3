@@ -87,6 +87,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
           <head>
             <title>Relatório do Veículo</title>
             <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
               * { margin: 0; padding: 0; box-sizing: border-box; }
               body { 
@@ -184,6 +185,63 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
               @media print {
                 body { margin: 0; padding: 10px; }
                 @page { margin: 0.3in; size: A4; }
+                
+                /* CSS específico para impressão mobile */
+                @media (max-width: 768px) {
+                  body { padding: 5px; font-size: 10px; }
+                  
+                  /* Força layout 2 colunas mesmo em mobile */
+                  .report-main-grid {
+                    display: grid !important;
+                    grid-template-columns: 1fr 1fr !important;
+                    gap: 0.5rem !important;
+                  }
+                  
+                  .report-left-column,
+                  .report-right-column {
+                    width: 100% !important;
+                  }
+                  
+                  /* Reduzir tamanhos de fonte */
+                  h1 { font-size: 14px !important; margin-bottom: 6px !important; }
+                  h2 { font-size: 12px !important; margin-bottom: 4px !important; }
+                  h3 { font-size: 11px !important; margin-bottom: 3px !important; }
+                  
+                  .text-xl { font-size: 12px !important; }
+                  .text-lg { font-size: 11px !important; }
+                  .text-sm { font-size: 9px !important; }
+                  
+                  /* Compactar espaçamentos */
+                  .mb-3 { margin-bottom: 4px !important; }
+                  .mb-4 { margin-bottom: 6px !important; }
+                  .mb-6 { margin-bottom: 8px !important; }
+                  .mt-4 { margin-top: 6px !important; }
+                  .p-6 { padding: 8px !important; }
+                  .p-2 { padding: 3px !important; }
+                  
+                  /* Grid de séries otimizado */
+                  .series-grid {
+                    gap: 0.25rem !important;
+                  }
+                  
+                  .series-column li {
+                    font-size: 8px !important;
+                    line-height: 1.0 !important;
+                    padding: 0 !important;
+                    margin-bottom: 1px !important;
+                  }
+                  
+                  /* Imagem menor */
+                  img {
+                    max-height: 60px !important;
+                  }
+                  
+                  /* Background boxes compactos */
+                  .bg-gray-50,
+                  .bg-blue-50 {
+                    padding: 3px !important;
+                  }
+                }
               }
             </style>
           </head>
@@ -194,13 +252,50 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
         `);
         printWindow.document.close();
         
+        // Detectar se é mobile e ajustar layout
+        const script = printWindow.document.createElement('script');
+        script.textContent = `
+          function isMobile() {
+            return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          }
+          
+          if (isMobile()) {
+            document.body.classList.add('mobile-print');
+            // Adicionar CSS específico para mobile
+            const mobileStyle = document.createElement('style');
+            mobileStyle.textContent = \`
+              @media print {
+                .mobile-print * { font-size: 10px !important; }
+                .mobile-print h1 { font-size: 14px !important; }
+                .mobile-print h2 { font-size: 12px !important; }
+                .mobile-print h3 { font-size: 11px !important; }
+                .mobile-print .report-main-grid { 
+                  display: grid !important; 
+                  grid-template-columns: 1fr 1fr !important; 
+                  gap: 0.5rem !important; 
+                }
+                .mobile-print .mb-3 { margin-bottom: 4px !important; }
+                .mobile-print .mb-4 { margin-bottom: 6px !important; }
+                .mobile-print .mb-6 { margin-bottom: 8px !important; }
+                .mobile-print .p-6 { padding: 8px !important; }
+                .mobile-print .p-2 { padding: 3px !important; }
+                .mobile-print img { max-height: 60px !important; }
+                .mobile-print .bg-gray-50 { padding: 3px !important; }
+                .mobile-print .series-column li { font-size: 8px !important; line-height: 1.0 !important; }
+              }
+            \`;
+            document.head.appendChild(mobileStyle);
+          }
+        `;
+        printWindow.document.head.appendChild(script);
+        
         // Aguardar carregamento e imprimir
         printWindow.onload = () => {
           setTimeout(() => {
             printWindow.focus();
             printWindow.print();
             printWindow.close();
-          }, 500);
+          }, 800);
         };
       }
     } else {
