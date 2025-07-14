@@ -173,8 +173,8 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
               }
               .series-column li {
                 padding: 0.125rem 0;
-                font-size: 0.75rem;
-                line-height: 1.2;
+                font-size: 0.8rem;
+                line-height: 1.3;
               }
               .series-column li:before {
                 content: "• ";
@@ -225,10 +225,10 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                   }
                   
                   .series-column li {
-                    font-size: 8px !important;
-                    line-height: 1.0 !important;
+                    font-size: 10px !important;
+                    line-height: 1.2 !important;
                     padding: 0 !important;
-                    margin-bottom: 1px !important;
+                    margin-bottom: 2px !important;
                   }
                   
                   /* Imagem menor */
@@ -281,7 +281,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                 .mobile-print .p-2 { padding: 3px !important; }
                 .mobile-print img { max-height: 60px !important; }
                 .mobile-print .bg-gray-50 { padding: 3px !important; }
-                .mobile-print .series-column li { font-size: 8px !important; line-height: 1.0 !important; }
+                .mobile-print .series-column li { font-size: 10px !important; line-height: 1.2 !important; }
               }
             \`;
             document.head.appendChild(mobileStyle);
