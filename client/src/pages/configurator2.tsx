@@ -290,14 +290,19 @@ export default function Configurator2() {
       setDiscountPercentage(calculatedDiscountPercentage);
       setDiscountAmount(calculatedDiscountAmount);
       
-      // Cálculo de opcionais
+    }
+  }, [selectedVehicle, selectedDirectSaleId, directSales]);
+
+  // useEffect separado para cálculo de opcionais (não deve interferir no desconto)
+  useEffect(() => {
+    if (versionOptionals.length > 0) {
       const selectedOptionalsTotal = versionOptionals
         .filter(opt => selectedOptionals.includes(opt.optionalId))
         .reduce((sum, opt) => sum + (Number(opt.price) || 0), 0);
       
       setOptionalsTotal(selectedOptionalsTotal);
     }
-  }, [selectedVehicle, selectedDirectSaleId, selectedOptionals, versionOptionals, directSales]);
+  }, [selectedOptionals, versionOptionals]);
   
   // Efeito separado para cálculo do preço final baseado em todas as entradas do usuário
   useEffect(() => {
