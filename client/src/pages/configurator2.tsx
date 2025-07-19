@@ -156,6 +156,24 @@ export default function Configurator2() {
   const [taxiIpi, setTaxiIpi] = useState(0);
   const [selectedPriceType, setSelectedPriceType] = useState<string | null>(null);
   
+  // Função para obter o preço base correto baseado no tipo selecionado
+  const getCurrentBasePrice = () => {
+    if (!selectedPriceType) return publicPrice;
+    
+    switch (selectedPriceType) {
+      case 'pcdIpi':
+        return pcdIpi;
+      case 'taxiIpiIcms':
+        return taxiIpiIcms;
+      case 'pcdIpiIcms':
+        return pcdIpiIcms;
+      case 'taxiIpi':
+        return taxiIpi;
+      default:
+        return publicPrice;
+    }
+  };
+
   // Função para lidar com seleção de cartões de preço
   const handlePriceCardClick = (priceType: string) => {
     // Limpa os valores de desconto e ágio cada vez que um cartão é clicado
@@ -285,13 +303,13 @@ export default function Configurator2() {
         : null;
       
       const calculatedDiscountPercentage = directSale ? directSale.discountPercentage : 0;
-      const calculatedDiscountAmount = (selectedVehicle.publicPrice * calculatedDiscountPercentage) / 100;
+      const calculatedDiscountAmount = (getCurrentBasePrice() * calculatedDiscountPercentage) / 100;
       
       setDiscountPercentage(calculatedDiscountPercentage);
       setDiscountAmount(calculatedDiscountAmount);
       
     }
-  }, [selectedVehicle, selectedDirectSaleId, directSales]);
+  }, [selectedVehicle, selectedDirectSaleId, directSales, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
 
   // useEffect separado para cálculo de opcionais (não deve interferir no desconto)
   useEffect(() => {
@@ -815,7 +833,7 @@ export default function Configurator2() {
                             const validValue = inputValue.replace(/[^0-9.]/g, '');
                             const newPercentage = parseFloat(validValue) || 0;
                             setDiscountPercentage(newPercentage);
-                            const newDiscountAmount = (publicPrice * newPercentage) / 100;
+                            const newDiscountAmount = (getCurrentBasePrice() * newPercentage) / 100;
                             setDiscountAmount(newDiscountAmount);
                           }
                         }}
