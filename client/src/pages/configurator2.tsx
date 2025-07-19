@@ -162,6 +162,7 @@ export default function Configurator2() {
     setDiscountPercentage(0);
     setDiscountAmount(0);
     setSurchargeAmount(0);
+    setSelectedDirectSaleId(""); // Limpa a seleção do dropdown de desconto
     
     // Se já estava selecionado ou se for o preço público e não havia seleção,
     // simplesmente desmarca (volta para o preço público sem destaque)
