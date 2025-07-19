@@ -21,6 +21,7 @@ interface VehicleReportProps {
       price: number;
     }>;
     basePrice: number;
+    priceType: string;
     discountPercent: number;
     discountAmount: number;
     markupAmount: number;
@@ -335,7 +336,7 @@ export default function VehicleReport({ vehicleData, onClose }: VehicleReportPro
                 </p>
               )}
               <div className="bg-blue-50 p-3 rounded mb-4">
-                <p className="text-sm text-blue-700">PREÇO PÚBLICO</p>
+                <p className="text-sm text-blue-700">{vehicleData.priceType}</p>
                 <p className="text-xl font-bold text-blue-900">
                   {formatCurrency(vehicleData.basePrice)}
                 </p>

@@ -1080,6 +1080,31 @@ export default function Configurator2() {
       };
     });
 
+    // Determina o preço base e tipo baseado na seleção
+    let basePrice = publicPrice;
+    let priceType = 'PREÇO PÚBLICO';
+    
+    if (selectedPriceType) {
+      switch (selectedPriceType) {
+        case 'pcdIpi':
+          basePrice = pcdIpi;
+          priceType = 'PCD IPI';
+          break;
+        case 'taxiIpiIcms':
+          basePrice = taxiIpiIcms;
+          priceType = 'TAXI IPI/ICMS';
+          break;
+        case 'pcdIpiIcms':
+          basePrice = pcdIpiIcms;
+          priceType = 'PCD IPI/ICMS';
+          break;
+        case 'taxiIpi':
+          basePrice = taxiIpi;
+          priceType = 'TAXI IPI';
+          break;
+      }
+    }
+
     return {
       brand: selectedBrand?.name || '',
       model: selectedModel?.name || '',
@@ -1092,7 +1117,8 @@ export default function Configurator2() {
         imageUrl: selectedColor.imageUrl
       } : undefined,
       selectedOptionals: selectedOptionalsList,
-      basePrice: publicPrice,
+      basePrice: basePrice,
+      priceType: priceType,
       discountPercent: discountPercentage,
       discountAmount: discountAmount,
       markupAmount: surchargeAmount,
