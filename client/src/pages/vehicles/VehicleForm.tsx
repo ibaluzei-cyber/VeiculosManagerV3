@@ -242,16 +242,21 @@ export default function VehicleForm() {
   };
   
   const handleSubmit = async (values: FormValues) => {
+    console.log("handleSubmit foi chamada com:", values);
     try {
       // Já está em processo de envio, evita múltiplos envios
       if (isSubmitting) {
+        console.log("Já está submetendo, saindo...");
         return;
       }
       
       console.log("Form values:", values);
       
       // Verifica se há erros de validação antes de enviar
+      console.log("Executando validação do schema...");
       const validationResult = formSchema.safeParse(values);
+      console.log("Resultado da validação:", validationResult);
+      
       if (!validationResult.success) {
         const errors = validationResult.error.format();
         console.error("Validation errors:", errors);
@@ -304,6 +309,7 @@ export default function VehicleForm() {
       }
       
       // Convert string values to appropriate types for the backend
+      console.log("Convertendo dados para o backend...");
       const vehicleData = {
         ...values,
         // Convert string IDs to numbers
@@ -320,6 +326,7 @@ export default function VehicleForm() {
       };
       
       console.log("Vehicle data to send:", vehicleData);
+      console.log("Iniciando requisição para a API...");
       
       try {
         let response;
@@ -781,6 +788,9 @@ export default function VehicleForm() {
                     onClick={(e) => {
                       e.preventDefault();
                       console.log("Botão salvar clicado manualmente");
+                      console.log("Estado atual do formulário:", form.getValues());
+                      console.log("Erros do formulário:", form.formState.errors);
+                      console.log("Formulário é válido?", form.formState.isValid);
                       form.handleSubmit(handleSubmit)(e);
                     }}
                   >
