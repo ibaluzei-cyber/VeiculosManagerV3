@@ -46,7 +46,7 @@ const formSchema = z.object({
   brandId: z.string().min(1, "Selecione uma marca"),
   modelId: z.string().min(1, "Selecione um modelo"),
   versionId: z.string().min(1, "Selecione uma versão"),
-  colorId: z.string().optional(),
+  colorId: z.string(),
   year: z.coerce.number().min(1900, "Ano inválido").max(new Date().getFullYear() + 5, "Ano muito avançado"),
   publicPrice: z.string()
     .min(1, "Informe o preço público")
@@ -76,7 +76,7 @@ type FormValues = {
   brandId: string;
   modelId: string;
   versionId: string;
-  colorId?: string;
+  colorId: string;
   year: number;
   publicPrice: string;
   situation: 'available' | 'unavailable' | 'coming-soon';
@@ -266,8 +266,8 @@ export default function VehicleForm() {
         
         // Percorre todos os erros e adiciona suas mensagens
         Object.entries(errors).forEach(([field, fieldErrors]) => {
-          if (fieldErrors && fieldErrors._errors) {
-            fieldErrors._errors.forEach(error => {
+          if (fieldErrors && typeof fieldErrors === 'object' && '_errors' in fieldErrors) {
+            fieldErrors._errors.forEach((error: string) => {
               errorMessages.push(`${field}: ${error}`);
             });
           }
