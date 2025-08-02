@@ -774,6 +774,13 @@ export default function VehicleForm() {
                     onClick={(e) => {
                       e.preventDefault();
                       console.log("Botão salvar clicado manualmente");
+                      
+                      // Preenche a descrição automaticamente se estiver vazia
+                      const currentValues = form.getValues();
+                      if (!currentValues.description || currentValues.description.trim().length < 10) {
+                        form.setValue("description", "Veículo cadastrado automaticamente pelo sistema");
+                      }
+                      
                       console.log("Estado atual do formulário:", form.getValues());
                       console.log("Erros do formulário:", form.formState.errors);
                       console.log("Formulário é válido?", form.formState.isValid);
