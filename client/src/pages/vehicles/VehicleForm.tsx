@@ -46,7 +46,7 @@ const formSchema = z.object({
   brandId: z.string().min(1, "Selecione uma marca"),
   modelId: z.string().min(1, "Selecione um modelo"),
   versionId: z.string().min(1, "Selecione uma versão"),
-  colorId: z.string().min(1, "Selecione uma cor"),
+  colorId: z.string().optional(),
   year: z.coerce.number().min(1900, "Ano inválido").max(new Date().getFullYear() + 5, "Ano muito avançado"),
   publicPrice: z.string()
     .min(1, "Informe o preço público")
@@ -76,7 +76,7 @@ type FormValues = {
   brandId: string;
   modelId: string;
   versionId: string;
-  colorId: string;
+  colorId?: string;
   year: number;
   publicPrice: string;
   situation: 'available' | 'unavailable' | 'coming-soon';
@@ -261,40 +261,26 @@ export default function VehicleForm() {
         const errors = validationResult.error.format();
         console.error("Validation errors:", errors);
         
-        // Exibe mensagens de erro específicas
+        // Exibe mensagens de erro específicas baseadas nos erros reais
         let errorMessages = [];
         
-        if (errors.brandId?._errors?.length) {
-          errorMessages.push("Selecione uma marca");
-        }
+        // Percorre todos os erros e adiciona suas mensagens
+        Object.entries(errors).forEach(([field, fieldErrors]) => {
+          if (fieldErrors && fieldErrors._errors) {
+            fieldErrors._errors.forEach(error => {
+              errorMessages.push(`${field}: ${error}`);
+            });
+          }
+        });
         
-        if (errors.modelId?._errors?.length) {
-          errorMessages.push("Selecione um modelo");
-        }
-        
-        if (errors.versionId?._errors?.length) {
-          errorMessages.push("Selecione uma versão");
-        }
-        
-        if (errors.publicPrice?._errors?.length) {
-          errorMessages.push("Informe o preço público");
-        }
-        
-        if (errors.description?._errors?.length) {
-          errorMessages.push("A descrição deve ter pelo menos 10 caracteres");
-        }
-        
-        if (errors.engine?._errors?.length) {
-          errorMessages.push("Informe o motor do veículo");
-        }
-        
-        if (errors.colorId?._errors?.length) {
-          errorMessages.push("Selecione uma cor");
+        // Se não encontrou erros específicos, adiciona mensagem genérica
+        if (errorMessages.length === 0) {
+          errorMessages.push("Existem campos com problemas no formulário");
         }
         
         // Exibe toast com mensagens de erro
         toast({
-          title: "Campos obrigatórios",
+          title: "Erro de validação",
           description: (
             <ul className="list-disc pl-4">
               {errorMessages.map((error, i) => (
@@ -316,7 +302,7 @@ export default function VehicleForm() {
         brandId: parseInt(values.brandId),
         modelId: parseInt(values.modelId),
         versionId: parseInt(values.versionId),
-        colorId: values.colorId ? parseInt(values.colorId) : undefined,
+        colorId: values.colorId && values.colorId !== "" ? parseInt(values.colorId) : undefined,
         // Convert string currency values to numbers
         publicPrice: parseBRCurrency(values.publicPrice),
         pcdIpiIcms: parseBRCurrency(values.pcdIpiIcms),
