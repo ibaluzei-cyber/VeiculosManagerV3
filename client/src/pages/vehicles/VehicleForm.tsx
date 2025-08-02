@@ -326,35 +326,45 @@ export default function VehicleForm() {
         
         if (isEditing) {
           console.log("Updating vehicle with ID:", id);
-          response = await apiRequest<Vehicle>("PATCH", `/api/vehicles/${id}`, vehicleData);
+          response = await apiRequest("PATCH", `/api/vehicles/${id}`, vehicleData);
           console.log("Update response:", response);
           
-          if (response && response.id) {
-            toast({
-              title: "Veículo atualizado",
-              description: "O veículo foi atualizado com sucesso!",
-            });
-            queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
-            navigate("/vehicles");
-          } else {
-            throw new Error("Falha ao atualizar o veículo");
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Falha ao atualizar o veículo: ${errorText}`);
           }
+          
+          const updatedVehicle = await response.json();
+          console.log("Updated vehicle:", updatedVehicle);
+          
+          toast({
+            title: "Veículo atualizado",
+            description: "O veículo foi atualizado com sucesso!",
+          });
+          queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
+          setIsSubmitting(false);
+          navigate("/vehicles");
         } else {
           console.log("Creating new vehicle");
           setIsSubmitting(true);
-          response = await apiRequest<Vehicle>("POST", "/api/vehicles", vehicleData);
+          response = await apiRequest("POST", "/api/vehicles", vehicleData);
           console.log("Create response:", response);
           
-          if (response && response.id) {
-            toast({
-              title: "Veículo cadastrado",
-              description: "O veículo foi cadastrado com sucesso!",
-            });
-            queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
-            navigate("/vehicles");
-          } else {
-            throw new Error("Falha ao cadastrar o veículo");
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Falha ao cadastrar o veículo: ${errorText}`);
           }
+          
+          const newVehicle = await response.json();
+          console.log("New vehicle:", newVehicle);
+          
+          toast({
+            title: "Veículo cadastrado",
+            description: "O veículo foi cadastrado com sucesso!",
+          });
+          queryClient.invalidateQueries({ queryKey: ["/api/vehicles"] });
+          setIsSubmitting(false);
+          navigate("/vehicles");
         }
       } catch (error) {
         console.error("API error:", error);
@@ -376,6 +386,8 @@ export default function VehicleForm() {
         description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
