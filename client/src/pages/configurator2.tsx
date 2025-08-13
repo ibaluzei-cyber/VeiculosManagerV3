@@ -821,34 +821,25 @@ export default function Configurator2() {
                       onClick={(e) => e.currentTarget.querySelector('input')?.focus()}
                     >
                       <input 
-                        type="text" 
-                        value={discountPercentage === 0 ? '' : discountPercentage.toString().replace('.', ',')}
+                        type="number" 
+                        step="0.1"
+                        min="0"
+                        max="100"
+                        value={discountPercentage || ''}
                         onChange={(e) => {
                           const inputValue = e.target.value;
                           if (inputValue === '') {
                             setDiscountPercentage(0);
                             setDiscountAmount(0);
                           } else {
-                            // Permitir apenas números, vírgulas e pontos, limitando a um decimal
-                            let validValue = inputValue.replace(/[^0-9.,]/g, '');
-                            
-                            // Substituir vírgula por ponto para processamento
-                            validValue = validValue.replace(',', '.');
-                            
-                            // Garantir que há apenas um ponto decimal
-                            const parts = validValue.split('.');
-                            if (parts.length > 2) {
-                              validValue = parts[0] + '.' + parts.slice(1).join('');
-                            }
-                            
-                            const newPercentage = validValue === '' ? 0 : parseFloat(validValue) || 0;
+                            const newPercentage = parseFloat(inputValue) || 0;
                             setDiscountPercentage(newPercentage);
                             const newDiscountAmount = (getCurrentBasePrice() * newPercentage) / 100;
                             setDiscountAmount(newDiscountAmount);
                           }
                         }}
-                        inputMode="decimal"
                         className="w-full text-right border-none outline-none bg-transparent"
+                        placeholder="0,0"
                       />
                     </div>
                   </div>
@@ -859,31 +850,21 @@ export default function Configurator2() {
                       onClick={(e) => e.currentTarget.querySelector('input')?.focus()}
                     >
                       <input 
-                        type="text" 
-                        value={surchargeAmount === 0 ? '' : surchargeAmount.toString().replace('.', ',')}
+                        type="number" 
+                        step="0.1"
+                        min="0"
+                        value={surchargeAmount || ''}
                         onChange={(e) => {
                           const inputValue = e.target.value;
                           if (inputValue === '') {
                             setSurchargeAmount(0);
                           } else {
-                            // Permitir apenas números, vírgulas e pontos, limitando a um decimal
-                            let validValue = inputValue.replace(/[^0-9.,]/g, '');
-                            
-                            // Substituir vírgula por ponto para processamento
-                            validValue = validValue.replace(',', '.');
-                            
-                            // Garantir que há apenas um ponto decimal
-                            const parts = validValue.split('.');
-                            if (parts.length > 2) {
-                              validValue = parts[0] + '.' + parts.slice(1).join('');
-                            }
-                            
-                            const newSurcharge = validValue === '' ? 0 : parseFloat(validValue) || 0;
+                            const newSurcharge = parseFloat(inputValue) || 0;
                             setSurchargeAmount(newSurcharge);
                           }
                         }}
-                        inputMode="decimal"
                         className="w-full text-right border-none outline-none bg-transparent"
+                        placeholder="0,0"
                       />
                     </div>
                   </div>
