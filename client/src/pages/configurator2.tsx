@@ -829,8 +829,8 @@ export default function Configurator2() {
                             setDiscountPercentage(0);
                             setDiscountAmount(0);
                           } else {
-                            // Permitir apenas números e pontos
-                            const validValue = inputValue.replace(/[^0-9.]/g, '');
+                            // Permitir números, pontos e vírgulas
+                            const validValue = inputValue.replace(/[^0-9.,]/g, '').replace(',', '.');
                             const newPercentage = parseFloat(validValue) || 0;
                             setDiscountPercentage(newPercentage);
                             const newDiscountAmount = (getCurrentBasePrice() * newPercentage) / 100;
@@ -838,7 +838,6 @@ export default function Configurator2() {
                           }
                         }}
                         inputMode="decimal"
-                        pattern="[0-9]*"
                         className="w-full text-right border-none outline-none bg-transparent"
                       />
                     </div>
@@ -857,14 +856,13 @@ export default function Configurator2() {
                           if (inputValue === '') {
                             setSurchargeAmount(0);
                           } else {
-                            // Permitir apenas números e pontos
-                            const validValue = inputValue.replace(/[^0-9.]/g, '');
+                            // Permitir números, pontos e vírgulas
+                            const validValue = inputValue.replace(/[^0-9.,]/g, '').replace(',', '.');
                             const newSurcharge = parseFloat(validValue) || 0;
                             setSurchargeAmount(newSurcharge);
                           }
                         }}
                         inputMode="decimal"
-                        pattern="[0-9]*"
                         className="w-full text-right border-none outline-none bg-transparent"
                       />
                     </div>
