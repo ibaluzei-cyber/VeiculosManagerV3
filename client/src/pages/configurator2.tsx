@@ -825,13 +825,16 @@ export default function Configurator2() {
                         value={discountPercentage === 0 ? '' : discountPercentage.toString()}
                         onChange={(e) => {
                           const inputValue = e.target.value;
+                          console.log('Debug DESCONTOS - Input original:', inputValue);
                           if (inputValue === '') {
                             setDiscountPercentage(0);
                             setDiscountAmount(0);
                           } else {
                             // Permitir números, pontos e vírgulas
                             const validValue = inputValue.replace(/[^0-9.,]/g, '').replace(',', '.');
+                            console.log('Debug DESCONTOS - Valor processado:', validValue);
                             const newPercentage = parseFloat(validValue) || 0;
+                            console.log('Debug DESCONTOS - Percentual final:', newPercentage);
                             setDiscountPercentage(newPercentage);
                             const newDiscountAmount = (getCurrentBasePrice() * newPercentage) / 100;
                             setDiscountAmount(newDiscountAmount);
@@ -853,12 +856,15 @@ export default function Configurator2() {
                         value={surchargeAmount === 0 ? '' : surchargeAmount.toString()}
                         onChange={(e) => {
                           const inputValue = e.target.value;
+                          console.log('Debug ÁGIO - Input original:', inputValue);
                           if (inputValue === '') {
                             setSurchargeAmount(0);
                           } else {
                             // Permitir números, pontos e vírgulas
                             const validValue = inputValue.replace(/[^0-9.,]/g, '').replace(',', '.');
+                            console.log('Debug ÁGIO - Valor processado:', validValue);
                             const newSurcharge = parseFloat(validValue) || 0;
+                            console.log('Debug ÁGIO - Valor final:', newSurcharge);
                             setSurchargeAmount(newSurcharge);
                           }
                         }}
