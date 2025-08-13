@@ -850,21 +850,29 @@ export default function Configurator2() {
                       onClick={(e) => e.currentTarget.querySelector('input')?.focus()}
                     >
                       <input 
-                        type="number" 
-                        step="0.1"
-                        min="0"
-                        value={surchargeAmount || ''}
+                        type="text" 
+                        value={surchargeAmount === 0 ? '' : formatCurrency(surchargeAmount)}
                         onChange={(e) => {
                           const inputValue = e.target.value;
                           if (inputValue === '') {
                             setSurchargeAmount(0);
                           } else {
-                            const newSurcharge = parseFloat(inputValue) || 0;
-                            setSurchargeAmount(newSurcharge);
+                            // Remove formatação e converte para número
+                            const numericValue = inputValue
+                              .replace(/[^\d]/g, '') // Remove tudo que não é dígito
+                              .replace(/^0+/, ''); // Remove zeros à esquerda
+                            
+                            if (numericValue === '') {
+                              setSurchargeAmount(0);
+                            } else {
+                              // Converte centavos para reais (divide por 100)
+                              const realValue = parseFloat(numericValue) / 100;
+                              setSurchargeAmount(realValue);
+                            }
                           }
                         }}
                         className="w-full text-right border-none outline-none bg-transparent"
-                        placeholder="0,0"
+                        placeholder="R$ 0,00"
                       />
                     </div>
                   </div>
