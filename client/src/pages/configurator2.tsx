@@ -405,10 +405,27 @@ export default function Configurator2() {
 
   const handleModelChange = (value: string) => {
     setSelectedModelId(value);
+    setSelectedVersionId(""); // Reset version selection
+    setSelectedColorId(""); // Reset color selection
+    
+    // Reset discount and surcharge fields to initial state
+    setSelectedDirectSaleId(""); // Reset dropdown to show "DESCONTOS V.D."
+    setDiscountPercentage(0);
+    setDiscountAmount(0);
+    setSurchargeAmount(0);
+    setSelectedPriceType(null); // Reset price type selection
   };
 
   const handleVersionChange = (value: string) => {
     setSelectedVersionId(value);
+    setSelectedColorId(""); // Reset color selection
+    
+    // Reset discount and surcharge fields to initial state
+    setSelectedDirectSaleId(""); // Reset dropdown to show "DESCONTOS V.D."
+    setDiscountPercentage(0);
+    setDiscountAmount(0);
+    setSurchargeAmount(0);
+    setSelectedPriceType(null); // Reset price type selection
   };
 
   const handleColorChange = (value: string) => {
