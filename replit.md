@@ -117,6 +117,9 @@ This is a comprehensive vehicle management system built as a full-stack web appl
 ```
 Changelog:
 - July 05, 2025. Initial setup
+- August 16, 2025. Implemented hierarchical discount system with version > model > brand specificity
+- August 16, 2025. Added search filtering for direct sales management
+- August 16, 2025. Fixed discount form editing and dropdown cascade functionality
 ```
 
 ## User Preferences
