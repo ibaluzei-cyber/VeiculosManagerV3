@@ -54,17 +54,7 @@ export default function DirectSaleForm() {
     ? allVersions.filter(version => version.modelId === parseInt(formData.modelId))
     : [];
     
-  // Debug logs
-  React.useEffect(() => {
-    if (formData.modelId && formData.modelId !== "0") {
-      console.log("Debug filtros:", {
-        formDataModelId: formData.modelId,
-        allVersionsLength: allVersions.length,
-        filteredVersionsLength: filteredVersions.length,
-        filteredVersions: filteredVersions.map(v => ({ id: v.id, name: v.name, modelId: v.modelId }))
-      });
-    }
-  }, [formData.modelId, allVersions.length, filteredVersions.length]);
+
   
   // If editing, fetch the direct sale data
   const { data: directSale, isLoading: directSaleLoading } = useQuery({
@@ -251,6 +241,7 @@ export default function DirectSaleForm() {
             <div className="grid gap-2">
               <Label htmlFor="model-select">Modelo (Opcional)</Label>
               <Select 
+                key={`model-${formData.brandId}-${formData.modelId}`}
                 value={formData.modelId} 
                 onValueChange={(value) => handleSelectChange("modelId", value)}
                 disabled={!formData.brandId}
@@ -272,6 +263,7 @@ export default function DirectSaleForm() {
             <div className="grid gap-2">
               <Label htmlFor="version-select">Versão (Opcional)</Label>
               <Select 
+                key={`version-${formData.modelId}-${formData.versionId}`}
                 value={formData.versionId} 
                 onValueChange={(value) => handleSelectChange("versionId", value)}
                 disabled={!formData.modelId || formData.modelId === "0"}

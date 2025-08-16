@@ -1,0 +1,124 @@
+﻿
+chunk-WERSD76P.js?v=4d68815c:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+Sidebar.tsx:199 Renderizando menu com items: 
+(14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']
+Sidebar.tsx:199 Renderizando menu com items: 
+(14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']
+0
+: 
+"Dashboard"
+1
+: 
+"Veículos"
+2
+: 
+"Marcas"
+3
+: 
+"Modelos"
+4
+: 
+"Versões"
+5
+: 
+"Cores/Pinturas"
+6
+: 
+"Tipos de Pintura"
+7
+: 
+"Opcionais"
+8
+: 
+"Configurador"
+9
+: 
+"Monte seu Veículo"
+10
+: 
+"Configurações"
+11
+: 
+"Usuários"
+12
+: 
+"Visualizar Permissões"
+13
+: 
+"Configurar Permissões"
+length
+: 
+14
+[[Prototype]]
+: 
+Array(0)
+DirectSaleForm.tsx:77 useEffect executado: 
+{isEditing: true, directSale: undefined, directSaleLoading: true, isFormInitialized: false, formData: '{\n  "name": "",\n  "brandId": "",\n  "modelId": "0",\n  "versionId": "0",\n  "discountPercentage": ""\n}'}
+DirectSaleForm.tsx:77 useEffect executado: 
+{isEditing: true, directSale: {…}, directSaleLoading: false, isFormInitialized: false, formData: '{\n  "name": "",\n  "brandId": "",\n  "modelId": "0",\n  "versionId": "0",\n  "discountPercentage": ""\n}'}
+DirectSaleForm.tsx:86 Inicializando formulário com dados do servidor: 
+{id: 117, name: 'Argo 1.0 Produtor Rural', discountPercentage: '10.90', brandId: 3, modelId: 17, …}
+DirectSaleForm.tsx:94 Novo formData: 
+{name: 'Argo 1.0 Produtor Rural', brandId: '3', modelId: '17', versionId: '23', discountPercentage: '10.90'}
+DirectSaleForm.tsx:77 useEffect executado: 
+{isEditing: true, directSale: {…}, directSaleLoading: false, isFormInitialized: true, formData: '{\n  "name": "Argo 1.0 Produtor Rural",\n  "brandId"…rsionId": "23",\n  "discountPercentage": "10.90"\n}'}
+directSale
+: 
+{id: 117, name: 'Argo 1.0 Produtor Rural', discountPercentage: '10.90', brandId: 3, modelId: 17, …}
+directSaleLoading
+: 
+false
+formData
+: 
+"{\n  \"name\": \"Argo 1.0 Produtor Rural\",\n  \"brandId\": \"3\",\n  \"modelId\": \"17\",\n  \"versionId\": \"23\",\n  \"discountPercentage\": \"10.90\"\n}"
+isEditing
+: 
+true
+isFormInitialized
+: 
+true
+[[Prototype]]
+: 
+Object
+constructor
+: 
+ƒ Object()
+hasOwnProperty
+: 
+ƒ hasOwnProperty()
+isPrototypeOf
+: 
+ƒ isPrototypeOf()
+propertyIsEnumerable
+: 
+ƒ propertyIsEnumerable()
+toLocaleString
+: 
+ƒ toLocaleString()
+toString
+: 
+ƒ toString()
+valueOf
+: 
+ƒ valueOf()
+__defineGetter__
+: 
+ƒ __defineGetter__()
+__defineSetter__
+: 
+ƒ __defineSetter__()
+__lookupGetter__
+: 
+ƒ __lookupGetter__()
+__lookupSetter__
+: 
+ƒ __lookupSetter__()
+__proto__
+: 
+(...)
+get __proto__
+: 
+ƒ __proto__()
+set __proto__
+: 
+ƒ __proto__()
