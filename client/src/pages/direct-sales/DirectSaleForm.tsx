@@ -54,19 +54,21 @@ export default function DirectSaleForm() {
     : [];
   
   // If editing, fetch the direct sale data
-  const { data: directSale, isLoading: directSaleLoading } = useQuery<any>({
-    queryKey: ["/api/direct-sales", id],
+  const { data: directSale, isLoading: directSaleLoading } = useQuery({
+    queryKey: [`/api/direct-sales/${id}`],
     queryFn: async () => {
-      if (!id) return null;
-      return await apiRequest("GET", `/api/direct-sales/${id}`);
+      const response = await fetch(`/api/direct-sales/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch direct sale');
+      }
+      return response.json();
     },
     enabled: isEditing && !!id,
   });
   
   // Initialize form with existing data if editing
   React.useEffect(() => {
-    if (isEditing && directSale) {
-      console.log("Carregando dados para edição:", directSale);
+    if (isEditing && directSale && !directSaleLoading) {
       setFormData({
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
@@ -75,7 +77,7 @@ export default function DirectSaleForm() {
         discountPercentage: directSale.discountPercentage?.toString() || ""
       });
     }
-  }, [isEditing, directSale]);
+  }, [isEditing, directSale, directSaleLoading]);
   
   // Handle text input changes
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
