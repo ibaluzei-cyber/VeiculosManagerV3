@@ -87,6 +87,7 @@ export default function DirectSaleForm() {
   
   // Handle select changes
   const handleSelectChange = (name: string, value: string) => {
+    console.log("handleSelectChange chamado:", { name, value });
     if (name === 'brandId') {
       // Reset model and version when brand changes
       setFormData(prev => ({ ...prev, [name]: value, modelId: "0", versionId: "0" }));
@@ -116,6 +117,9 @@ export default function DirectSaleForm() {
         versionId: formData.versionId && formData.versionId !== "0" ? parseInt(formData.versionId) : null,
         discountPercentage: formData.discountPercentage // Keeping it as string to match schema expectation
       };
+      
+      console.log("Form data antes do envio:", formData);
+      console.log("Dados parseados para envio:", parsedData);
       
       // Create or update direct sale
       if (isEditing && id) {
