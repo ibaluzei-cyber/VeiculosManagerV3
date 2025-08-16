@@ -1156,6 +1156,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Direct sale not found" });
       }
       
+      console.log("Direct sale dados encontrados:", directSale);
       res.json(directSale);
     } catch (error) {
       console.error("Error fetching direct sale:", error);

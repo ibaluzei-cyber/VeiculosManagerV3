@@ -66,11 +66,12 @@ export default function DirectSaleForm() {
   // Initialize form with existing data if editing
   React.useEffect(() => {
     if (isEditing && directSale) {
+      console.log("Carregando dados para edição:", directSale);
       setFormData({
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
-        modelId: directSale.modelId?.toString() || "0",
-        versionId: directSale.versionId?.toString() || "0",
+        modelId: directSale.modelId ? directSale.modelId.toString() : "0",
+        versionId: directSale.versionId ? directSale.versionId.toString() : "0",
         discountPercentage: directSale.discountPercentage?.toString() || ""
       });
     }
