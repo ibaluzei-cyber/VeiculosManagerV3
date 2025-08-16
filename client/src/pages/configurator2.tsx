@@ -18,7 +18,7 @@ import { ChevronDown, ChevronUp, FileText, Printer, LayoutTemplate } from "lucid
 import { formatCurrency } from "@/lib/formatters";
 import { hasPermission } from "@/lib/permissions";
 import { useAuth } from "@/hooks/use-auth";
-import { getQueryFn } from "@/lib/queryClient";
+import { getQueryFn, queryClient } from "@/lib/queryClient";
 import VehicleReport from "@/components/VehicleReport";
 
 
@@ -216,6 +216,28 @@ export default function Configurator2() {
   const { data: directSales = [] } = useQuery<DirectSale[]>({
     queryKey: ["/api/direct-sales"],
   });
+
+  // Listen for direct sales updates from other parts of the app
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const lastUpdate = localStorage.getItem('direct-sales-updated');
+      if (lastUpdate) {
+        queryClient.invalidateQueries({ queryKey: ["/api/direct-sales"] });
+        localStorage.removeItem('direct-sales-updated');
+      }
+    };
+
+    // Check for updates periodically
+    const interval = setInterval(handleStorageChange, 1000);
+    
+    // Also listen for storage events from other tabs
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const { data: versionColors = [] } = useQuery<VersionColor[]>({
     queryKey: ["/api/version-colors", selectedVersionId],

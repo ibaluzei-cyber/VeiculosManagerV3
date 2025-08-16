@@ -147,6 +147,10 @@ export default function DirectSaleForm() {
       // Refresh data and redirect
       queryClient.invalidateQueries({ queryKey: ["/api/direct-sales"] });
       queryClient.invalidateQueries({ queryKey: ["/api/direct-sales", id] });
+      
+      // Trigger refresh on configurator page
+      localStorage.setItem('direct-sales-updated', Date.now().toString());
+      
       navigate("/settings");
     } catch (error) {
       console.error("Erro ao salvar venda direta:", error);

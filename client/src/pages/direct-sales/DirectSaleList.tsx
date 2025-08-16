@@ -45,6 +45,9 @@ export default function DirectSaleList() {
       
       // Refresh data
       queryClient.invalidateQueries({ queryKey: ["/api/direct-sales"] });
+      
+      // Trigger refresh on configurator page
+      localStorage.setItem('direct-sales-updated', Date.now().toString());
     } catch (error) {
       console.error("Erro ao excluir venda direta:", error);
       toast({
