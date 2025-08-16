@@ -23,8 +23,8 @@ export default function DirectSaleForm() {
   const [formData, setFormData] = React.useState({
     name: "",
     brandId: "",
-    modelId: "",
-    versionId: "",
+    modelId: "0",
+    versionId: "0",
     discountPercentage: ""
   });
   
@@ -69,8 +69,8 @@ export default function DirectSaleForm() {
       setFormData({
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
-        modelId: directSale.modelId?.toString() || "",
-        versionId: directSale.versionId?.toString() || "",
+        modelId: directSale.modelId?.toString() || "0",
+        versionId: directSale.versionId?.toString() || "0",
         discountPercentage: directSale.discountPercentage?.toString() || ""
       });
     }
@@ -86,10 +86,10 @@ export default function DirectSaleForm() {
   const handleSelectChange = (name: string, value: string) => {
     if (name === 'brandId') {
       // Reset model and version when brand changes
-      setFormData(prev => ({ ...prev, [name]: value, modelId: "", versionId: "" }));
+      setFormData(prev => ({ ...prev, [name]: value, modelId: "0", versionId: "0" }));
     } else if (name === 'modelId') {
       // Reset version when model changes
-      setFormData(prev => ({ ...prev, [name]: value, versionId: "" }));
+      setFormData(prev => ({ ...prev, [name]: value, versionId: "0" }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -109,8 +109,8 @@ export default function DirectSaleForm() {
       const parsedData = {
         name: formData.name,
         brandId: parseInt(formData.brandId),
-        modelId: formData.modelId ? parseInt(formData.modelId) : null,
-        versionId: formData.versionId ? parseInt(formData.versionId) : null,
+        modelId: formData.modelId && formData.modelId !== "0" ? parseInt(formData.modelId) : null,
+        versionId: formData.versionId && formData.versionId !== "0" ? parseInt(formData.versionId) : null,
         discountPercentage: formData.discountPercentage // Keeping it as string to match schema expectation
       };
       
@@ -233,7 +233,7 @@ export default function DirectSaleForm() {
                   <SelectValue placeholder={formData.brandId ? "Selecione um modelo ou deixe vazio para toda marca" : "Selecione uma marca primeiro"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Aplicar a toda marca</SelectItem>
+                  <SelectItem value="0">Aplicar a toda marca</SelectItem>
                   {filteredModels.map(model => (
                     <SelectItem key={model.id} value={model.id.toString()}>
                       {model.name}
@@ -254,7 +254,7 @@ export default function DirectSaleForm() {
                   <SelectValue placeholder={formData.modelId ? "Selecione uma versão ou deixe vazio para todo modelo" : "Selecione um modelo primeiro"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Aplicar a todo modelo</SelectItem>
+                  <SelectItem value="0">Aplicar a todo modelo</SelectItem>
                   {filteredVersions.map(version => (
                     <SelectItem key={version.id} value={version.id.toString()}>
                       {version.name}
