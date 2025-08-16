@@ -120,8 +120,7 @@ export default function DirectSaleForm() {
         discountPercentage: formData.discountPercentage // Keeping it as string to match schema expectation
       };
       
-      console.log("Form data antes do envio:", formData);
-      console.log("Dados parseados para envio:", parsedData);
+
       
       // Create or update direct sale
       if (isEditing && id) {
@@ -140,6 +139,7 @@ export default function DirectSaleForm() {
       
       // Refresh data and redirect
       queryClient.invalidateQueries({ queryKey: ["/api/direct-sales"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/direct-sales", id] });
       navigate("/settings");
     } catch (error) {
       console.error("Erro ao salvar venda direta:", error);
