@@ -1,0 +1,106 @@
+Sidebar.tsx:199 Renderizando menu com items: (14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']0: "Dashboard"1: "Veículos"2: "Marcas"3: "Modelos"4: "Versões"5: "Cores/Pinturas"6: "Tipos de Pintura"7: "Opcionais"8: "Configurador"9: "Monte seu Veículo"10: "Configurações"11: "Usuários"12: "Visualizar Permissões"13: "Configurar Permissões"length: 14[[Prototype]]: Array(0)
+configurator2.tsx:267 Uncaught ReferenceError: React is not defined
+    at Configurator2 (configurator2.tsx:267:32)
+    at renderWithHooks (chunk-WERSD76P.js?v=4d68815c:11548:26)
+    at mountIndeterminateComponent (chunk-WERSD76P.js?v=4d68815c:14926:21)
+    at beginWork (chunk-WERSD76P.js?v=4d68815c:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-WERSD76P.js?v=4d68815c:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-WERSD76P.js?v=4d68815c:3699:24)
+    at invokeGuardedCallback (chunk-WERSD76P.js?v=4d68815c:3733:39)
+    at beginWork$1 (chunk-WERSD76P.js?v=4d68815c:19765:15)
+    at performUnitOfWork (chunk-WERSD76P.js?v=4d68815c:19198:20)
+    at workLoopSync (chunk-WERSD76P.js?v=4d68815c:19137:13)
+Configurator2 @ configurator2.tsx:267
+renderWithHooks @ chunk-WERSD76P.js?v=4d68815c:11548
+mountIndeterminateComponent @ chunk-WERSD76P.js?v=4d68815c:14926
+beginWork @ chunk-WERSD76P.js?v=4d68815c:15914
+callCallback2 @ chunk-WERSD76P.js?v=4d68815c:3674
+invokeGuardedCallbackDev @ chunk-WERSD76P.js?v=4d68815c:3699
+invokeGuardedCallback @ chunk-WERSD76P.js?v=4d68815c:3733
+beginWork$1 @ chunk-WERSD76P.js?v=4d68815c:19765
+performUnitOfWork @ chunk-WERSD76P.js?v=4d68815c:19198
+workLoopSync @ chunk-WERSD76P.js?v=4d68815c:19137
+renderRootSync @ chunk-WERSD76P.js?v=4d68815c:19116
+performSyncWorkOnRoot @ chunk-WERSD76P.js?v=4d68815c:18874
+flushSyncCallbacks @ chunk-WERSD76P.js?v=4d68815c:9119
+(anonymous) @ chunk-WERSD76P.js?v=4d68815c:18627
+Sidebar.tsx:199 Renderizando menu com items: (14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']0: "Dashboard"1: "Veículos"2: "Marcas"3: "Modelos"4: "Versões"5: "Cores/Pinturas"6: "Tipos de Pintura"7: "Opcionais"8: "Configurador"9: "Monte seu Veículo"10: "Configurações"11: "Usuários"12: "Visualizar Permissões"13: "Configurar Permissões"length: 14[[Prototype]]: Array(0)
+configurator2.tsx:267 Uncaught ReferenceError: React is not defined
+    at Configurator2 (configurator2.tsx:267:32)
+    at renderWithHooks (chunk-WERSD76P.js?v=4d68815c:11548:26)
+    at mountIndeterminateComponent (chunk-WERSD76P.js?v=4d68815c:14926:21)
+    at beginWork (chunk-WERSD76P.js?v=4d68815c:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-WERSD76P.js?v=4d68815c:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-WERSD76P.js?v=4d68815c:3699:24)
+    at invokeGuardedCallback (chunk-WERSD76P.js?v=4d68815c:3733:39)
+    at beginWork$1 (chunk-WERSD76P.js?v=4d68815c:19765:15)
+    at performUnitOfWork (chunk-WERSD76P.js?v=4d68815c:19198:20)
+    at workLoopSync (chunk-WERSD76P.js?v=4d68815c:19137:13)
+Configurator2 @ configurator2.tsx:267
+renderWithHooks @ chunk-WERSD76P.js?v=4d68815c:11548
+mountIndeterminateComponent @ chunk-WERSD76P.js?v=4d68815c:14926
+beginWork @ chunk-WERSD76P.js?v=4d68815c:15914
+callCallback2 @ chunk-WERSD76P.js?v=4d68815c:3674
+invokeGuardedCallbackDev @ chunk-WERSD76P.js?v=4d68815c:3699
+invokeGuardedCallback @ chunk-WERSD76P.js?v=4d68815c:3733
+beginWork$1 @ chunk-WERSD76P.js?v=4d68815c:19765
+performUnitOfWork @ chunk-WERSD76P.js?v=4d68815c:19198
+workLoopSync @ chunk-WERSD76P.js?v=4d68815c:19137
+renderRootSync @ chunk-WERSD76P.js?v=4d68815c:19116
+recoverFromConcurrentError @ chunk-WERSD76P.js?v=4d68815c:18736
+performSyncWorkOnRoot @ chunk-WERSD76P.js?v=4d68815c:18879
+flushSyncCallbacks @ chunk-WERSD76P.js?v=4d68815c:9119
+(anonymous) @ chunk-WERSD76P.js?v=4d68815c:18627
+chunk-WERSD76P.js?v=4d68815c:14032 The above error occurred in the <Configurator2> component:
+
+    at Configurator2 (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/pages/configurator2.tsx?t=1755358320309:39:31)
+    at Route (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=4d68815c:280:16)
+    at ProtectedRoute (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/lib/protected-route.tsx:68:3)
+    at Switch (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=4d68815c:336:17)
+    at main
+    at div
+    at div
+    at AdminLayout (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/components/layout/AdminLayout.tsx:25:39)
+    at AppContent (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/App.tsx?v=83THmpdsRJ3cHpASGHJ4c:65:31)
+    at AuthProvider (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/src/hooks/use-auth.tsx:55:32)
+    at QueryClientProvider (https://b372c0a7-abe6-4ff0-91af-d6bbc852998d-00-1laakqsodxjiq.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=4d68815c:2879:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-WERSD76P.js?v=4d68815c:14032
+update.callback @ chunk-WERSD76P.js?v=4d68815c:14052
+callCallback @ chunk-WERSD76P.js?v=4d68815c:11248
+commitUpdateQueue @ chunk-WERSD76P.js?v=4d68815c:11265
+commitLayoutEffectOnFiber @ chunk-WERSD76P.js?v=4d68815c:17093
+commitLayoutMountEffects_complete @ chunk-WERSD76P.js?v=4d68815c:17980
+commitLayoutEffects_begin @ chunk-WERSD76P.js?v=4d68815c:17969
+commitLayoutEffects @ chunk-WERSD76P.js?v=4d68815c:17920
+commitRootImpl @ chunk-WERSD76P.js?v=4d68815c:19353
+commitRoot @ chunk-WERSD76P.js?v=4d68815c:19277
+performSyncWorkOnRoot @ chunk-WERSD76P.js?v=4d68815c:18895
+flushSyncCallbacks @ chunk-WERSD76P.js?v=4d68815c:9119
+(anonymous) @ chunk-WERSD76P.js?v=4d68815c:18627
+chunk-WERSD76P.js?v=4d68815c:9129 Uncaught ReferenceError: React is not defined
+    at Configurator2 (configurator2.tsx:267:32)
+    at renderWithHooks (chunk-WERSD76P.js?v=4d68815c:11548:26)
+    at mountIndeterminateComponent (chunk-WERSD76P.js?v=4d68815c:14926:21)
+    at beginWork (chunk-WERSD76P.js?v=4d68815c:15914:22)
+    at beginWork$1 (chunk-WERSD76P.js?v=4d68815c:19753:22)
+    at performUnitOfWork (chunk-WERSD76P.js?v=4d68815c:19198:20)
+    at workLoopSync (chunk-WERSD76P.js?v=4d68815c:19137:13)
+    at renderRootSync (chunk-WERSD76P.js?v=4d68815c:19116:15)
+    at recoverFromConcurrentError (chunk-WERSD76P.js?v=4d68815c:18736:28)
+    at performSyncWorkOnRoot (chunk-WERSD76P.js?v=4d68815c:18879:28)
+Configurator2 @ configurator2.tsx:267
+renderWithHooks @ chunk-WERSD76P.js?v=4d68815c:11548
+mountIndeterminateComponent @ chunk-WERSD76P.js?v=4d68815c:14926
+beginWork @ chunk-WERSD76P.js?v=4d68815c:15914
+beginWork$1 @ chunk-WERSD76P.js?v=4d68815c:19753
+performUnitOfWork @ chunk-WERSD76P.js?v=4d68815c:19198
+workLoopSync @ chunk-WERSD76P.js?v=4d68815c:19137
+renderRootSync @ chunk-WERSD76P.js?v=4d68815c:19116
+recoverFromConcurrentError @ chunk-WERSD76P.js?v=4d68815c:18736
+performSyncWorkOnRoot @ chunk-WERSD76P.js?v=4d68815c:18879
+flushSyncCallbacks @ chunk-WERSD76P.js?v=4d68815c:9119
+(anonymous) @ chunk-WERSD76P.js?v=4d68815c:18627
