@@ -1,0 +1,42 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+Sidebar.tsx:199 Renderizando menu com items: 
+(14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']
+Sidebar.tsx:199 Renderizando menu com items: 
+(14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']
+DirectSaleForm.tsx:90 handleSelectChange chamado: 
+{name: 'modelId', value: ''}
+DirectSaleForm.tsx:90 handleSelectChange chamado: 
+{name: 'versionId', value: ''}
+DirectSaleForm.tsx:90 handleSelectChange chamado: 
+{name: 'modelId', value: '17'}
+DirectSaleForm.tsx:90 handleSelectChange chamado: 
+{name: 'versionId', value: '23'}
+name
+: 
+"versionId"
+value
+: 
+"23"
+[[Prototype]]
+: 
+Object
+DirectSaleForm.tsx:121 Form data antes do envio: 
+{name: 'Argo 1.0 Produtor Rural', brandId: '3', modelId: '17', versionId: '23', discountPercentage: '10.90'}
+DirectSaleForm.tsx:122 Dados parseados para envio: 
+{name: 'Argo 1.0 Produtor Rural', brandId: 3, modelId: 17, versionId: 23, discountPercentage: '10.90'}
+Sidebar.tsx:199 Renderizando menu com items: 
+(14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']
+Sidebar.tsx:199 Renderizando menu com items: 
+(14) ['Dashboard', 'Veículos', 'Marcas', 'Modelos', 'Versões', 'Cores/Pinturas', 'Tipos de Pintura', 'Opcionais', 'Configurador', 'Monte seu Veículo', 'Configurações', 'Usuários', 'Visualizar Permissões', 'Configurar Permissões']
+﻿
+
+A more reliable and productive Chrome DevTools
+In Chrome 139, DevTools prioritized product excellence and developer experience. We tackled numerous known issues, including some years-old ones, and also made improvements to newer features. Behind the scenes, we enhanced our test coverage and migrated tests to more robust foundations.
+
+We hope you will experience these numerous subtle fixes across various panels, making your daily debugging and development workflows smoother, more reliable, and more productive.
+
+Upload images in AI assistance for styling
+To provide additional visual context to your prompts, you can now upload arbitrary images in the AI assistance panel when you start your conversation from the Elements panel with a DOM element selected as context.
+
+Check out the highlights from I/O
+Check out the features we announced at Google I/O 2025, including features with Gemini integration: modify and save CSS changes to your workspace, ask about performance insights, annotate performance findings, and more.

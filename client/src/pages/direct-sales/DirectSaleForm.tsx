@@ -69,6 +69,8 @@ export default function DirectSaleForm() {
   // Initialize form with existing data if editing
   React.useEffect(() => {
     if (isEditing && directSale && !directSaleLoading) {
+      console.log("Inicializando formulário com dados:", directSale);
+      console.log("Versões disponíveis:", allVersions);
       setFormData({
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
@@ -77,7 +79,7 @@ export default function DirectSaleForm() {
         discountPercentage: directSale.discountPercentage?.toString() || ""
       });
     }
-  }, [isEditing, directSale, directSaleLoading]);
+  }, [isEditing, directSale, directSaleLoading, allVersions]);
   
   // Handle text input changes
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
