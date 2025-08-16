@@ -49,7 +49,7 @@ export default function DirectSaleForm() {
     : [];
 
   // Filter versions based on selected model
-  const filteredVersions = formData.modelId 
+  const filteredVersions = formData.modelId && formData.modelId !== "0"
     ? allVersions.filter(version => version.modelId === parseInt(formData.modelId))
     : [];
   
@@ -251,7 +251,7 @@ export default function DirectSaleForm() {
               <Select 
                 value={formData.versionId} 
                 onValueChange={(value) => handleSelectChange("versionId", value)}
-                disabled={!formData.modelId}
+                disabled={!formData.modelId || formData.modelId === "0"}
               >
                 <SelectTrigger id="version-select">
                   <SelectValue placeholder={formData.modelId ? "Selecione uma versão ou deixe vazio para todo modelo" : "Selecione um modelo primeiro"} />
