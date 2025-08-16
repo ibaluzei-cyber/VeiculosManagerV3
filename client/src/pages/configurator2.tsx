@@ -264,45 +264,68 @@ export default function Configurator2() {
         })
     : [];
 
-  const availableDirectSales = directSales.filter(ds => {
-    const sale = ds as any; // Temporary type assertion while types update
+  const availableDirectSales = React.useMemo(() => {
+    if (!selectedBrandId) return [];
     
-    // Se tem versão selecionada, verifica descontos específicos da versão primeiro
+    const sale = (ds: any) => ds; // Type helper
+    
+    // Hierarquia: Versão > Modelo > Marca
+    // O mais específico sempre sobrepõe os menos específicos
+    
     if (selectedVersionId) {
-      // Desconto específico para a versão
-      if (sale.versionId === parseInt(selectedVersionId)) {
-        return true;
+      // 1. Primeiro, busca descontos específicos para a VERSÃO
+      const versionDiscounts = directSales.filter(ds => 
+        sale(ds).versionId === parseInt(selectedVersionId)
+      );
+      
+      if (versionDiscounts.length > 0) {
+        return versionDiscounts; // Se tem desconto de versão, mostra APENAS esses
       }
-      // Se não tem versão específica, verifica modelo
-      if (!sale.versionId && selectedModelId && sale.modelId === parseInt(selectedModelId)) {
-        return true;
+      
+      // 2. Se não tem desconto de versão, busca por MODELO
+      if (selectedModelId) {
+        const modelDiscounts = directSales.filter(ds => 
+          sale(ds).modelId === parseInt(selectedModelId) && !sale(ds).versionId
+        );
+        
+        if (modelDiscounts.length > 0) {
+          return modelDiscounts; // Se tem desconto de modelo, mostra APENAS esses
+        }
       }
-      // Se não tem versão nem modelo específico, verifica marca geral
-      if (!sale.versionId && !sale.modelId && selectedBrandId && 
-          (sale.brandId === 0 || sale.brandId === parseInt(selectedBrandId))) {
-        return true;
-      }
-      return false;
+      
+      // 3. Se não tem desconto de versão nem modelo, busca por MARCA
+      return directSales.filter(ds => 
+        sale(ds).brandId === parseInt(selectedBrandId) && 
+        !sale(ds).modelId && 
+        !sale(ds).versionId
+      );
     }
     
-    // Se tem modelo selecionado mas não versão
     if (selectedModelId) {
-      // Desconto específico para o modelo
-      if (sale.modelId === parseInt(selectedModelId)) {
-        return true;
+      // 1. Primeiro, busca descontos específicos para o MODELO
+      const modelDiscounts = directSales.filter(ds => 
+        sale(ds).modelId === parseInt(selectedModelId) && !sale(ds).versionId
+      );
+      
+      if (modelDiscounts.length > 0) {
+        return modelDiscounts; // Se tem desconto de modelo, mostra APENAS esses
       }
-      // Desconto geral da marca se não tem modelo específico
-      if (!sale.modelId && selectedBrandId && 
-          (sale.brandId === 0 || sale.brandId === parseInt(selectedBrandId))) {
-        return true;
-      }
-      return false;
+      
+      // 2. Se não tem desconto de modelo, busca por MARCA
+      return directSales.filter(ds => 
+        sale(ds).brandId === parseInt(selectedBrandId) && 
+        !sale(ds).modelId && 
+        !sale(ds).versionId
+      );
     }
     
-    // Se só tem marca selecionada, mostra descontos gerais da marca
-    return selectedBrandId && !sale.modelId && !sale.versionId && 
-           (sale.brandId === 0 || sale.brandId === parseInt(selectedBrandId));
-  });
+    // Se só tem marca selecionada, mostra apenas descontos gerais da marca
+    return directSales.filter(ds => 
+      sale(ds).brandId === parseInt(selectedBrandId) && 
+      !sale(ds).modelId && 
+      !sale(ds).versionId
+    );
+  }, [directSales, selectedBrandId, selectedModelId, selectedVersionId]);
 
   // Buscar o veículo selecionado na lista de veículos
   const selectedVehicle = selectedVersionId 
