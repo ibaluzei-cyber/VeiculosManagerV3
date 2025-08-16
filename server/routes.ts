@@ -1180,14 +1180,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch(`${apiPrefix}/direct-sales/:id`, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      console.log("PATCH direct-sales - ID:", id);
-      console.log("PATCH direct-sales - Dados recebidos:", req.body);
-      
       const validatedData = directSalesInsertSchema.parse(req.body);
-      console.log("PATCH direct-sales - Dados validados:", validatedData);
       
       const updatedDirectSale = await storage.updateDirectSale(id, validatedData);
-      console.log("PATCH direct-sales - Resultado da atualização:", updatedDirectSale);
       
       if (!updatedDirectSale) {
         return res.status(404).json({ message: "Direct sale not found" });
@@ -1196,7 +1191,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updatedDirectSale);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("PATCH direct-sales - Erro de validação:", error.errors);
         return res.status(400).json({ errors: error.errors });
       }
       console.error("Error updating direct sale:", error);

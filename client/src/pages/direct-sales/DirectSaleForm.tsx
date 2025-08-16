@@ -20,6 +20,7 @@ export default function DirectSaleForm() {
   
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
+  const [isFormInitialized, setIsFormInitialized] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: "",
     brandId: "",
@@ -66,10 +67,14 @@ export default function DirectSaleForm() {
     enabled: isEditing && !!id,
   });
   
+  // Reset form initialization when ID changes
+  React.useEffect(() => {
+    setIsFormInitialized(false);
+  }, [id]);
+
   // Initialize form with existing data if editing
   React.useEffect(() => {
-    if (isEditing && directSale && !directSaleLoading && allVersions.length > 0) {
-
+    if (isEditing && directSale && !directSaleLoading && !isFormInitialized) {
       setFormData({
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
@@ -77,8 +82,9 @@ export default function DirectSaleForm() {
         versionId: directSale.versionId ? directSale.versionId.toString() : "0",
         discountPercentage: directSale.discountPercentage?.toString() || ""
       });
+      setIsFormInitialized(true);
     }
-  }, [isEditing, directSale, directSaleLoading, allVersions.length]);
+  }, [isEditing, directSale, directSaleLoading, isFormInitialized]);
   
   // Handle text input changes
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
