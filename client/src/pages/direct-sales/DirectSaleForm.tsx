@@ -53,6 +53,18 @@ export default function DirectSaleForm() {
   const filteredVersions = formData.modelId && formData.modelId !== "0"
     ? allVersions.filter(version => version.modelId === parseInt(formData.modelId))
     : [];
+    
+  // Debug logs
+  React.useEffect(() => {
+    if (formData.modelId && formData.modelId !== "0") {
+      console.log("Debug filtros:", {
+        formDataModelId: formData.modelId,
+        allVersionsLength: allVersions.length,
+        filteredVersionsLength: filteredVersions.length,
+        filteredVersions: filteredVersions.map(v => ({ id: v.id, name: v.name, modelId: v.modelId }))
+      });
+    }
+  }, [formData.modelId, allVersions.length, filteredVersions.length]);
   
   // If editing, fetch the direct sale data
   const { data: directSale, isLoading: directSaleLoading } = useQuery({
@@ -74,16 +86,7 @@ export default function DirectSaleForm() {
 
   // Initialize form with existing data if editing
   React.useEffect(() => {
-    console.log("useEffect executado:", { 
-      isEditing, 
-      directSale, 
-      directSaleLoading, 
-      isFormInitialized,
-      formData: JSON.stringify(formData, null, 2)
-    });
-    
     if (isEditing && directSale && !directSaleLoading && !isFormInitialized) {
-      console.log("Inicializando formulário com dados do servidor:", directSale);
       const newFormData = {
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
@@ -91,7 +94,6 @@ export default function DirectSaleForm() {
         versionId: directSale.versionId ? directSale.versionId.toString() : "0",
         discountPercentage: directSale.discountPercentage?.toString() || ""
       };
-      console.log("Novo formData:", newFormData);
       setFormData(newFormData);
       setIsFormInitialized(true);
     }
