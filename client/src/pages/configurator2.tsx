@@ -264,9 +264,45 @@ export default function Configurator2() {
         })
     : [];
 
-  const availableDirectSales = directSales.filter(ds => 
-    !selectedBrandId || ds.brandId === 0 || ds.brandId === parseInt(selectedBrandId)
-  );
+  const availableDirectSales = directSales.filter(ds => {
+    const sale = ds as any; // Temporary type assertion while types update
+    
+    // Se tem versão selecionada, verifica descontos específicos da versão primeiro
+    if (selectedVersionId) {
+      // Desconto específico para a versão
+      if (sale.versionId === parseInt(selectedVersionId)) {
+        return true;
+      }
+      // Se não tem versão específica, verifica modelo
+      if (!sale.versionId && selectedModelId && sale.modelId === parseInt(selectedModelId)) {
+        return true;
+      }
+      // Se não tem versão nem modelo específico, verifica marca geral
+      if (!sale.versionId && !sale.modelId && selectedBrandId && 
+          (sale.brandId === 0 || sale.brandId === parseInt(selectedBrandId))) {
+        return true;
+      }
+      return false;
+    }
+    
+    // Se tem modelo selecionado mas não versão
+    if (selectedModelId) {
+      // Desconto específico para o modelo
+      if (sale.modelId === parseInt(selectedModelId)) {
+        return true;
+      }
+      // Desconto geral da marca se não tem modelo específico
+      if (!sale.modelId && selectedBrandId && 
+          (sale.brandId === 0 || sale.brandId === parseInt(selectedBrandId))) {
+        return true;
+      }
+      return false;
+    }
+    
+    // Se só tem marca selecionada, mostra descontos gerais da marca
+    return selectedBrandId && !sale.modelId && !sale.versionId && 
+           (sale.brandId === 0 || sale.brandId === parseInt(selectedBrandId));
+  });
 
   // Buscar o veículo selecionado na lista de veículos
   const selectedVehicle = selectedVersionId 

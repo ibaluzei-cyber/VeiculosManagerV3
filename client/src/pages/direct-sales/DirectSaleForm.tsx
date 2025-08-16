@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft, Save } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Brand } from "@/lib/types";
+import { Brand, Model, Version } from "@/lib/types";
 
 export default function DirectSaleForm() {
   const [_, navigate] = useLocation();
@@ -23,6 +23,8 @@ export default function DirectSaleForm() {
   const [formData, setFormData] = React.useState({
     name: "",
     brandId: "",
+    modelId: "",
+    versionId: "",
     discountPercentage: ""
   });
   
@@ -30,6 +32,26 @@ export default function DirectSaleForm() {
   const { data: brands = [], isLoading: brandsLoading } = useQuery<Brand[]>({
     queryKey: ["/api/brands"],
   });
+
+  // Fetch models for the dropdown
+  const { data: allModels = [] } = useQuery<Model[]>({
+    queryKey: ["/api/models"],
+  });
+
+  // Fetch versions for the dropdown
+  const { data: allVersions = [] } = useQuery<Version[]>({
+    queryKey: ["/api/versions"],
+  });
+
+  // Filter models based on selected brand
+  const filteredModels = formData.brandId 
+    ? allModels.filter(model => model.brandId === parseInt(formData.brandId))
+    : [];
+
+  // Filter versions based on selected model
+  const filteredVersions = formData.modelId 
+    ? allVersions.filter(version => version.modelId === parseInt(formData.modelId))
+    : [];
   
   // If editing, fetch the direct sale data
   const { data: directSale, isLoading: directSaleLoading } = useQuery<any>({
@@ -47,6 +69,8 @@ export default function DirectSaleForm() {
       setFormData({
         name: directSale.name || "",
         brandId: directSale.brandId?.toString() || "",
+        modelId: directSale.modelId?.toString() || "",
+        versionId: directSale.versionId?.toString() || "",
         discountPercentage: directSale.discountPercentage?.toString() || ""
       });
     }
@@ -60,7 +84,15 @@ export default function DirectSaleForm() {
   
   // Handle select changes
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'brandId') {
+      // Reset model and version when brand changes
+      setFormData(prev => ({ ...prev, [name]: value, modelId: "", versionId: "" }));
+    } else if (name === 'modelId') {
+      // Reset version when model changes
+      setFormData(prev => ({ ...prev, [name]: value, versionId: "" }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
   
   // Handle form submission
@@ -77,6 +109,8 @@ export default function DirectSaleForm() {
       const parsedData = {
         name: formData.name,
         brandId: parseInt(formData.brandId),
+        modelId: formData.modelId ? parseInt(formData.modelId) : null,
+        versionId: formData.versionId ? parseInt(formData.versionId) : null,
         discountPercentage: formData.discountPercentage // Keeping it as string to match schema expectation
       };
       
@@ -182,6 +216,48 @@ export default function DirectSaleForm() {
                   {brands.map(brand => (
                     <SelectItem key={brand.id} value={brand.id.toString()}>
                       {brand.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="model-select">Modelo (Opcional)</Label>
+              <Select 
+                value={formData.modelId} 
+                onValueChange={(value) => handleSelectChange("modelId", value)}
+                disabled={!formData.brandId}
+              >
+                <SelectTrigger id="model-select">
+                  <SelectValue placeholder={formData.brandId ? "Selecione um modelo ou deixe vazio para toda marca" : "Selecione uma marca primeiro"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Aplicar a toda marca</SelectItem>
+                  {filteredModels.map(model => (
+                    <SelectItem key={model.id} value={model.id.toString()}>
+                      {model.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="version-select">Versão (Opcional)</Label>
+              <Select 
+                value={formData.versionId} 
+                onValueChange={(value) => handleSelectChange("versionId", value)}
+                disabled={!formData.modelId}
+              >
+                <SelectTrigger id="version-select">
+                  <SelectValue placeholder={formData.modelId ? "Selecione uma versão ou deixe vazio para todo modelo" : "Selecione um modelo primeiro"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Aplicar a todo modelo</SelectItem>
+                  {filteredVersions.map(version => (
+                    <SelectItem key={version.id} value={version.id.toString()}>
+                      {version.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

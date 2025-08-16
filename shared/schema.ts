@@ -227,6 +227,8 @@ export const directSales = pgTable("direct_sales", {
   name: text("name").notNull(),
   discountPercentage: decimal("discount_percentage", { precision: 5, scale: 2 }).notNull(),
   brandId: integer("brand_id").references(() => brands.id),
+  modelId: integer("model_id").references(() => models.id),
+  versionId: integer("version_id").references(() => versions.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
@@ -235,6 +237,14 @@ export const directSalesRelations = relations(directSales, ({ one }) => ({
   brand: one(brands, {
     fields: [directSales.brandId],
     references: [brands.id]
+  }),
+  model: one(models, {
+    fields: [directSales.modelId],
+    references: [models.id]
+  }),
+  version: one(versions, {
+    fields: [directSales.versionId],
+    references: [versions.id]
   })
 }));
 
