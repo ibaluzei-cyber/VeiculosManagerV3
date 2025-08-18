@@ -162,8 +162,28 @@ export default function DirectSaleList() {
                   <tr key={sale.id} className="border-t">
                     <td className="p-3">{sale.name}</td>
                     <td className="p-3">{sale.brand?.name || "N/A"}</td>
-                    <td className="p-3">{sale.model?.name || "-"}</td>
-                    <td className="p-3">{sale.version?.name || "-"}</td>
+                    <td className="p-3">
+                      {sale.model ? (
+                        <span className="font-medium">{sale.model.name}</span>
+                      ) : sale.brand ? (
+                        <span className="text-blue-600 text-sm bg-blue-50 px-2 py-1 rounded">
+                          Todos os modelos
+                        </span>
+                      ) : "-"}
+                    </td>
+                    <td className="p-3">
+                      {sale.version ? (
+                        <span className="font-medium">{sale.version.name}</span>
+                      ) : sale.model ? (
+                        <span className="text-green-600 text-sm bg-green-50 px-2 py-1 rounded">
+                          Todas as versões
+                        </span>
+                      ) : sale.brand ? (
+                        <span className="text-purple-600 text-sm bg-purple-50 px-2 py-1 rounded">
+                          Todas as versões
+                        </span>
+                      ) : "-"}
+                    </td>
                     <td className="p-3 text-center">{sale.discountPercentage}%</td>
                     <td className="p-3 text-right">
                       <div className="flex justify-end gap-2">
