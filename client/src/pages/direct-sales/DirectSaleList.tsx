@@ -26,7 +26,9 @@ export default function DirectSaleList() {
     const searchTerm = searchFilter.toLowerCase().trim();
     return directSales.filter((sale: any) => 
       sale.name?.toLowerCase().includes(searchTerm) ||
-      sale.brand?.name?.toLowerCase().includes(searchTerm)
+      sale.brand?.name?.toLowerCase().includes(searchTerm) ||
+      sale.model?.name?.toLowerCase().includes(searchTerm) ||
+      sale.version?.name?.toLowerCase().includes(searchTerm)
     );
   }, [directSales, searchFilter]);
 
@@ -116,7 +118,7 @@ export default function DirectSaleList() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               type="text"
-              placeholder="Buscar por nome do desconto ou marca..."
+              placeholder="Buscar por nome, marca, modelo ou versão..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               className="pl-10"
@@ -149,6 +151,8 @@ export default function DirectSaleList() {
                 <tr className="bg-muted/50">
                   <th className="text-left p-3 font-medium">Nome</th>
                   <th className="text-left p-3 font-medium">Marca</th>
+                  <th className="text-left p-3 font-medium">Modelo</th>
+                  <th className="text-left p-3 font-medium">Versão</th>
                   <th className="text-center p-3 font-medium">Desconto (%)</th>
                   <th className="text-right p-3 font-medium">Ações</th>
                 </tr>
@@ -158,6 +162,8 @@ export default function DirectSaleList() {
                   <tr key={sale.id} className="border-t">
                     <td className="p-3">{sale.name}</td>
                     <td className="p-3">{sale.brand?.name || "N/A"}</td>
+                    <td className="p-3">{sale.model?.name || "-"}</td>
+                    <td className="p-3">{sale.version?.name || "-"}</td>
                     <td className="p-3 text-center">{sale.discountPercentage}%</td>
                     <td className="p-3 text-right">
                       <div className="flex justify-end gap-2">

@@ -610,7 +610,9 @@ export async function getDirectSales() {
   return db.query.directSales.findMany({
     orderBy: directSales.name,
     with: {
-      brand: true
+      brand: true,
+      model: true,
+      version: true
     }
   });
 }
