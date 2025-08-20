@@ -459,6 +459,7 @@ export default function Configurator2() {
       setSelectedColorId("");
       setSelectedDirectSaleId("");
       setSelectedOptionals([]);
+      setOptionalsTotal(0);
       setPaintPrice(0);
     }
   }, [selectedBrandId]);
@@ -468,6 +469,7 @@ export default function Configurator2() {
       setSelectedVersionId("");
       setSelectedColorId("");
       setSelectedOptionals([]);
+      setOptionalsTotal(0);
       setPaintPrice(0);
     }
   }, [selectedModelId]);
@@ -476,6 +478,7 @@ export default function Configurator2() {
     if (selectedVersionId) {
       setSelectedColorId("");
       setSelectedOptionals([]);
+      setOptionalsTotal(0);
       setPaintPrice(0);
     }
   }, [selectedVersionId]);
@@ -495,6 +498,11 @@ export default function Configurator2() {
     setDiscountAmount(0);
     setSurchargeAmount(0);
     setSelectedPriceType(null); // Reset price type selection
+    
+    // Reset optionals
+    setSelectedOptionals([]);
+    setOptionalsTotal(0);
+    setPaintPrice(0);
   };
 
   const handleVersionChange = (value: string) => {
@@ -507,6 +515,11 @@ export default function Configurator2() {
     setDiscountAmount(0);
     setSurchargeAmount(0);
     setSelectedPriceType(null); // Reset price type selection
+    
+    // Reset optionals
+    setSelectedOptionals([]);
+    setOptionalsTotal(0);
+    setPaintPrice(0);
   };
 
   const handleColorChange = (value: string) => {
