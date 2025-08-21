@@ -414,7 +414,7 @@ export default function Configurator2() {
 
   // useEffect para recalcular desconto quando pintura ou opcionais mudam
   useEffect(() => {
-    if (selectedDirectSaleId && discountPercentage > 0) {
+    if (selectedDirectSaleId && selectedDirectSaleId !== "0" && discountPercentage > 0) {
       // Recalcular desconto sobre preço base + pintura + opcionais
       const basePrice = getCurrentBasePrice();
       const paintCost = Number(paintPrice) || 0;
@@ -423,6 +423,15 @@ export default function Configurator2() {
       
       const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
       setDiscountAmount(calculatedDiscountAmount);
+      
+      console.log('Recalculando desconto:', {
+        basePrice,
+        paintCost,
+        optionalsCost,
+        totalBeforeDiscount,
+        discountPercentage,
+        calculatedDiscountAmount
+      });
     }
   }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
   
@@ -549,6 +558,7 @@ export default function Configurator2() {
     setSelectedColorId(value);
     
     // Atualizar o preço da pintura quando uma cor for selecionada
+    let newPaintPrice = 0;
     if (value && versionColors.length > 0) {
       const selectedColor = versionColors.find(vc => vc.colorId.toString() === value);
       if (selectedColor) {
@@ -557,12 +567,21 @@ export default function Configurator2() {
           typeof selectedColor.price === 'number' ? selectedColor.price :
           selectedColor.price !== undefined ? Number(selectedColor.price) : 
           500; // Valor fixo para simulação
-        setPaintPrice(colorPrice);
-      } else {
-        setPaintPrice(0);
+        newPaintPrice = colorPrice;
       }
-    } else {
-      setPaintPrice(0);
+    }
+    setPaintPrice(newPaintPrice);
+    
+    // Recalcular desconto se há um desconto ativo
+    if (selectedDirectSaleId && selectedDirectSaleId !== "0" && discountPercentage > 0) {
+      // Calcular desconto sobre preço base + nova pintura + opcionais
+      const basePrice = getCurrentBasePrice();
+      const paintCost = newPaintPrice;
+      const optionalsCost = Number(optionalsTotal) || 0;
+      const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
+      
+      const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+      setDiscountAmount(calculatedDiscountAmount);
     }
   };
 
