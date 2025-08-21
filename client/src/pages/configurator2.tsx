@@ -378,21 +378,28 @@ export default function Configurator2() {
       setTaxiIpiIcms(selectedVehicle.taxiIpiIcms);
       setTaxiIpi(selectedVehicle.taxiIpi);
       
-      // Cálculo de desconto
+      // Cálculo de desconto aplicado sobre base + pintura + opcionais
       const directSale = selectedDirectSaleId 
         ? directSales.find(ds => ds.id === parseInt(selectedDirectSaleId)) 
         : null;
       
       const calculatedDiscountPercentage = directSale ? directSale.discountPercentage : 0;
-      const calculatedDiscountAmount = (getCurrentBasePrice() * calculatedDiscountPercentage) / 100;
+      
+      // Calcular desconto sobre preço base + pintura + opcionais
+      const basePrice = getCurrentBasePrice();
+      const paintCost = Number(paintPrice) || 0;
+      const optionalsCost = Number(optionalsTotal) || 0;
+      const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
+      
+      const calculatedDiscountAmount = (totalBeforeDiscount * calculatedDiscountPercentage) / 100;
       
       setDiscountPercentage(calculatedDiscountPercentage);
       setDiscountAmount(calculatedDiscountAmount);
       
     }
-  }, [selectedVehicle, selectedDirectSaleId, directSales, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
+  }, [selectedVehicle, selectedDirectSaleId, directSales, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi, paintPrice, optionalsTotal]);
 
-  // useEffect separado para cálculo de opcionais (não deve interferir no desconto)
+  // useEffect separado para cálculo de opcionais
   useEffect(() => {
     if (versionOptionals.length > 0) {
       const selectedOptionalsTotal = versionOptionals
@@ -400,8 +407,24 @@ export default function Configurator2() {
         .reduce((sum, opt) => sum + (Number(opt.price) || 0), 0);
       
       setOptionalsTotal(selectedOptionalsTotal);
+    } else {
+      setOptionalsTotal(0);
     }
   }, [selectedOptionals, versionOptionals]);
+
+  // useEffect para recalcular desconto quando pintura ou opcionais mudam
+  useEffect(() => {
+    if (selectedDirectSaleId && discountPercentage > 0) {
+      // Recalcular desconto sobre preço base + pintura + opcionais
+      const basePrice = getCurrentBasePrice();
+      const paintCost = Number(paintPrice) || 0;
+      const optionalsCost = Number(optionalsTotal) || 0;
+      const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
+      
+      const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+      setDiscountAmount(calculatedDiscountAmount);
+    }
+  }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
   
   // Efeito separado para cálculo do preço final baseado em todas as entradas do usuário
   useEffect(() => {
@@ -545,6 +568,29 @@ export default function Configurator2() {
 
   const handleDirectSaleChange = (value: string) => {
     setSelectedDirectSaleId(value);
+    
+    // Recalcular desconto imediatamente quando selecionado
+    if (value && value !== "0") {
+      const directSale = directSales.find(ds => ds.id === parseInt(value));
+      if (directSale) {
+        const calculatedDiscountPercentage = directSale.discountPercentage;
+        
+        // Calcular desconto sobre preço base + pintura + opcionais
+        const basePrice = getCurrentBasePrice();
+        const paintCost = Number(paintPrice) || 0;
+        const optionalsCost = Number(optionalsTotal) || 0;
+        const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
+        
+        const calculatedDiscountAmount = (totalBeforeDiscount * calculatedDiscountPercentage) / 100;
+        
+        setDiscountPercentage(calculatedDiscountPercentage);
+        setDiscountAmount(calculatedDiscountAmount);
+      }
+    } else {
+      // Se não há desconto selecionado, zerar
+      setDiscountPercentage(0);
+      setDiscountAmount(0);
+    }
   };
 
   const handleOptionalToggle = (optionalId: number) => {
@@ -1065,7 +1111,14 @@ export default function Configurator2() {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm font-medium">Desc. {discountPercentage > 0 ? `${discountPercentage}%` : "0%"}</div>
+                      <div className="text-sm font-medium">
+                        Desc. {discountPercentage > 0 ? `${discountPercentage}%` : "0%"}
+                        {discountPercentage > 0 && (
+                          <div className="text-xs text-gray-500">
+                            (sobre total: base+pintura+opcionais)
+                          </div>
+                        )}
+                      </div>
                       <div className="font-bold">{formatCurrency(discountAmount)}</div>
                     </div>
                     <div>
