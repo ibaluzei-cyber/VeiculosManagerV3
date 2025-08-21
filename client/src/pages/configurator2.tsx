@@ -1059,15 +1059,7 @@ export default function Configurator2() {
                     </div>
                     <div>
                       <div className="text-sm font-medium">Total</div>
-                      <div className="font-bold">{formatCurrency((
-                        Number(selectedPriceType === 'pcdIpi' ? pcdIpi :
-                              selectedPriceType === 'taxiIpiIcms' ? taxiIpiIcms :
-                              selectedPriceType === 'pcdIpiIcms' ? pcdIpiIcms :
-                              selectedPriceType === 'taxiIpi' ? taxiIpi :
-                              publicPrice) + 
-                        Number(paintPrice) + 
-                        Number(optionalsTotal)
-                      ) * quantity)}</div>
+                      <div className="font-bold">{formatCurrency(finalPrice * quantity)}</div>
                     </div>
                   </div>
                   
@@ -1087,17 +1079,7 @@ export default function Configurator2() {
               {/* Preço Final */}
               <div className="bg-[#082a58] text-white p-4 text-center rounded-md">
                 <div className="uppercase font-bold mb-1">PREÇO FINAL</div>
-                <div className="text-xl font-bold">{formatCurrency((
-                  Number(selectedPriceType === 'pcdIpi' ? pcdIpi :
-                        selectedPriceType === 'taxiIpiIcms' ? taxiIpiIcms :
-                        selectedPriceType === 'pcdIpiIcms' ? pcdIpiIcms :
-                        selectedPriceType === 'taxiIpi' ? taxiIpi :
-                        publicPrice) + 
-                  Number(paintPrice) + 
-                  Number(optionalsTotal) - 
-                  Number(discountAmount) + 
-                  Number(surchargeAmount)
-                ) * quantity)}</div>
+                <div className="text-xl font-bold">{formatCurrency(finalPrice * quantity)}</div>
               </div>
             </div>
           </div>
