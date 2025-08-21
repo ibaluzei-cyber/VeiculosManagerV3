@@ -158,19 +158,19 @@ export default function Configurator2() {
   
   // Função para obter o preço base correto baseado no tipo selecionado
   const getCurrentBasePrice = () => {
-    if (!selectedPriceType) return publicPrice;
+    if (!selectedPriceType) return Number(publicPrice) || 0;
     
     switch (selectedPriceType) {
       case 'pcdIpi':
-        return pcdIpi;
+        return Number(pcdIpi) || 0;
       case 'taxiIpiIcms':
-        return taxiIpiIcms;
+        return Number(taxiIpiIcms) || 0;
       case 'pcdIpiIcms':
-        return pcdIpiIcms;
+        return Number(pcdIpiIcms) || 0;
       case 'taxiIpi':
-        return taxiIpi;
+        return Number(taxiIpi) || 0;
       default:
-        return publicPrice;
+        return Number(publicPrice) || 0;
     }
   };
 
