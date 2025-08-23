@@ -412,9 +412,11 @@ export default function Configurator2() {
     }
   }, [selectedOptionals, versionOptionals]);
 
-  // useEffect para recalcular desconto quando pintura ou opcionais mudam
+  // useEffect para recalcular desconto de DROPDOWN quando pintura ou opcionais mudam
   useEffect(() => {
+    // APENAS para desconto de dropdown (não manual)
     if (selectedDirectSaleId && selectedDirectSaleId !== "0" && discountPercentage > 0) {
+      console.log('=== useEffect DROPDOWN executando ===');
       // Recalcular desconto sobre preço base + pintura + opcionais
       const basePrice = getCurrentBasePrice();
       const paintCost = Number(paintPrice) || 0;
@@ -422,9 +424,10 @@ export default function Configurator2() {
       const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
       
       const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+      console.log('=== useEffect DROPDOWN calculado ===', calculatedDiscountAmount);
       setDiscountAmount(calculatedDiscountAmount);
     }
-  }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
+  }, [paintPrice, optionalsTotal, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
   
   // useEffect para recalcular desconto manual quando pintura ou opcionais mudam
   useEffect(() => {
