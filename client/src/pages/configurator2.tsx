@@ -423,15 +423,20 @@ export default function Configurator2() {
       
       const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
       setDiscountAmount(calculatedDiscountAmount);
+    }
+  }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
+  
+  // useEffect para recalcular desconto manual quando pintura ou opcionais mudam
+  useEffect(() => {
+    if (discountPercentage > 0 && (!selectedDirectSaleId || selectedDirectSaleId === "0")) {
+      // Recalcular desconto manual sobre preço base + pintura + opcionais
+      const basePrice = getCurrentBasePrice();
+      const paintCost = Number(paintPrice) || 0;
+      const optionalsCost = Number(optionalsTotal) || 0;
+      const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
       
-      console.log('Recalculando desconto:', {
-        basePrice,
-        paintCost,
-        optionalsCost,
-        totalBeforeDiscount,
-        discountPercentage,
-        calculatedDiscountAmount
-      });
+      const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+      setDiscountAmount(calculatedDiscountAmount);
     }
   }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
   
@@ -572,8 +577,8 @@ export default function Configurator2() {
     }
     setPaintPrice(newPaintPrice);
     
-    // Recalcular desconto se há um desconto ativo
-    if (selectedDirectSaleId && selectedDirectSaleId !== "0" && discountPercentage > 0) {
+    // Recalcular desconto se há um desconto ativo (dropdown ou manual)
+    if (discountPercentage > 0) {
       // Calcular desconto sobre preço base + nova pintura + opcionais
       const basePrice = getCurrentBasePrice();
       const paintCost = newPaintPrice;
@@ -1010,7 +1015,14 @@ export default function Configurator2() {
                           } else {
                             const newPercentage = parseFloat(inputValue) || 0;
                             setDiscountPercentage(newPercentage);
-                            const newDiscountAmount = (getCurrentBasePrice() * newPercentage) / 100;
+                            
+                            // Calcular desconto sobre preço base + pintura + opcionais
+                            const basePrice = getCurrentBasePrice();
+                            const paintCost = Number(paintPrice) || 0;
+                            const optionalsCost = Number(optionalsTotal) || 0;
+                            const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
+                            
+                            const newDiscountAmount = (totalBeforeDiscount * newPercentage) / 100;
                             setDiscountAmount(newDiscountAmount);
                           }
                         }}
