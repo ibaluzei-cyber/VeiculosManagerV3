@@ -1023,12 +1023,14 @@ export default function Configurator2() {
                         max="100"
                         value={discountPercentage || ''}
                         onChange={(e) => {
+                          console.log('=== DESCONTO MANUAL CHANGED ===', e.target.value);
                           const inputValue = e.target.value;
                           if (inputValue === '') {
                             setDiscountPercentage(0);
                             setDiscountAmount(0);
                           } else {
                             const newPercentage = parseFloat(inputValue) || 0;
+                            console.log('Nova porcentagem:', newPercentage);
                             setDiscountPercentage(newPercentage);
                             
                             // Calcular desconto sobre preço base + pintura + opcionais
@@ -1037,7 +1039,7 @@ export default function Configurator2() {
                             const optionalsCost = Number(optionalsTotal) || 0;
                             const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
                             
-                            console.log('Desconto manual - valores:', {
+                            console.log('=== Desconto manual - valores ===', {
                               basePrice,
                               paintCost,
                               optionalsCost,
@@ -1046,7 +1048,7 @@ export default function Configurator2() {
                             });
                             
                             const newDiscountAmount = (totalBeforeDiscount * newPercentage) / 100;
-                            console.log('Desconto manual calculado:', newDiscountAmount);
+                            console.log('=== Desconto manual calculado ===', newDiscountAmount);
                             setDiscountAmount(newDiscountAmount);
                           }
                         }}
