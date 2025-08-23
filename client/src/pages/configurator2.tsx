@@ -1026,14 +1026,20 @@ export default function Configurator2() {
                         max="100"
                         value={discountPercentage || ''}
                         onChange={(e) => {
-                          alert('TESTE: Campo changed! Valor: ' + e.target.value);
                           const inputValue = e.target.value;
+                          console.log('=== DESCONTO MANUAL onChange ===', inputValue);
+                          
                           if (inputValue === '') {
                             setDiscountPercentage(0);
                             setDiscountAmount(0);
+                            // Limpar seleção de dropdown para evitar conflito
+                            setSelectedDirectSaleId("");
                           } else {
                             const newPercentage = parseFloat(inputValue) || 0;
-                            setDiscountPercentage(newPercentage);
+                            console.log('=== Nova porcentagem ===', newPercentage);
+                            
+                            // Limpar seleção de dropdown para evitar conflito
+                            setSelectedDirectSaleId("");
                             
                             // Calcular desconto sobre preço base + pintura + opcionais
                             const basePrice = getCurrentBasePrice();
@@ -1041,7 +1047,18 @@ export default function Configurator2() {
                             const optionalsCost = Number(optionalsTotal) || 0;
                             const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
                             
+                            console.log('=== Valores para cálculo ===', {
+                              basePrice,
+                              paintCost,
+                              optionalsCost,
+                              totalBeforeDiscount,
+                              newPercentage
+                            });
+                            
                             const newDiscountAmount = (totalBeforeDiscount * newPercentage) / 100;
+                            console.log('=== Desconto calculado ===', newDiscountAmount);
+                            
+                            setDiscountPercentage(newPercentage);
                             setDiscountAmount(newDiscountAmount);
                           }
                         }}
