@@ -429,13 +429,28 @@ export default function Configurator2() {
   // useEffect para recalcular desconto manual quando pintura ou opcionais mudam
   useEffect(() => {
     if (discountPercentage > 0 && (!selectedDirectSaleId || selectedDirectSaleId === "0")) {
+      console.log('useEffect desconto manual executando com:', {
+        discountPercentage,
+        selectedDirectSaleId,
+        paintPrice,
+        optionalsTotal
+      });
+      
       // Recalcular desconto manual sobre preço base + pintura + opcionais
       const basePrice = getCurrentBasePrice();
       const paintCost = Number(paintPrice) || 0;
       const optionalsCost = Number(optionalsTotal) || 0;
       const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
       
+      console.log('useEffect desconto manual - cálculo:', {
+        basePrice,
+        paintCost,
+        optionalsCost,
+        totalBeforeDiscount
+      });
+      
       const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
+      console.log('useEffect desconto manual - resultado:', calculatedDiscountAmount);
       setDiscountAmount(calculatedDiscountAmount);
     }
   }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
@@ -1022,7 +1037,16 @@ export default function Configurator2() {
                             const optionalsCost = Number(optionalsTotal) || 0;
                             const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
                             
+                            console.log('Desconto manual - valores:', {
+                              basePrice,
+                              paintCost,
+                              optionalsCost,
+                              totalBeforeDiscount,
+                              newPercentage
+                            });
+                            
                             const newDiscountAmount = (totalBeforeDiscount * newPercentage) / 100;
+                            console.log('Desconto manual calculado:', newDiscountAmount);
                             setDiscountAmount(newDiscountAmount);
                           }
                         }}
