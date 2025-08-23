@@ -416,7 +416,6 @@ export default function Configurator2() {
   useEffect(() => {
     // APENAS para desconto de dropdown (não manual)
     if (selectedDirectSaleId && selectedDirectSaleId !== "0" && discountPercentage > 0) {
-      console.log('=== useEffect DROPDOWN executando ===');
       // Recalcular desconto sobre preço base + pintura + opcionais
       const basePrice = getCurrentBasePrice();
       const paintCost = Number(paintPrice) || 0;
@@ -424,7 +423,6 @@ export default function Configurator2() {
       const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
       
       const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
-      console.log('=== useEffect DROPDOWN calculado ===', calculatedDiscountAmount);
       setDiscountAmount(calculatedDiscountAmount);
     }
   }, [paintPrice, optionalsTotal, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
@@ -432,28 +430,13 @@ export default function Configurator2() {
   // useEffect para recalcular desconto manual quando pintura ou opcionais mudam
   useEffect(() => {
     if (discountPercentage > 0 && (!selectedDirectSaleId || selectedDirectSaleId === "0")) {
-      console.log('useEffect desconto manual executando com:', {
-        discountPercentage,
-        selectedDirectSaleId,
-        paintPrice,
-        optionalsTotal
-      });
-      
       // Recalcular desconto manual sobre preço base + pintura + opcionais
       const basePrice = getCurrentBasePrice();
       const paintCost = Number(paintPrice) || 0;
       const optionalsCost = Number(optionalsTotal) || 0;
       const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
       
-      console.log('useEffect desconto manual - cálculo:', {
-        basePrice,
-        paintCost,
-        optionalsCost,
-        totalBeforeDiscount
-      });
-      
       const calculatedDiscountAmount = (totalBeforeDiscount * discountPercentage) / 100;
-      console.log('useEffect desconto manual - resultado:', calculatedDiscountAmount);
       setDiscountAmount(calculatedDiscountAmount);
     }
   }, [paintPrice, optionalsTotal, discountPercentage, selectedDirectSaleId, selectedPriceType, publicPrice, pcdIpi, pcdIpiIcms, taxiIpiIcms, taxiIpi]);
@@ -526,6 +509,7 @@ export default function Configurator2() {
       setSelectedOptionals([]);
       setOptionalsTotal(0);
       setPaintPrice(0);
+      // Preservar desconto manual
     }
   }, [selectedModelId]);
 
@@ -535,6 +519,7 @@ export default function Configurator2() {
       setSelectedOptionals([]);
       setOptionalsTotal(0);
       setPaintPrice(0);
+      // Preservar desconto manual
     }
   }, [selectedVersionId]);
 
@@ -566,8 +551,9 @@ export default function Configurator2() {
     
     // Reset discount and surcharge fields to initial state
     setSelectedDirectSaleId(""); // Reset dropdown to show "DESCONTOS V.D."
-    setDiscountPercentage(0);
-    setDiscountAmount(0);
+    // Preservar desconto manual quando mudar versão
+    // setDiscountPercentage(0);
+    // setDiscountAmount(0);
     setSurchargeAmount(0);
     setSelectedPriceType(null); // Reset price type selection
     
@@ -1027,7 +1013,6 @@ export default function Configurator2() {
                         value={discountPercentage || ''}
                         onChange={(e) => {
                           const inputValue = e.target.value;
-                          console.log('=== DESCONTO MANUAL onChange ===', inputValue);
                           
                           if (inputValue === '') {
                             setDiscountPercentage(0);
@@ -1036,7 +1021,6 @@ export default function Configurator2() {
                             setSelectedDirectSaleId("");
                           } else {
                             const newPercentage = parseFloat(inputValue) || 0;
-                            console.log('=== Nova porcentagem ===', newPercentage);
                             
                             // Limpar seleção de dropdown para evitar conflito
                             setSelectedDirectSaleId("");
@@ -1047,16 +1031,7 @@ export default function Configurator2() {
                             const optionalsCost = Number(optionalsTotal) || 0;
                             const totalBeforeDiscount = basePrice + paintCost + optionalsCost;
                             
-                            console.log('=== Valores para cálculo ===', {
-                              basePrice,
-                              paintCost,
-                              optionalsCost,
-                              totalBeforeDiscount,
-                              newPercentage
-                            });
-                            
                             const newDiscountAmount = (totalBeforeDiscount * newPercentage) / 100;
-                            console.log('=== Desconto calculado ===', newDiscountAmount);
                             
                             setDiscountPercentage(newPercentage);
                             setDiscountAmount(newDiscountAmount);
