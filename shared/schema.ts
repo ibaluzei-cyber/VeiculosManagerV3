@@ -351,3 +351,43 @@ export const customPermissionsInsertSchema = createInsertSchema(customPermission
 export type CustomPermissionsInsert = z.infer<typeof customPermissionsInsertSchema>;
 export const customPermissionsSelectSchema = createSelectSchema(customPermissions);
 export type CustomPermissions = z.infer<typeof customPermissionsSelectSchema>;
+
+// Tabela para gerenciamento de backups
+export const backups = pgTable("backups", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  fileName: text("file_name").notNull().unique(),
+  filePath: text("file_path").notNull(),
+  fileSize: integer("file_size").notNull(),
+  checksum: text("checksum").notNull(),
+  status: text("status").notNull().$type<'creating' | 'completed' | 'failed' | 'deleted'>().default('creating'),
+  storageType: text("storage_type").notNull().$type<'local' | 's3'>().default('local'),
+  storageLocation: text("storage_location"),
+  schemaVersion: text("schema_version").notNull(),
+  tablesCount: integer("tables_count").notNull(),
+  recordsCount: integer("records_count").notNull(),
+  compressionType: text("compression_type").default("gzip"),
+  isEncrypted: boolean("is_encrypted").default(false).notNull(),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  metadata: json("metadata") // Para armazenar informações adicionais como lista de tabelas, etc.
+});
+
+export const backupsRelations = relations(backups, ({ one }) => ({
+  createdByUser: one(users, { fields: [backups.createdBy], references: [users.id] }),
+}));
+
+export const backupsInsertSchema = createInsertSchema(backups, {
+  name: (schema) => schema.min(3, "Nome do backup deve ter pelo menos 3 caracteres"),
+  fileName: (schema) => schema.min(1, "Nome do arquivo é obrigatório"),
+  filePath: (schema) => schema.min(1, "Caminho do arquivo é obrigatório"),
+  fileSize: (schema) => schema.min(0, "Tamanho do arquivo deve ser positivo"),
+  checksum: (schema) => schema.min(1, "Checksum é obrigatório"),
+  schemaVersion: (schema) => schema.min(1, "Versão do schema é obrigatória"),
+  tablesCount: (schema) => schema.min(0, "Quantidade de tabelas deve ser positiva"),
+  recordsCount: (schema) => schema.min(0, "Quantidade de registros deve ser positiva")
+});
+export type BackupInsert = z.infer<typeof backupsInsertSchema>;
+export const backupsSelectSchema = createSelectSchema(backups);
+export type Backup = z.infer<typeof backupsSelectSchema>;
