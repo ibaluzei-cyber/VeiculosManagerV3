@@ -1888,13 +1888,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post(`${apiPrefix}/backups/validate`, isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const { filePath } = req.body;
+      const { backupId, filePath } = req.body;
       
-      if (!filePath || typeof filePath !== 'string') {
-        return res.status(400).json({ message: "Caminho do arquivo é obrigatório" });
+      let targetFilePath = filePath;
+      
+      // Se backupId foi fornecido, buscar o caminho do arquivo
+      if (backupId && typeof backupId === 'number') {
+        targetFilePath = await backupService.getBackupFilePath(backupId);
+        if (!targetFilePath) {
+          return res.status(404).json({ message: "Backup não encontrado ou não disponível" });
+        }
       }
       
-      const validation = await backupService.validateBackup(filePath);
+      if (!targetFilePath || typeof targetFilePath !== 'string') {
+        return res.status(400).json({ message: "backupId ou filePath é obrigatório" });
+      }
+      
+      const validation = await backupService.validateBackup(targetFilePath);
       res.json(validation);
     } catch (error) {
       console.error("Erro ao validar backup:", error);
@@ -1904,17 +1914,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post(`${apiPrefix}/backups/restore`, isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const { filePath, mode = 'merge', dryRun = false } = req.body;
+      const { backupId, filePath, mode = 'merge', dryRun = false } = req.body;
       
-      if (!filePath || typeof filePath !== 'string') {
-        return res.status(400).json({ message: "Caminho do arquivo é obrigatório" });
+      let targetFilePath = filePath;
+      
+      // Se backupId foi fornecido, buscar o caminho do arquivo
+      if (backupId && typeof backupId === 'number') {
+        targetFilePath = await backupService.getBackupFilePath(backupId);
+        if (!targetFilePath) {
+          return res.status(404).json({ message: "Backup não encontrado ou não disponível" });
+        }
+      }
+      
+      if (!targetFilePath || typeof targetFilePath !== 'string') {
+        return res.status(400).json({ message: "backupId ou filePath é obrigatório" });
       }
       
       if (mode !== 'merge' && mode !== 'replace') {
         return res.status(400).json({ message: "Modo deve ser 'merge' ou 'replace'" });
       }
       
-      const result = await backupService.restoreBackup(filePath, mode, dryRun);
+      const result = await backupService.restoreBackup(targetFilePath, mode, dryRun);
       
       if (result.success) {
         res.json(result);

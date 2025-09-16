@@ -4,38 +4,38 @@ import {
   optionals, versionOptionals, vehicles, settings, directSales,
   users, userRoles, customPermissions, backups 
 } from "@shared/schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql, gt, asc } from "drizzle-orm";
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import * as tar from "tar";
 import * as zlib from "zlib";
 
-// Definir ordem das tabelas respeitando foreign keys
+// Definir ordem das tabelas respeitando foreign keys com metadata de primary key
 const BACKUP_TABLES = [
   // Tabelas base (sem dependências)
-  { name: 'user_roles', table: userRoles },
-  { name: 'users', table: users },
-  { name: 'brands', table: brands },
-  { name: 'paint_types', table: paintTypes },
-  { name: 'settings', table: settings },
+  { name: 'user_roles', table: userRoles, keyColumn: 'id' },
+  { name: 'users', table: users, keyColumn: 'id' },
+  { name: 'brands', table: brands, keyColumn: 'id' },
+  { name: 'paint_types', table: paintTypes, keyColumn: 'id' },
+  { name: 'settings', table: settings, keyColumn: 'id' },
   
   // Tabelas com dependências de primeiro nível
-  { name: 'models', table: models },
-  { name: 'colors', table: colors },
-  { name: 'optionals', table: optionals },
+  { name: 'models', table: models, keyColumn: 'id' },
+  { name: 'colors', table: colors, keyColumn: 'id' },
+  { name: 'optionals', table: optionals, keyColumn: 'id' },
   
   // Tabelas com dependências de segundo nível
-  { name: 'versions', table: versions },
-  { name: 'direct_sales', table: directSales },
+  { name: 'versions', table: versions, keyColumn: 'id' },
+  { name: 'direct_sales', table: directSales, keyColumn: 'id' },
   
   // Tabelas com dependências de terceiro nível
-  { name: 'version_colors', table: versionColors },
-  { name: 'version_optionals', table: versionOptionals },
-  { name: 'vehicles', table: vehicles },
+  { name: 'version_colors', table: versionColors, keyColumn: 'id' },
+  { name: 'version_optionals', table: versionOptionals, keyColumn: 'id' },
+  { name: 'vehicles', table: vehicles, keyColumn: 'id' },
   
   // Tabelas de sistema
-  { name: 'custom_permissions', table: customPermissions }
+  { name: 'custom_permissions', table: customPermissions, keyColumn: 'id' }
 ];
 
 const BACKUP_DIR = path.join(process.cwd(), 'backups');
@@ -93,14 +93,19 @@ export class BackupService {
       const checksums: Record<string, string> = {};
       let totalRecords = 0;
       
-      // Exportar cada tabela
-      for (const tableInfo of BACKUP_TABLES) {
-        console.log(`Exportando tabela: ${tableInfo.name}`);
-        const { count, checksum } = await this.exportTable(tableInfo, tempDir);
-        tableCounts[tableInfo.name] = count;
-        checksums[tableInfo.name] = checksum;
-        totalRecords += count;
-      }
+      // Exportar cada tabela em uma única transação para garantir snapshot consistente
+      await db.transaction(async (tx) => {
+        // Definir isolation level para REPEATABLE READ para snapshot consistente
+        await tx.execute(sql`SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`);
+        
+        for (const tableInfo of BACKUP_TABLES) {
+          console.log(`Exportando tabela: ${tableInfo.name}`);
+          const { count, checksum } = await this.exportTable(tableInfo, tempDir, tx);
+          tableCounts[tableInfo.name] = count;
+          checksums[tableInfo.name] = checksum;
+          totalRecords += count;
+        }
+      });
       
       // Criar manifest
       const manifest: BackupManifest = {
@@ -170,27 +175,63 @@ export class BackupService {
     }
   }
   
-  // Exportar dados de uma tabela específica
-  private async exportTable(tableInfo: { name: string, table: any }, tempDir: string): Promise<{ count: number; checksum: string }> {
-    const data = await db.select().from(tableInfo.table);
-    
-    // Filtrar campos sensíveis se necessário
-    const sanitizedData = tableInfo.name === 'users' 
-      ? data.map(user => ({
-          ...user,
-          password: user.password ? '[ENCRYPTED]' : null // Manter indicação de senha hashada
-        }))
-      : data;
-    
+  // Exportar dados de uma tabela específica com streaming real
+  private async exportTable(tableInfo: { name: string, table: any, keyColumn: string }, tempDir: string, tx: any): Promise<{ count: number; checksum: string }> {
     const filePath = path.join(tempDir, `${tableInfo.name}.jsonl`);
-    const lines = sanitizedData.map(record => JSON.stringify(record)).join('\n');
+    const writeStream = fs.createWriteStream(filePath);
+    const hash = crypto.createHash('sha256');
     
-    fs.writeFileSync(filePath, lines);
+    let count = 0;
+    const batchSize = 1000;
+    let lastId = 0; // Para paginação determinística
     
-    // Calcular checksum
-    const checksum = crypto.createHash('sha256').update(lines).digest('hex');
-    
-    return { count: sanitizedData.length, checksum };
+    try {
+      // Verificar se a tabela tem a coluna de primary key esperada
+      if (!tableInfo.keyColumn || tableInfo.keyColumn !== 'id') {
+        throw new Error(`Tabela ${tableInfo.name} deve ter primary key 'id' numérica para backup streaming`);
+      }
+      
+      while (true) {
+        // Paginação determinística usando typed column refs
+        // WHERE tableInfo.table.id > lastId ORDER BY tableInfo.table.id ASC
+        const idColumn = tableInfo.table.id;
+        
+        const batch = await tx
+          .select()
+          .from(tableInfo.table)
+          .where(gt(idColumn, lastId))
+          .orderBy(asc(idColumn))
+          .limit(batchSize);
+        
+        if (batch.length === 0) break;
+        
+        for (const record of batch) {
+          // Manter senhas hasheadas como estão - não sanitizar
+          const jsonLine = JSON.stringify(record) + '\n';
+          writeStream.write(jsonLine);
+          hash.update(jsonLine);
+          count++;
+          lastId = record.id; // Atualizar lastId para próxima iteração
+        }
+        
+        // Se retornou menos que o batch size, chegamos ao fim
+        if (batch.length < batchSize) break;
+      }
+      
+      await new Promise((resolve, reject) => {
+        writeStream.end((error) => {
+          if (error) reject(error);
+          else resolve(void 0);
+        });
+      });
+      
+      const checksum = hash.digest('hex');
+      return { count, checksum };
+      
+    } catch (error) {
+      writeStream.destroy();
+      throw error;
+    }
   }
   
   // Listar backups existentes
@@ -285,11 +326,20 @@ export class BackupService {
           errors.push(`Versão do schema incompatível. Backup: ${manifest.schemaVersion}, Sistema: ${SCHEMA_VERSION}`);
         }
         
-        // Verificar se todas as tabelas estão presentes
+        // Verificar se todas as tabelas estão presentes e validar checksums
         for (const tableName of manifest.tableOrder) {
           const tableFile = path.join(tempDir, `${tableName}.jsonl`);
           if (!fs.existsSync(tableFile)) {
             errors.push(`Arquivo da tabela ${tableName} não encontrado`);
+          } else {
+            // Recomputar checksum e comparar com o manifest
+            const fileContent = fs.readFileSync(tableFile, 'utf8');
+            const computedChecksum = crypto.createHash('sha256').update(fileContent).digest('hex');
+            const expectedChecksum = manifest.checksums[tableName];
+            
+            if (computedChecksum !== expectedChecksum) {
+              errors.push(`Checksum inválido para tabela ${tableName}. Esperado: ${expectedChecksum}, Computado: ${computedChecksum}`);
+            }
           }
         }
         
@@ -405,35 +455,46 @@ export class BackupService {
             
             // Filtrar campos válidos e tratar dados especiais
             const validRecords = records.map(record => {
-              // Remover campos que não devem ser restaurados
-              const { id, created_at, updated_at, ...cleanRecord } = record;
+              // Converter campos de timestamp de string para Date primeiro
+              const convertedRecord = { ...record };
               
-              // Para usuários, pular se senha estiver como [ENCRYPTED]
-              if (tableName === 'users' && cleanRecord.password === '[ENCRYPTED]') {
-                return null;
+              // Lista de campos que são timestamps e precisam de conversão
+              const timestampFields = ['createdAt', 'updatedAt', 'created_at', 'updated_at', 'lastLogin', 'last_login', 'completedAt', 'completed_at'];
+              
+              for (const field of timestampFields) {
+                if (convertedRecord[field] && typeof convertedRecord[field] === 'string') {
+                  try {
+                    convertedRecord[field] = new Date(convertedRecord[field]);
+                  } catch (error) {
+                    console.warn(`Erro ao converter campo ${field} para Date:`, error);
+                    // Se não conseguir converter, manter como está
+                  }
+                }
               }
               
-              return cleanRecord;
+              return convertedRecord;
             }).filter(record => record !== null);
             
             if (validRecords.length > 0) {
               if (mode === 'merge') {
-                // Modo merge - inserir ou atualizar
+                // Modo merge - usar UPSERT para preservar relacionamentos
+                // Manter IDs para preservar foreign keys entre tabelas
                 for (const record of validRecords) {
                   try {
-                    await tx.insert(tableInfo.table).values(record);
+                    // Usar onConflictDoUpdate para UPSERT adequado
+                    await tx.insert(tableInfo.table)
+                      .values(record)
+                      .onConflictDoUpdate({
+                        target: tableInfo.table.id,
+                        set: record // Atualizar todos os campos se já existir
+                      });
                   } catch (error) {
-                    // Se erro de chave duplicada, tentar update
-                    if (error instanceof Error && error.message.includes('duplicate key')) {
-                      // Para modo merge, ignorar duplicatas silenciosamente
-                      console.log(`Registro duplicado ignorado em ${tableName}`);
-                    } else {
-                      throw error;
-                    }
+                    console.error(`Erro ao fazer UPSERT em ${tableName}:`, error);
+                    throw error;
                   }
                 }
               } else {
-                // Modo replace - inserir direto
+                // Modo replace - inserir direto (tabelas já foram limpas)
                 await tx.insert(tableInfo.table).values(validRecords);
               }
             }
