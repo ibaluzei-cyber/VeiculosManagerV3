@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Download, Upload, Trash2, Database, CheckCircle, AlertTriangle, FileArchive, Calendar, User, HardDrive } from "lucide-react";
 
 type Setting = {
   id: number;
@@ -26,10 +26,20 @@ export default function Settings() {
   const [saving, setSaving] = React.useState(false);
   const [formData, setFormData] = React.useState<Record<string, string | boolean>>({});
   
+  // Estados para backup
+  const [backupName, setBackupName] = React.useState('');
+  const [isCreatingBackup, setIsCreatingBackup] = React.useState(false);
+  const [isValidatingBackup, setIsValidatingBackup] = React.useState(false);
+  const [isRestoringBackup, setIsRestoringBackup] = React.useState(false);
+  
   // Buscar configurações do servidor
   const { data: settings = [], isLoading, error } = useQuery<Setting[]>({
     queryKey: ["/api/settings"],
-    queryFn: getQueryFn(),
+  });
+
+  // Buscar backups existentes
+  const { data: backups = [], isLoading: isLoadingBackups, refetch: refetchBackups } = useQuery({
+    queryKey: ["/api/backups"],
   });
   
   // Inicializa o formulário quando as configurações são carregadas
@@ -152,6 +162,7 @@ export default function Settings() {
           <TabsTrigger value="company">Empresa</TabsTrigger>
           <TabsTrigger value="app">Aplicação</TabsTrigger>
           <TabsTrigger value="theme">Cores do Tema</TabsTrigger>
+          <TabsTrigger value="backup">Backup</TabsTrigger>
         </TabsList>
         
         <TabsContent value="general" className="space-y-4">
