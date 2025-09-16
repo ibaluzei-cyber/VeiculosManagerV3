@@ -23,6 +23,7 @@ import {
   updateUserSessionActivity
 } from "./auth";
 import { sensitiveApiLimiter, logSecurityEvent } from "./security";
+import { backupService } from "./services/backupService";
 import { 
   brandInsertSchema, 
   modelInsertSchema, 
@@ -1799,6 +1800,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Erro ao atualizar status do usuário:", error);
       res.status(500).json({ message: "Erro ao atualizar status do usuário" });
+    }
+  });
+
+  // Backup API Routes - Admin Only
+  app.get(`${apiPrefix}/backups`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const backups = await backupService.listBackups(limit, offset);
+      res.json(backups);
+    } catch (error) {
+      console.error("Erro ao listar backups:", error);
+      res.status(500).json({ message: "Erro ao listar backups" });
+    }
+  });
+
+  app.post(`${apiPrefix}/backups`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { name } = req.body;
+      
+      if (!name || typeof name !== 'string' || name.trim().length === 0) {
+        return res.status(400).json({ message: "Nome do backup é obrigatório" });
+      }
+      
+      const userId = (req.user as any)?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Usuário não autenticado" });
+      }
+      
+      const result = await backupService.createBackup(name.trim(), userId);
+      res.status(201).json(result);
+    } catch (error) {
+      console.error("Erro ao criar backup:", error);
+      res.status(500).json({ message: "Erro ao criar backup" });
+    }
+  });
+
+  app.get(`${apiPrefix}/backups/:id/download`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const backupId = parseInt(req.params.id);
+      const filePath = await backupService.getBackupFilePath(backupId);
+      
+      if (!filePath) {
+        return res.status(404).json({ message: "Backup não encontrado ou não disponível" });
+      }
+      
+      // Definir headers para download
+      const fileName = filePath.split('/').pop() || 'backup.tar.gz';
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.setHeader('Content-Type', 'application/gzip');
+      
+      // Stream o arquivo para o cliente
+      const fs = require('fs');
+      const fileStream = fs.createReadStream(filePath);
+      
+      fileStream.on('error', (error) => {
+        console.error("Erro ao ler arquivo de backup:", error);
+        if (!res.headersSent) {
+          res.status(500).json({ message: "Erro ao baixar backup" });
+        }
+      });
+      
+      fileStream.pipe(res);
+    } catch (error) {
+      console.error("Erro ao baixar backup:", error);
+      res.status(500).json({ message: "Erro ao baixar backup" });
+    }
+  });
+
+  app.delete(`${apiPrefix}/backups/:id`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const backupId = parseInt(req.params.id);
+      const success = await backupService.deleteBackup(backupId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Backup não encontrado" });
+      }
+      
+      res.json({ message: "Backup deletado com sucesso" });
+    } catch (error) {
+      console.error("Erro ao deletar backup:", error);
+      res.status(500).json({ message: "Erro ao deletar backup" });
+    }
+  });
+
+  app.post(`${apiPrefix}/backups/validate`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { filePath } = req.body;
+      
+      if (!filePath || typeof filePath !== 'string') {
+        return res.status(400).json({ message: "Caminho do arquivo é obrigatório" });
+      }
+      
+      const validation = await backupService.validateBackup(filePath);
+      res.json(validation);
+    } catch (error) {
+      console.error("Erro ao validar backup:", error);
+      res.status(500).json({ message: "Erro ao validar backup" });
+    }
+  });
+
+  app.post(`${apiPrefix}/backups/restore`, isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { filePath, mode = 'merge', dryRun = false } = req.body;
+      
+      if (!filePath || typeof filePath !== 'string') {
+        return res.status(400).json({ message: "Caminho do arquivo é obrigatório" });
+      }
+      
+      if (mode !== 'merge' && mode !== 'replace') {
+        return res.status(400).json({ message: "Modo deve ser 'merge' ou 'replace'" });
+      }
+      
+      const result = await backupService.restoreBackup(filePath, mode, dryRun);
+      
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error("Erro ao restaurar backup:", error);
+      res.status(500).json({ message: "Erro ao restaurar backup" });
     }
   });
 
