@@ -38,7 +38,7 @@ export default function Settings() {
   });
 
   // Buscar backups existentes
-  const { data: backups = [], isLoading: isLoadingBackups, refetch: refetchBackups } = useQuery({
+  const { data: backups = [], isLoading: isLoadingBackups, refetch: refetchBackups } = useQuery<any[]>({
     queryKey: ["/api/backups"],
   });
   
@@ -108,6 +108,141 @@ export default function Settings() {
       });
     } finally {
       setSaving(false);
+    }
+  };
+  
+  // Função para criar backup
+  const handleCreateBackup = async () => {
+    if (!backupName.trim()) {
+      toast({
+        title: "Nome obrigatório",
+        description: "Por favor, digite um nome para o backup.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsCreatingBackup(true);
+    try {
+      await apiRequest("POST", "/api/backups", { name: backupName });
+      toast({
+        title: "Backup criado",
+        description: "O backup foi criado com sucesso.",
+      });
+      setBackupName('');
+      refetchBackups();
+    } catch (error) {
+      console.error("Erro ao criar backup:", error);
+      toast({
+        title: "Erro ao criar backup",
+        description: "Ocorreu um erro ao criar o backup. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingBackup(false);
+    }
+  };
+  
+  // Função para validar backup
+  const handleValidateBackup = async (backupId: number) => {
+    setIsValidatingBackup(true);
+    try {
+      const response = await fetch(`/api/backups/${backupId}/validate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const result = await response.json();
+      toast({
+        title: result.isValid ? "Backup válido" : "Backup inválido",
+        description: result.message || (result.isValid ? "O backup passou na validação." : "O backup apresentou problemas."),
+        variant: result.isValid ? "default" : "destructive",
+      });
+    } catch (error) {
+      console.error("Erro ao validar backup:", error);
+      toast({
+        title: "Erro ao validar",
+        description: "Ocorreu um erro ao validar o backup.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsValidatingBackup(false);
+    }
+  };
+  
+  // Função para fazer download do backup
+  const handleDownloadBackup = async (backupId: number, fileName: string) => {
+    try {
+      const response = await fetch(`/api/backups/${backupId}/download`);
+      if (!response.ok) throw new Error('Erro ao baixar backup');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Download iniciado",
+        description: "O download do backup foi iniciado.",
+      });
+    } catch (error) {
+      console.error("Erro ao baixar backup:", error);
+      toast({
+        title: "Erro no download",
+        description: "Ocorreu um erro ao baixar o backup.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Função para deletar backup
+  const handleDeleteBackup = async (backupId: number) => {
+    try {
+      await apiRequest("DELETE", `/api/backups/${backupId}`);
+      toast({
+        title: "Backup deletado",
+        description: "O backup foi removido com sucesso.",
+      });
+      refetchBackups();
+    } catch (error) {
+      console.error("Erro ao deletar backup:", error);
+      toast({
+        title: "Erro ao deletar",
+        description: "Ocorreu um erro ao deletar o backup.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Função para restaurar backup
+  const handleRestoreBackup = async (backupId: number) => {
+    if (!confirm("ATENÇÃO: A restauração irá substituir todos os dados atuais. Esta ação não pode ser desfeita. Deseja continuar?")) {
+      return;
+    }
+    
+    setIsRestoringBackup(true);
+    try {
+      await apiRequest("POST", `/api/backups/${backupId}/restore`);
+      toast({
+        title: "Backup restaurado",
+        description: "O backup foi restaurado com sucesso. A página será recarregada.",
+      });
+      // Recarregar a página após restauração
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error) {
+      console.error("Erro ao restaurar backup:", error);
+      toast({
+        title: "Erro na restauração",
+        description: "Ocorreu um erro ao restaurar o backup.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRestoringBackup(false);
     }
   };
   
@@ -351,6 +486,226 @@ export default function Settings() {
                 <p className="text-xs text-muted-foreground mt-2">
                   Nota: As alterações nas cores serão aplicadas após salvar e recarregar a página.
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="backup" className="space-y-4">
+          {/* Seção de Criar Backup */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Database className="mr-2 h-5 w-5" />
+                Criar Novo Backup
+              </CardTitle>
+              <CardDescription>
+                Crie um backup completo do sistema incluindo todas as configurações e dados
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex space-x-2">
+                <Input
+                  placeholder="Nome do backup (ex: Backup-Sistema-2024)"
+                  value={backupName}
+                  onChange={(e) => setBackupName(e.target.value)}
+                  disabled={isCreatingBackup}
+                />
+                <Button onClick={handleCreateBackup} disabled={isCreatingBackup || !backupName.trim()}>
+                  {isCreatingBackup ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Criando...
+                    </>
+                  ) : (
+                    <>
+                      <FileArchive className="mr-2 h-4 w-4" />
+                      Criar Backup
+                    </>
+                  )}
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                O backup incluirá todas as tabelas do sistema: veículos, marcas, modelos, versões, cores, opcionais, configurações e dados de usuários.
+              </p>
+            </CardContent>
+          </Card>
+          
+          {/* Seção de Lista de Backups */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileArchive className="mr-2 h-5 w-5" />
+                Backups Disponíveis
+              </CardTitle>
+              <CardDescription>
+                Visualize, baixe, valide ou restaure backups existentes
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingBackups ? (
+                <div className="flex justify-center items-center h-32">
+                  <Loader2 className="animate-spin h-6 w-6 text-primary" />
+                  <span className="ml-2">Carregando backups...</span>
+                </div>
+              ) : backups.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Database className="mx-auto h-12 w-12 mb-4" />
+                  <p>Nenhum backup encontrado</p>
+                  <p className="text-sm">Crie seu primeiro backup usando o formulário acima</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {backups.map((backup: any) => (
+                    <div key={backup.id} className="border rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <h3 className="font-medium">{backup.name}</h3>
+                          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                            <span className="flex items-center">
+                              <Calendar className="mr-1 h-4 w-4" />
+                              {new Date(backup.createdAt).toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                            <span className="flex items-center">
+                              <HardDrive className="mr-1 h-4 w-4" />
+                              {(backup.fileSize / 1024 / 1024).toFixed(2)} MB
+                            </span>
+                            <span className="flex items-center">
+                              <User className="mr-1 h-4 w-4" />
+                              Tabelas: {backup.tablesCount}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`px-2 py-1 rounded text-xs font-medium ${
+                          backup.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          backup.status === 'creating' ? 'bg-yellow-100 text-yellow-800' :
+                          backup.status === 'failed' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {backup.status === 'completed' && (
+                            <><CheckCircle className="inline mr-1 h-3 w-3" />Concluído</>
+                          )}
+                          {backup.status === 'creating' && (
+                            <><Loader2 className="inline mr-1 h-3 w-3 animate-spin" />Criando</>
+                          )}
+                          {backup.status === 'failed' && (
+                            <><AlertTriangle className="inline mr-1 h-3 w-3" />Falhou</>
+                          )}
+                          {!['completed', 'creating', 'failed'].includes(backup.status) && backup.status}
+                        </div>
+                      </div>
+                      
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDownloadBackup(backup.id, backup.fileName)}
+                          disabled={backup.status !== 'completed'}
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Baixar
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleValidateBackup(backup.id)}
+                          disabled={backup.status !== 'completed' || isValidatingBackup}
+                        >
+                          {isValidatingBackup ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Validando...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              Validar
+                            </>
+                          )}
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRestoreBackup(backup.id)}
+                          disabled={backup.status !== 'completed' || isRestoringBackup}
+                        >
+                          {isRestoringBackup ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Restaurando...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="mr-2 h-4 w-4" />
+                              Restaurar
+                            </>
+                          )}
+                        </Button>
+                        
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDeleteBackup(backup.id)}
+                          disabled={backup.status === 'creating'}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Deletar
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Seção de Informações sobre Backup */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <AlertTriangle className="mr-2 h-5 w-5" />
+                Informações Importantes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                <h4 className="font-medium text-blue-900 mb-2">O que está incluído no backup:</h4>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li>• Todos os veículos cadastrados</li>
+                  <li>• Marcas, modelos e versões</li>
+                  <li>• Cores e tipos de pintura</li>
+                  <li>• Opcionais e configurações</li>
+                  <li>• Configurações do sistema</li>
+                  <li>• Dados de usuários e permissões</li>
+                </ul>
+              </div>
+              
+              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+                <h4 className="font-medium text-yellow-900 mb-2">Recomendações:</h4>
+                <ul className="text-sm text-yellow-700 space-y-1">
+                  <li>• Crie backups regulares (recomendamos semanalmente)</li>
+                  <li>• Sempre valide um backup após sua criação</li>
+                  <li>• Faça download dos backups importantes</li>
+                  <li>• Teste a restauração em um ambiente de desenvolvimento</li>
+                </ul>
+              </div>
+              
+              <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                <h4 className="font-medium text-red-900 mb-2">⚠️ Atenção:</h4>
+                <ul className="text-sm text-red-700 space-y-1">
+                  <li>• A restauração substitui TODOS os dados atuais</li>
+                  <li>• Esta ação NÃO pode ser desfeita</li>
+                  <li>• Sempre confirme se é o backup correto antes de restaurar</li>
+                  <li>• Recomendamos criar um backup antes de restaurar outro</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
