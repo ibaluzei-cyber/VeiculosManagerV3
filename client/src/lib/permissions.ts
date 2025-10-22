@@ -24,6 +24,7 @@ export const ROUTE_PERMISSIONS: RoutePermission[] = [
   { path: "/paint-types", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Visualizar tipos de pintura" },
   { path: "/optionals", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Visualizar opcionais" },
   { path: "/vehicles", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Visualizar veículos" },
+  { path: "/direct-sales", allowedRoles: ["Administrador", "Cadastrador", "Usuário"], description: "Visualizar vendas diretas" },
   
   // Rotas de cadastro - acessíveis a Cadastradores e Administradores
   { path: "/brands/new", allowedRoles: ["Administrador", "Cadastrador"], description: "Cadastrar novas marcas" },
