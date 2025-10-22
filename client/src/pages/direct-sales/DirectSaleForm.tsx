@@ -26,7 +26,8 @@ export default function DirectSaleForm() {
     brandId: "",
     modelId: "0",
     versionId: "0",
-    discountPercentage: ""
+    discountPercentage: "",
+    priceType: "public"
   });
   
   // Fetch brands for the dropdown
@@ -82,7 +83,8 @@ export default function DirectSaleForm() {
         brandId: directSale.brandId?.toString() || "",
         modelId: directSale.modelId ? directSale.modelId.toString() : "0",
         versionId: directSale.versionId ? directSale.versionId.toString() : "0",
-        discountPercentage: directSale.discountPercentage?.toString() || ""
+        discountPercentage: directSale.discountPercentage?.toString() || "",
+        priceType: directSale.priceType || "public"
       };
       setFormData(newFormData);
       setIsFormInitialized(true);
@@ -124,7 +126,8 @@ export default function DirectSaleForm() {
         brandId: parseInt(formData.brandId),
         modelId: formData.modelId && formData.modelId !== "0" ? parseInt(formData.modelId) : null,
         versionId: formData.versionId && formData.versionId !== "0" ? parseInt(formData.versionId) : null,
-        discountPercentage: formData.discountPercentage // Keeping it as string to match schema expectation
+        discountPercentage: formData.discountPercentage, // Keeping it as string to match schema expectation
+        priceType: formData.priceType
       };
       
 
@@ -299,6 +302,25 @@ export default function DirectSaleForm() {
                 onChange={handleTextChange}
                 placeholder="Ex: 5.5"
               />
+            </div>
+            
+            <div className="grid gap-2">
+              <Label htmlFor="priceType-select">Tipo de Preço</Label>
+              <Select 
+                value={formData.priceType} 
+                onValueChange={(value) => handleSelectChange("priceType", value)}
+              >
+                <SelectTrigger id="priceType-select">
+                  <SelectValue placeholder="Selecione o tipo de preço" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="public">Preço Público</SelectItem>
+                  <SelectItem value="pcdIpi">PCD IPI</SelectItem>
+                  <SelectItem value="taxiIpiIcms">TAXI IPI/ICMS</SelectItem>
+                  <SelectItem value="pcdIpiIcms">PCD IPI/ICMS</SelectItem>
+                  <SelectItem value="taxiIpi">TAXI IPI</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">

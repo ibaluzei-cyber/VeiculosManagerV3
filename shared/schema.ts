@@ -226,6 +226,7 @@ export const directSales = pgTable("direct_sales", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   discountPercentage: decimal("discount_percentage", { precision: 5, scale: 2 }).notNull(),
+  priceType: text("price_type").notNull().$type<'public' | 'pcdIpi' | 'taxiIpiIcms' | 'pcdIpiIcms' | 'taxiIpi'>().default('public'),
   brandId: integer("brand_id").references(() => brands.id),
   modelId: integer("model_id").references(() => models.id),
   versionId: integer("version_id").references(() => versions.id),
@@ -250,7 +251,11 @@ export const directSalesRelations = relations(directSales, ({ one }) => ({
 
 export const directSalesInsertSchema = createInsertSchema(directSales, {
   name: (schema) => schema.min(2, "Nome deve ter pelo menos 2 caracteres"),
-  discountPercentage: (schema) => schema.min(0, "Percentual de desconto não pode ser negativo")
+  discountPercentage: (schema) => schema.min(0, "Percentual de desconto não pode ser negativo"),
+  priceType: (schema) => schema.refine(
+    (val) => ['public', 'pcdIpi', 'taxiIpiIcms', 'pcdIpiIcms', 'taxiIpi'].includes(val),
+    { message: "Tipo de preço inválido" }
+  )
 });
 export type DirectSaleInsert = z.infer<typeof directSalesInsertSchema>;
 export const directSalesSelectSchema = createSelectSchema(directSales);

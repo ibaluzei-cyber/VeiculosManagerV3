@@ -291,6 +291,17 @@ export default function Configurator2() {
     
     const sale = (ds: any) => ds; // Type helper
     
+    // Determinar o tipo de preço atual para filtro
+    const currentPriceType = selectedPriceType || 'public';
+    
+    // Filtro adicional por tipo de preço
+    const filterByPriceType = (discounts: any[]) => {
+      return discounts.filter(ds => {
+        const dsType = sale(ds).priceType || 'public';
+        return dsType === currentPriceType;
+      });
+    };
+    
     // Hierarquia: Versão > Modelo > Marca
     // O mais específico sempre sobrepõe os menos específicos
     
@@ -301,7 +312,7 @@ export default function Configurator2() {
       );
       
       if (versionDiscounts.length > 0) {
-        return versionDiscounts; // Se tem desconto de versão, mostra APENAS esses
+        return filterByPriceType(versionDiscounts); // Filtra por tipo de preço
       }
       
       // 2. Se não tem desconto de versão, busca por MODELO
@@ -311,16 +322,17 @@ export default function Configurator2() {
         );
         
         if (modelDiscounts.length > 0) {
-          return modelDiscounts; // Se tem desconto de modelo, mostra APENAS esses
+          return filterByPriceType(modelDiscounts); // Filtra por tipo de preço
         }
       }
       
       // 3. Se não tem desconto de versão nem modelo, busca por MARCA
-      return directSales.filter(ds => 
+      const brandDiscounts = directSales.filter(ds => 
         sale(ds).brandId === parseInt(selectedBrandId) && 
         !sale(ds).modelId && 
         !sale(ds).versionId
       );
+      return filterByPriceType(brandDiscounts); // Filtra por tipo de preço
     }
     
     if (selectedModelId) {
@@ -330,24 +342,26 @@ export default function Configurator2() {
       );
       
       if (modelDiscounts.length > 0) {
-        return modelDiscounts; // Se tem desconto de modelo, mostra APENAS esses
+        return filterByPriceType(modelDiscounts); // Filtra por tipo de preço
       }
       
       // 2. Se não tem desconto de modelo, busca por MARCA
-      return directSales.filter(ds => 
+      const brandDiscounts = directSales.filter(ds => 
         sale(ds).brandId === parseInt(selectedBrandId) && 
         !sale(ds).modelId && 
         !sale(ds).versionId
       );
+      return filterByPriceType(brandDiscounts); // Filtra por tipo de preço
     }
     
     // Se só tem marca selecionada, mostra apenas descontos gerais da marca
-    return directSales.filter(ds => 
+    const brandDiscounts = directSales.filter(ds => 
       sale(ds).brandId === parseInt(selectedBrandId) && 
       !sale(ds).modelId && 
       !sale(ds).versionId
     );
-  }, [directSales, selectedBrandId, selectedModelId, selectedVersionId]);
+    return filterByPriceType(brandDiscounts); // Filtra por tipo de preço
+  }, [directSales, selectedBrandId, selectedModelId, selectedVersionId, selectedPriceType]);
 
   // Buscar o veículo selecionado na lista de veículos
   const selectedVehicle = selectedVersionId 
