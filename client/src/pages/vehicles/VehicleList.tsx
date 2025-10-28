@@ -178,7 +178,7 @@ export default function VehicleList() {
   
   const filteredVehicles = vehicles.filter(vehicle => {
     // Status filter
-    if (statusFilter !== "all" && vehicle.status !== statusFilter) {
+    if (statusFilter !== "all" && vehicle.situation !== statusFilter) {
       return false;
     }
     

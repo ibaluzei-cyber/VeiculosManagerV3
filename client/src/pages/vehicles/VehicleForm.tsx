@@ -159,10 +159,8 @@ export default function VehicleForm() {
       form.setValue("modelId", vehicle.version.modelId.toString());
       
       // Filter versions based on model
-      // Se a versão do veículo está inativa, incluímos ela também para permitir a edição
       const versionsForModel = versions.filter(
-        version => version.modelId === vehicle.version.modelId && 
-        ((version as any).isActive !== false || version.id === vehicle.versionId)
+        version => version.modelId === vehicle.version.modelId
       );
       setFilteredVersions(versionsForModel);
       
@@ -211,9 +209,8 @@ export default function VehicleForm() {
     
     if (modelId) {
       const parsedModelId = parseInt(modelId);
-      // Filtra versões pelo modelo E que estejam ativas
       setFilteredVersions(versions.filter(version => 
-        version.modelId === parsedModelId && (version as any).isActive !== false
+        version.modelId === parsedModelId
       ));
     } else {
       setFilteredVersions([]);
