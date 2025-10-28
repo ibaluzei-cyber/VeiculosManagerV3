@@ -27,6 +27,7 @@ export const versions = pgTable("versions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   modelId: integer("model_id").references(() => models.id).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
