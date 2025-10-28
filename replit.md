@@ -120,6 +120,10 @@ Changelog:
 - August 16, 2025. Implemented hierarchical discount system with version > model > brand specificity
 - August 16, 2025. Added search filtering for direct sales management
 - August 16, 2025. Fixed discount form editing and dropdown cascade functionality
+- October 28, 2025. Added price type specific discount system (public, PCD IPI, TAXI IPI/ICMS, PCD IPI/ICMS, TAXI IPI)
+- October 28, 2025. Fixed permissions for /direct-sales route
+- October 28, 2025. Fixed discount dropdown disabled state for non-public price types
+- October 28, 2025. Implemented smart version sorting: descending by year (2026→2025), with versions without year appearing last
 ```
 
 ## User Preferences

@@ -272,9 +272,39 @@ export default function Configurator2() {
     selectedBrandId ? model.brandId === parseInt(selectedBrandId) : true
   );
 
-  const filteredVersions = allVersions.filter(version => 
-    selectedModelId ? version.modelId === parseInt(selectedModelId) : true
-  );
+  // Função para extrair o ano do nome da versão
+  const extractYear = (versionName: string): number | null => {
+    const yearMatch = versionName.match(/\b(20\d{2})\b/); // Procura por anos como 2024, 2025, 2026, etc.
+    return yearMatch ? parseInt(yearMatch[1]) : null;
+  };
+
+  // Filtrar e ordenar versões
+  const filteredVersions = allVersions
+    .filter(version => 
+      selectedModelId ? version.modelId === parseInt(selectedModelId) : true
+    )
+    .sort((a, b) => {
+      const yearA = extractYear(a.name);
+      const yearB = extractYear(b.name);
+      
+      // Se ambos têm ano, ordena por ano decrescente
+      if (yearA !== null && yearB !== null) {
+        return yearB - yearA; // Decrescente (2026 antes de 2025)
+      }
+      
+      // Se apenas A tem ano, A vem primeiro
+      if (yearA !== null && yearB === null) {
+        return -1;
+      }
+      
+      // Se apenas B tem ano, B vem primeiro
+      if (yearA === null && yearB !== null) {
+        return 1;
+      }
+      
+      // Se nenhum tem ano, ordena alfabeticamente
+      return a.name.localeCompare(b.name);
+    });
 
   // Filtra apenas as cores disponíveis para a versão selecionada
   const availableColors = selectedVersionId 
