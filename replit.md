@@ -124,6 +124,8 @@ Changelog:
 - October 28, 2025. Fixed permissions for /direct-sales route
 - October 28, 2025. Fixed discount dropdown disabled state for non-public price types
 - October 28, 2025. Implemented smart version sorting: descending by year (2026→2025), with versions without year appearing last
+- October 28, 2025. Added isActive field to versions table for version lifecycle management
+- October 28, 2025. Implemented version filtering: inactive versions hidden in vehicle creation, but visible when editing vehicles that use them
 ```
 
 ## User Preferences
