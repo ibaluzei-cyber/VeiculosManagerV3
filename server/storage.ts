@@ -1,5 +1,5 @@
 import { db } from "@db";
-import { eq, and, desc, lt, gt, ne } from "drizzle-orm";
+import { eq, and, desc, lt, gt, ne, sql } from "drizzle-orm";
 import { 
   brands, 
   models, 
@@ -137,16 +137,31 @@ export async function deleteModel(id: number) {
 
 // Versions
 export async function getVersions() {
-  return db.query.versions.findMany({
+  // Filtra versões que:
+  // 1. Não têm veículos (para permitir criar novos)
+  // 2. Têm pelo menos um veículo ativo
+  // Exclui versões que têm veículos mas todos são inativos
+  const allVersions = await db.query.versions.findMany({
     orderBy: versions.name,
     with: {
       model: {
         with: {
           brand: true
         }
-      }
+      },
+      vehicles: true
     }
   });
+
+  // Filtrar versões que não têm veículos OU têm pelo menos um veículo ativo
+  return allVersions.filter(version => {
+    // Se não tem veículos, incluir (permite criar novos)
+    if (!version.vehicles || version.vehicles.length === 0) {
+      return true;
+    }
+    // Se tem veículos, incluir apenas se pelo menos um for ativo
+    return version.vehicles.some(vehicle => vehicle.isActive);
+  }).map(({ vehicles, ...version }) => version); // Remove a propriedade vehicles do retorno
 }
 
 export async function getVersionById(id: number) {
