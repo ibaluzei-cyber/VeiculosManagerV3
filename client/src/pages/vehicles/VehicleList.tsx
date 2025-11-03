@@ -177,12 +177,7 @@ export default function VehicleList() {
   };
   
   const filteredVehicles = vehicles.filter(vehicle => {
-    // Filtrar apenas veículos ativos
-    if (!vehicle.isActive) {
-      return false;
-    }
-    
-    // Status filter
+    // Status filter (situação)
     if (statusFilter !== "all" && vehicle.situation !== statusFilter) {
       return false;
     }
